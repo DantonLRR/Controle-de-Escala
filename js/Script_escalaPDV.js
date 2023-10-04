@@ -209,6 +209,15 @@ $("#selectMes").change(function () {
 });
 
 
+
+
+
+
+
+
+
+
+
 var iconeAddTables = document.getElementById("BTNAdicionarDescritivo");
 var iconeRemoveTable = document.getElementById("BTNremoverDescritivo");
 var iconeAddTables2 = document.getElementById("BTNAdicionarDescritivo2");
@@ -243,51 +252,13 @@ iconeRemoveTable2.addEventListener("click", function () {
 
 
 
-// $(document).ready(function () {
-//     var opcoesSelecionadas = []; // Array para rastrear opções já selecionadas
-
-//     $('#table1').on('change', '.estilezaSelect', function () {
-//         var nomeSelecionado = $(this).val(); // Obtém o valor selecionado no select
-//         var $selects = $('#table1 .estilezaSelect');
-
-//         if (nomeSelecionado !== "") {
-//             // Verifica se a opção já foi selecionada em algum lugar da tabela
-//             if (opcoesSelecionadas.includes(nomeSelecionado)) {
-//                 alert('Opção já selecionada em outra linha.');
-//                 $(this).val(""); // Limpa a seleção
-//             } else {
-//                 // Adiciona a opção ao array de opções selecionadas
-//                 opcoesSelecionadas.push(nomeSelecionado);
-
-//                 // Remove a opção selecionada de todos os outros selects na tabela
-//                 $selects.not(this).find('option[value="' + nomeSelecionado + '"]').remove();
-
-//                 $.ajax({
-//                     url: "filtro/busca_infosFuncionarios.php",
-//                     method: 'get',
-//                     data: 'nomeSelecionado=' + nomeSelecionado,
-//                     success: function (retorno) {
-//                                 alert('Valor selecionado: ' + nomeSelecionado);
-
-//                                 // Preencha as células da linha com os dados retornados
-//                                 var $linha = $(this).closest('tr');
-//                                 $linha.find('#horaEntrada1').text(retorno.horaEntrada);
-//                                 $linha.find('#horaSaida1').text(retorno.horaSaida);
-//                                 $linha.find('#horaIntervalo1').text(retorno.horaIntervalo);
-//                     }
-//                 })
-//             }
-//         }
-//     });
-// });
-
-
 
 
 
 var opcoesSelecionadas = [];
 
 $('#table1').on('change', '.estilezaSelect', function () {
+    criandoHtmlmensagemCarregamento("exibir");
     var nomeSelecionado = $(this).val();
     var $selects = $('#table1 .estilezaSelect');
     var matricula = $(this).parent().parent().find(".Matricula1").closest(".Matricula1");
@@ -302,22 +273,58 @@ $('#table1').on('change', '.estilezaSelect', function () {
             $(this).val("");
         } else {
             opcoesSelecionadas.push(nomeSelecionado);
-
             $selects.not(this).find('option[value="' + nomeSelecionado + '"]').remove();
-
             $.ajax({
                 url: "filtro/busca_infosFuncionarios.php",
                 method: 'get',
                 data: 'nomeSelecionado=' + nomeSelecionado,
                 dataType: 'json',
                 success: function (retorno) {
-                    matricula.text(retorno.matricula);
-                    entrada.text(retorno.horaEntrada);
-                    saida.text(retorno.horaSaida);
-                    intervalo.text(retorno.horaIntervalo);
+               matricula.text(retorno.matricula);
+               entrada.text(retorno.horaEntrada);
+                  saida.text(retorno.horaSaida);
+                 intervalo.text(retorno.horaIntervalo);
+
+                 
+
+
+
+
+                  var DadosMatricula = retorno.matricula;
+                  var DadosEntrada =   retorno.horaEntrada;
+                  var DadosSaida=  retorno.horaSaida;
+                  var DadosIntervalo =  retorno.horaIntervalo;
+
+
+                    $.ajax({
+                        url: "config/insertManha_escalaPDV.php",
+                        method: 'get',
+                        data: 'DadosMatricula=' +
+                        DadosMatricula +
+                            "&nomeSelecionado=" +
+                            nomeSelecionado+
+                            "&DadosEntrada=" +
+                            DadosEntrada +
+                            "&DadosSaida=" +
+                            DadosSaida +
+                            "&DadosIntervalo=" +
+                            DadosIntervalo,
+                        // dataType: 'json',
+                        success: function (retorno2) {
+                            
+                            criandoHtmlmensagemCarregamento("ocultar");
+
+
+                        }
+                    });
+
 
                 }
             });
+
+
+
+
         }
     }
 });
