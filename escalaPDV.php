@@ -109,12 +109,6 @@ for ($i = 7; $i <= 21; $i++) {
                                     </select>
                                 </div>
                             </div> -->
-
-
-
-
-
-
                         </div>
                     </div>
                 </div>
