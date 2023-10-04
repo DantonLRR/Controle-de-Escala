@@ -13,6 +13,6 @@ $intervalo = $_GET['DadosIntervalo'];
 
 $InsertDeDados = new Insert();
 
-$insereDadosFuncManha =$InsertDeDados-> insertAceitarTipoAcordo($oracle, $matricula, $nome, $entrada, $saida, $intervalo);
+$insereDadosFuncManha =$InsertDeDados-> insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo);
 
 

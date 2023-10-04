@@ -280,29 +280,24 @@ $('#table1').on('change', '.estilezaSelect', function () {
                 data: 'nomeSelecionado=' + nomeSelecionado,
                 dataType: 'json',
                 success: function (retorno) {
-               matricula.text(retorno.matricula);
-               entrada.text(retorno.horaEntrada);
-                  saida.text(retorno.horaSaida);
-                 intervalo.text(retorno.horaIntervalo);
-
-                 
+                    matricula.text(retorno.matricula);
+                    entrada.text(retorno.horaEntrada);
+                    saida.text(retorno.horaSaida);
+                    intervalo.text(retorno.horaIntervalo);
 
 
-
-
-                  var DadosMatricula = retorno.matricula;
-                  var DadosEntrada =   retorno.horaEntrada;
-                  var DadosSaida=  retorno.horaSaida;
-                  var DadosIntervalo =  retorno.horaIntervalo;
-
+                    var DadosMatricula = retorno.matricula;
+                    var DadosEntrada = retorno.horaEntrada;
+                    var DadosSaida = retorno.horaSaida;
+                    var DadosIntervalo = retorno.horaIntervalo;
 
                     $.ajax({
                         url: "config/insertManha_escalaPDV.php",
                         method: 'get',
                         data: 'DadosMatricula=' +
-                        DadosMatricula +
+                            DadosMatricula +
                             "&nomeSelecionado=" +
-                            nomeSelecionado+
+                            nomeSelecionado +
                             "&DadosEntrada=" +
                             DadosEntrada +
                             "&DadosSaida=" +
@@ -311,7 +306,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
                             DadosIntervalo,
                         // dataType: 'json',
                         success: function (retorno2) {
-                            
+
                             criandoHtmlmensagemCarregamento("ocultar");
 
 
@@ -360,6 +355,38 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                     entrada2.text(retorno2.horaEntrada);
                     saida2.text(retorno2.horaSaida);
                     intervalo2.text(retorno2.horaIntervalo);
+
+                    var DadosMatricula1 = retorno2.matricula;
+                    var DadosEntrada1 = retorno2.horaEntrada;
+                    var DadosSaida1 = retorno2.horaSaida;
+                    var DadosIntervalo1 = retorno2.horaIntervalo;
+                    alert(DadosEntrada1)
+
+
+                    $.ajax({
+                        url: "config/insertTarde_escalaPDV.php",
+                        method: 'get',
+                        data: 'DadosMatricula1=' +
+                            DadosMatricula1 +
+                            "&nomeSelecionado2=" +
+                            nomeSelecionado2 +
+                            "&DadosEntrada1=" +
+                            DadosEntrada1 +
+                            "&DadosSaida1=" +
+                            DadosSaida1 +
+                            "&DadosIntervalo1=" +
+                            DadosIntervalo1,
+                        // dataType: 'json',
+                        success: function (retorno2) {
+
+                            criandoHtmlmensagemCarregamento("ocultar");
+
+
+                        }
+                    });
+
+
+
 
                 }
             });

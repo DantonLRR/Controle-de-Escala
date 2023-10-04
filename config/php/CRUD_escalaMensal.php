@@ -99,7 +99,7 @@ class Funcionarios{
 class Insert
 {
 
-    public function insertAceitarTipoAcordo($oracle, $matricula, $nome, $entrada, $saida, $intervalo)
+    public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo)
     {
         $query = "INSERT INTO  ESCALA_PDV_MANHA (
         MATRICULA,
@@ -136,6 +136,42 @@ class Insert
 
 
 
+
+    
+    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo)
+    {
+        $query = "INSERT INTO  ESCALA_PDV_TARDE (
+        MATRICULA,
+        NOME,
+        HORAENTRADA,
+        HORASAIDA,
+        HORAINTERVALO,
+        DATAINCLUSAO
+    )
+    VALUES (
+        '$matricula',
+        '$nome',
+        '$entrada',
+        '$saida',
+        '$intervalo',
+        sysdate        
+    )";
+
+        // echo $query;
+        $parse = oci_parse($oracle, $query);
+
+        $retorno = oci_execute($parse);
+        if ($retorno) {
+            global $sucess;
+            $sucess = 1;
+
+            return true;
+        } else {
+            $sucess = 0;
+            //  echo "<br>" . $query;
+            return false;
+        }
+    }
 
 
 
