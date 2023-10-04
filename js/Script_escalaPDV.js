@@ -393,3 +393,20 @@ $('#table1').on('change', '.estilizaSelect2', function () {
         }
     }
 });
+
+
+
+
+$('#dataPesquisa').on('change', function () {
+
+alert("teste")
+
+
+
+
+
+
+
+
+
+});

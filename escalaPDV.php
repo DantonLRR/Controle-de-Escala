@@ -134,18 +134,10 @@ for ($i = 7; $i <= 21; $i++) {
                         Escala de Operadores
                     </h6>
                     <div id="cardTable1" class="card-body ">
-                        <label for="validationCustom02" class="form-label">Mês/Ano: </label>
-                        <select name="selectMes" id="selectMes" class="col-lg-1 form-control">>
-                            <?php
-                            foreach ($mesEAnoFiltro as $row) :
-                            ?>
-                                <div>
-                                    <option style="color: black; font-weight: bold;" value="<?= $row['MES'] ?>"> <?= $row['MES'] ?> </option>
-                                </div>
-                            <?php
-                            endforeach
-                            ?>
-                        </select>
+                        <label for="validationCustom02" class="form-label"> Mês/Ano: </label>
+                        <div class="col-lg-2">
+                                <input  type="date" class="form-control dataPesquisa" id="dataPesquisa">
+                            </div>
                         <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
                             <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
                             <thead style="background-color: #00a550; color: white;">
