@@ -2,7 +2,7 @@
 include "../base/Conexao_teste.php";
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_escalaMensal.php";
-$hoje = date("Y-m-d");
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -25,16 +25,16 @@ $hoje = date("Y-m-d");
 <?php
 
 $InformacaoDosDias = new Dias();
-
+$InformacaoFuncionarios = new Funcionarios();
 
 
 
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
-$InformacaoFuncionarios = new Funcionarios();
 
-$horariosFuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle);
-$horariosFuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle);
+$hoje = date("Y-m-d");
+// echo $hoje;
+
 
 
 $horarios = array();
@@ -167,67 +167,66 @@ for ($i = 7; $i <= 21; $i++) {
                                     for ($i = 1; $i <= 30; $i++) {
                                         $qntPDV[] = $i;
                                     }
+                                    // add a variavel hoje para poder filtrar a pagina inicial da tabela tendo conteudo ou nao
+                                    $horariosFuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $hoje);
+                                    $horariosFuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $hoje);
+                                    $totalManha = count($horariosFuncManha);
+                                    $totalTarde = count($horariosFuncTarde);
 
-
-
-
-
-
-
-
-                                    // add a variavel hoje para poder filtrar a pagina inicial
-                                    //  da tabela tendo conteudo ou nao 
-                                    foreach ($qntPDV as $row) : ?>
+                                    foreach ($qntPDV as $row) :
+                                        $row2Manha = ($row <= $totalManha) ? $horariosFuncManha[$row - 1] : ['MATRICULA' => '', 'NOME' => '', 'HORAENTRADA' => '', 'HORASAIDA' => '', 'HORAINTERVALO' => ''];
+                                        $row3Tarde = ($row <= $totalTarde) ? $horariosFuncTarde[$row - 1] : ['MATRICULA' => '', 'NOME' => '', 'HORAENTRADA' => '', 'HORASAIDA' => '', 'HORAINTERVALO' => ''];
+                                    ?>
                                         <tr class="trr">
                                             <td scope="row" id="">
                                                 <?= $row ?>
                                             </td>
-                                            <td scope="row" class="Matricula1" contenteditable="true"></td>
+                                            <td scope="row" class="Matricula1" contenteditable="true"><?= $row2Manha['MATRICULA'] ?></td>
                                             <td scope="row" class="NomeFunc">
                                                 <select class="estilezaSelect form-control" id="selectFuncionario">
-                                                    <option value=""></option>
+                                                    <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?></option>
                                                     <?php
-                                                    foreach ($horariosFuncManha as $row) :
+                                                    foreach ($horariosFuncManha as $rowManha) :
                                                     ?>
                                                         <div>
-                                                            <option style="color: black; font-weight: bold;" value="<?= $row['NOME'] ?>"> <?= $row['NOME'] ?> </option>
+                                                            <option style="color: black; font-weight: bold;" value="<?= $rowManha['NOME'] ?>"> <?= $rowManha['NOME'] ?> </option>
                                                         </div>
                                                     <?php
                                                     endforeach
                                                     ?>
                                                 </select>
                                             </td>
-                                            <td scope="row" class="text-center horaEntrada1"></td>
-                                            <td scope="row" class="horaSaida1"></td>
-                                            <td scope="row" class="horaIntervalo1"></td>
+                                            <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?></td>
+                                            <td scope="row" class="horaSaida1"><?= $row2Manha['HORASAIDA'] ?></td>
+                                            <td scope="row" class="horaIntervalo1"><?= $row2Manha['HORAINTERVALO'] ?></td>
 
-
-
-
-
-                                            <td scope="row" class="matricula2" contenteditable="true"></td>
+                                            <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?></td>
                                             <td scope="row" class="text-center nome2">
                                                 <select class="estilizaSelect2 form-control">
-                                                    <option value=""></option>
+                                                    <option value="<?= $row3Tarde['NOME'] ?>"><?= $row3Tarde['NOME'] ?></option>
                                                     <?php
-                                                    foreach ($horariosFuncTarde as $row) :
+                                                    foreach ($horariosFuncTarde as $rowTarde) :
                                                     ?>
                                                         <div>
-                                                            <option style="color: black; font-weight: bold;" value="<?= $row['NOME'] ?>"> <?= $row['NOME'] ?> </option>
+                                                            <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"> <?= $rowTarde['NOME'] ?> </option>
                                                         </div>
                                                     <?php
                                                     endforeach
                                                     ?>
                                                 </select>
                                             </td>
-                                            <td scope="row" class="horaEntrada2"></td>
-                                            <td scope="row" class="horaSaida2"></td>
-                                            <td scope="row" class="horaIntervalo2"></td>
+                                            <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?></td>
+                                            <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?></td>
+                                            <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?></td>
                                         </tr>
                                     <?php
                                     endforeach
                                     ?>
                                 </tbody>
+
+
+
+
                             </table>
                         </div>
                     </div>

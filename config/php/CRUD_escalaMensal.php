@@ -1,10 +1,10 @@
 <?php
-$dataSelecionadaNoFiltro = $_GET['mesPesquisado'] ??date("Y-m") ;
+$dataSelecionadaNoFiltro = $_GET['mesPesquisado'] ?? date("Y-m");
 
 class Dias
 {
 
-    public function mesEAnoFiltro($oracle )
+    public function mesEAnoFiltro($oracle)
     {
         $lista = array();
         $query = "SELECT TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'YYYY'), LEVEL - 1), 'YYYY-MM') AS mes
@@ -21,7 +21,7 @@ class Dias
 
 
 
-    public function buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro )
+    public function buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro)
     {
         $lista = array();
         $query = "SELECT
@@ -34,7 +34,7 @@ class Dias
         + LEVEL - 1 <= LAST_DAY(TO_DATE('$dataSelecionadaNoFiltro', 'YYYY-MM'))
     )";
 
-    
+
 
         //  echo  $query;
 
@@ -46,20 +46,31 @@ class Dias
         }
         return $lista;
     }
-
-
-
-   
 }
-class Funcionarios{
+class Funcionarios
+{
 
-    public function buscaFuncEHorarioDeTrabalhoManha($oracle)
+    public function buscaFuncEHorarioDeTrabalhoManha($oracle, $dia)
     {
         $lista = array();
-        $query = "select * from HorariosFuncControleDeEscala a 
-        WHERE a.horaentrada  BETWEEN '07:00' AND '11:00'";
+        $query = "SELECT *  FROM ESCALA_PDV_MANHA a
+        WHERE TO_CHAR(TO_DATE(a.datainclusao, 'DD-MON-RR'), 'YYYY-MM-DD') = '$dia'
+        ";
+        // echo $query;
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
 
-         
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+    }
+
+    public function buscaFuncEHorarioDeTrabalhoTarde($oracle, $dia)
+    {
+        $lista = array();
+        $query = "SELECT *  FROM ESCALA_PDV_TARDE a
+        WHERE TO_CHAR(TO_DATE(a.datainclusao, 'DD-MON-RR'), 'YYYY-MM-DD') = '$dia'";
 
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
@@ -68,28 +79,7 @@ class Funcionarios{
             array_push($lista, $row);
         }
         return $lista;
-        echo  $lista;
     }
-
-    public function buscaFuncEHorarioDeTrabalhoTarde($oracle)
-    {
-        $lista = array();
-        $query = "select * from HorariosFuncControleDeEscala a 
-        WHERE a.horaentrada  BETWEEN '12:00' AND '22:00'" ;
-
-
-         
-
-        $resultado = oci_parse($oracle, $query);
-        oci_execute($resultado);
-
-        while ($row = oci_fetch_assoc($resultado)) {
-            array_push($lista, $row);
-        }
-        return $lista;
-        echo  $lista;
-    }
-
 }
 
 
@@ -137,7 +127,7 @@ class Insert
 
 
 
-    
+
     public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo)
     {
         $query = "INSERT INTO  ESCALA_PDV_TARDE (
@@ -172,9 +162,4 @@ class Insert
             return false;
         }
     }
-
-
-
-
-
 }
