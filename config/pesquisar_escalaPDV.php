@@ -10,16 +10,12 @@ $dataPesquisada = $_POST['dataPesquisa'];
     var dataPesquisa = $("#dataPesquisa").val();
     var dataAtual = new Date().toISOString().slice(0, 10);
 
-    console.log("dataPesquisa:", dataPesquisa);
-    console.log("dataAtual:", dataAtual);
-    if (dataPesquisa === dataAtual) {
-        alert("identicos");
-        $('.estilizaSelect2').prop('disabled', false);
-        $('.estilezaSelect').prop('disabled', false);
-    } else {
-        alert("diferentes");
+    if (dataPesquisa < dataAtual) {   
         $('.estilezaSelect').prop('disabled', true);
         $('.estilizaSelect2').prop('disabled', true);
+    } else {
+        $('.estilizaSelect2').prop('disabled', false);
+        $('.estilezaSelect').prop('disabled', false);
     }
 </script>
 
