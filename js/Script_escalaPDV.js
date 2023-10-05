@@ -254,7 +254,7 @@ iconeRemoveTable2.addEventListener("click", function () {
 
 
 
-
+var usuarioLogado = $("#usuarioLogado").val();
 var opcoesSelecionadas = [];
 
 $('#table1').on('change', '.estilezaSelect', function () {
@@ -303,7 +303,9 @@ $('#table1').on('change', '.estilezaSelect', function () {
                             "&DadosSaida=" +
                             DadosSaida +
                             "&DadosIntervalo=" +
-                            DadosIntervalo,
+                            DadosIntervalo+
+                            "&usuarioLogado=" +
+                            usuarioLogado,
                         // dataType: 'json',
                         success: function (retorno2) {
 
@@ -328,6 +330,9 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
 
 $('#table1').on('change', '.estilizaSelect2', function () {
+    
+    
+    
     var nomeSelecionado2 = $(this).val();
     var $selects2 = $('#table1 .estilizaSelect2');
     var matricula2 = $(this).parent().parent().find(".matricula2").closest(".matricula2");
@@ -375,7 +380,9 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             "&DadosSaida1=" +
                             DadosSaida1 +
                             "&DadosIntervalo1=" +
-                            DadosIntervalo1,
+                            DadosIntervalo1+
+                            "&usuarioLogado=" +
+                            usuarioLogado,
                         // dataType: 'json',
                         success: function (retorno2) {
 

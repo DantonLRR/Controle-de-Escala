@@ -89,7 +89,7 @@ class Funcionarios
 class Insert
 {
 
-    public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo)
+    public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado)
     {
         $query = "INSERT INTO  ESCALA_PDV_MANHA (
         MATRICULA,
@@ -97,6 +97,7 @@ class Insert
         HORAENTRADA,
         HORASAIDA,
         HORAINTERVALO,
+        USUINCLUSAO,
         DATAINCLUSAO
     )
     VALUES (
@@ -105,6 +106,7 @@ class Insert
         '$entrada',
         '$saida',
         '$intervalo',
+        '$usuarioLogado',
         sysdate        
     )";
 
@@ -128,7 +130,7 @@ class Insert
 
 
 
-    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo)
+    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado)
     {
         $query = "INSERT INTO  ESCALA_PDV_TARDE (
         MATRICULA,
@@ -136,6 +138,7 @@ class Insert
         HORAENTRADA,
         HORASAIDA,
         HORAINTERVALO,
+        USUINCLUSAO,
         DATAINCLUSAO
     )
     VALUES (
@@ -144,6 +147,7 @@ class Insert
         '$entrada',
         '$saida',
         '$intervalo',
+        '$usuarioLogado',
         sysdate        
     )";
 

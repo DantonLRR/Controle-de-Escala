@@ -8,11 +8,11 @@ $nome = $_GET['nomeSelecionado'];
 $entrada = $_GET['DadosEntrada'];
 $saida = $_GET['DadosSaida'];
 $intervalo = $_GET['DadosIntervalo'];
-
+$usuarioLogado = $_GET['usuarioLogado'];
 
 
 $InsertDeDados = new Insert();
 
-$insereDadosFuncManha =$InsertDeDados-> insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo);
+$insereDadosFuncManha =$InsertDeDados-> insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado);
 
 

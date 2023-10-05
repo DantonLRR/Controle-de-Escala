@@ -47,6 +47,7 @@ for ($i = 7; $i <= 21; $i++) {
 
 
 <body style="background-color:#DCDCDC; ">
+<input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
     <div class="container-fluid">
 
         <div class="row">
@@ -247,7 +248,7 @@ for ($i = 7; $i <= 21; $i++) {
                     </h6>
                     <div id="CardTable2" class="card-body ">
                         <table id="table2" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
-                            <input class="usu" type="hidden" value="<?= $_SESSION['nome'] ?>">
+                            
                             <thead style="background-color: #00a550; color: white;">
                                 <tr class="trr">
                                     <th> PDV </th>
