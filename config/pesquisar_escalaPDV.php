@@ -2,6 +2,8 @@
 include "../../base/Conexao_teste.php";
 include "php/CRUD_escalaMensal.php";
 $InformacaoFuncionarios = new Funcionarios();
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle);
 $dataPesquisada = $_POST['dataPesquisa'];
 // session_start();
 ?>
@@ -49,8 +51,8 @@ $dataPesquisada = $_POST['dataPesquisa'];
             $qntPDV[] = $i;
         }
         // add a variavel hoje para poder filtrar a pagina inicial da tabela tendo conteudo ou nao
-        $horariosFuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $dataPesquisada);
-        $horariosFuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $dataPesquisada);
+        $horariosFuncManha = $InformacaoFuncionarios->filtroFuncionariosCadastradosManha($oracle, $dataPesquisada);
+        $horariosFuncTarde = $InformacaoFuncionarios->filtroFuncionariosCadastradoTarde($oracle, $dataPesquisada);
         $totalManha = count($horariosFuncManha);
         $totalTarde = count($horariosFuncTarde);
 
@@ -67,7 +69,7 @@ $dataPesquisada = $_POST['dataPesquisa'];
                     <select class="estilezaSelect form-control" id="selectFuncionario">
                         <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?></option>
                         <?php
-                        foreach ($horariosFuncManha as $rowManha) :
+                        foreach ($FuncManha as $rowManha) :
                         ?>
                             <div>
                                 <option style="color: black; font-weight: bold;" value="<?= $rowManha['NOME'] ?>"> <?= $rowManha['NOME'] ?> </option>
@@ -81,12 +83,16 @@ $dataPesquisada = $_POST['dataPesquisa'];
                 <td scope="row" class="horaSaida1"><?= $row2Manha['HORASAIDA'] ?></td>
                 <td scope="row" class="horaIntervalo1"><?= $row2Manha['HORAINTERVALO'] ?></td>
 
+
+
+
+
                 <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?></td>
                 <td scope="row" class="text-center nome2">
                     <select class="estilizaSelect2 form-control">
                         <option value="<?= $row3Tarde['NOME'] ?>"><?= $row3Tarde['NOME'] ?></option>
                         <?php
-                        foreach ($horariosFuncTarde as $rowTarde) :
+                        foreach ($FuncTarde as $rowTarde) :
                         ?>
                             <div>
                                 <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"> <?= $rowTarde['NOME'] ?> </option>
