@@ -28,13 +28,14 @@ $InformacaoDosDias = new Dias();
 $InformacaoFuncionarios = new Funcionarios();
 
 
-
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
 
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle);
+
 $hoje = date("Y-m-d");
 // echo $hoje;
-
 
 
 $horarios = array();
@@ -169,8 +170,8 @@ for ($i = 7; $i <= 21; $i++) {
                                         $qntPDV[] = $i;
                                     }
                                     // add a variavel hoje para poder filtrar a pagina inicial da tabela tendo conteudo ou nao
-                                    $horariosFuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $hoje);
-                                    $horariosFuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $hoje);
+                                    $horariosFuncManha = $InformacaoFuncionarios->filtroFuncionariosCadastradosManha($oracle, $hoje);
+                                    $horariosFuncTarde = $InformacaoFuncionarios->filtroFuncionariosCadastradoTarde($oracle, $hoje);
                                     $totalManha = count($horariosFuncManha);
                                     $totalTarde = count($horariosFuncTarde);
 
@@ -187,7 +188,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <select class="estilezaSelect form-control" id="selectFuncionario">
                                                     <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?></option>
                                                     <?php
-                                                    foreach ($horariosFuncManha as $rowManha) :
+                                                    foreach ($FuncManha as $rowManha) :
                                                     ?>
                                                         <div>
                                                             <option style="color: black; font-weight: bold;" value="<?= $rowManha['NOME'] ?>"> <?= $rowManha['NOME'] ?> </option>
@@ -206,7 +207,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <select class="estilizaSelect2 form-control">
                                                     <option value="<?= $row3Tarde['NOME'] ?>"><?= $row3Tarde['NOME'] ?></option>
                                                     <?php
-                                                    foreach ($horariosFuncTarde as $rowTarde) :
+                                                    foreach ($FuncTarde as $rowTarde) :
                                                     ?>
                                                         <div>
                                                             <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"> <?= $rowTarde['NOME'] ?> </option>

@@ -50,7 +50,38 @@ class Dias
 class Funcionarios
 {
 
-    public function buscaFuncEHorarioDeTrabalhoManha($oracle, $dia)
+    public function buscaFuncEHorarioDeTrabalhoManha($oracle)
+    {
+        $lista = array();
+        $query = "select * from HorariosFuncControleDeEscala a 
+        WHERE a.horaentrada  BETWEEN '07:00' AND '11:00'";
+         
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+        echo  $lista;
+    }
+    public function buscaFuncEHorarioDeTrabalhoTarde($oracle)
+    {
+        $lista = array();
+        $query = "select * from HorariosFuncControleDeEscala a 
+        WHERE a.horaentrada  BETWEEN '12:00' AND '22:00'" ;
+         
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+        echo  $lista;
+    }
+
+
+
+    public function filtroFuncionariosCadastradosManha($oracle, $dia)
     {
         $lista = array();
         $query = "SELECT *  FROM ESCALA_PDV_MANHA a
@@ -66,7 +97,7 @@ class Funcionarios
         return $lista;
     }
 
-    public function buscaFuncEHorarioDeTrabalhoTarde($oracle, $dia)
+    public function  filtroFuncionariosCadastradoTarde($oracle, $dia)
     {
         $lista = array();
         $query = "SELECT *  FROM ESCALA_PDV_TARDE a
@@ -80,7 +111,15 @@ class Funcionarios
         }
         return $lista;
     }
+
+
+
+
+
+
+
 }
+
 
 
 
@@ -99,8 +138,8 @@ class Insert
         HORAINTERVALO,
         USUINCLUSAO,
         DATAINCLUSAO
-    )
-    VALUES (
+     )
+     VALUES (
         '$matricula',
         '$nome',
         '$entrada',
@@ -108,7 +147,7 @@ class Insert
         '$intervalo',
         '$usuarioLogado',
         sysdate        
-    )";
+     )";
 
         // echo $query;
         $parse = oci_parse($oracle, $query);
@@ -140,8 +179,8 @@ class Insert
         HORAINTERVALO,
         USUINCLUSAO,
         DATAINCLUSAO
-    )
-    VALUES (
+     )
+     VALUES (
         '$matricula',
         '$nome',
         '$entrada',
@@ -149,7 +188,7 @@ class Insert
         '$intervalo',
         '$usuarioLogado',
         sysdate        
-    )";
+     )";
 
         // echo $query;
         $parse = oci_parse($oracle, $query);
