@@ -398,15 +398,14 @@ $('#table1').on('change', '.estilizaSelect2', function () {
 
 
 $('#dataPesquisa').on('change', function () {
+    var $dataPesquisa = $("#dataPesquisa").val();
+    $.ajax({
+        url: "config/pesquisar_escalaPDV.php",
+        method: 'POST',
+        data: 'dataPesquisa=' + dataPesquisa,
+        success: function (data_pesquisada) {
 
-alert("teste")
-
-
-
-
-
-
-
-
-
+            $('.dadosEscalaPDV').empty().html(data_pesquisada);
+        }
+    });
 });
