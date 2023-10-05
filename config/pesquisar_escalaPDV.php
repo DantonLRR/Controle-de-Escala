@@ -1,9 +1,10 @@
 <?php
 include "../../base/Conexao_teste.php";
-
+include "php/CRUD_escalaMensal.php";
+$InformacaoFuncionarios = new Funcionarios();
 $dataPesquisada = $_POST['dataPesquisa'];
 // session_start();
-echo ("tabela atualizada");
+
 ?>
 
 
@@ -35,55 +36,57 @@ echo ("tabela atualizada");
         for ($i = 1; $i <= 30; $i++) {
             $qntPDV[] = $i;
         }
+        // add a variavel hoje para poder filtrar a pagina inicial da tabela tendo conteudo ou nao
+        $horariosFuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $dataPesquisada);
+        $horariosFuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $dataPesquisada);
+        $totalManha = count($horariosFuncManha);
+        $totalTarde = count($horariosFuncTarde);
 
-        // add a variavel hoje para poder filtrar a pagina inicial
-        //  da tabela tendo conteudo ou nao 
-        foreach ($qntPDV as $row) : ?>
+        foreach ($qntPDV as $row) :
+            $row2Manha = ($row <= $totalManha) ? $horariosFuncManha[$row - 1] : ['MATRICULA' => '', 'NOME' => '', 'HORAENTRADA' => '', 'HORASAIDA' => '', 'HORAINTERVALO' => ''];
+            $row3Tarde = ($row <= $totalTarde) ? $horariosFuncTarde[$row - 1] : ['MATRICULA' => '', 'NOME' => '', 'HORAENTRADA' => '', 'HORASAIDA' => '', 'HORAINTERVALO' => ''];
+        ?>
             <tr class="trr">
                 <td scope="row" id="">
                     <?= $row ?>
                 </td>
-                <td scope="row" class="Matricula1" contenteditable="true"></td>
+                <td scope="row" class="Matricula1" contenteditable="true"><?= $row2Manha['MATRICULA'] ?></td>
                 <td scope="row" class="NomeFunc">
                     <select class="estilezaSelect form-control" id="selectFuncionario">
-                        <option value=""></option>
+                        <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?></option>
                         <?php
-                        foreach ($horariosFuncManha as $row) :
+                        foreach ($horariosFuncManha as $rowManha) :
                         ?>
                             <div>
-                                <option style="color: black; font-weight: bold;" value="<?= $row['NOME'] ?>"> <?= $row['NOME'] ?> </option>
+                                <option style="color: black; font-weight: bold;" value="<?= $rowManha['NOME'] ?>"> <?= $rowManha['NOME'] ?> </option>
                             </div>
                         <?php
                         endforeach
                         ?>
                     </select>
                 </td>
-                <td scope="row" class="text-center horaEntrada1"></td>
-                <td scope="row" class="horaSaida1"></td>
-                <td scope="row" class="horaIntervalo1"></td>
+                <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?></td>
+                <td scope="row" class="horaSaida1"><?= $row2Manha['HORASAIDA'] ?></td>
+                <td scope="row" class="horaIntervalo1"><?= $row2Manha['HORAINTERVALO'] ?></td>
 
-
-
-
-
-                <td scope="row" class="matricula2" contenteditable="true"></td>
+                <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?></td>
                 <td scope="row" class="text-center nome2">
                     <select class="estilizaSelect2 form-control">
-                        <option value=""></option>
+                        <option value="<?= $row3Tarde['NOME'] ?>"><?= $row3Tarde['NOME'] ?></option>
                         <?php
-                        foreach ($horariosFuncTarde as $row) :
+                        foreach ($horariosFuncTarde as $rowTarde) :
                         ?>
                             <div>
-                                <option style="color: black; font-weight: bold;" value="<?= $row['NOME'] ?>"> <?= $row['NOME'] ?> </option>
+                                <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"> <?= $rowTarde['NOME'] ?> </option>
                             </div>
                         <?php
                         endforeach
                         ?>
                     </select>
                 </td>
-                <td scope="row" class="horaEntrada2"></td>
-                <td scope="row" class="horaSaida2"></td>
-                <td scope="row" class="horaIntervalo2"></td>
+                <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?></td>
+                <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?></td>
+                <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?></td>
             </tr>
         <?php
         endforeach
@@ -91,98 +94,95 @@ echo ("tabela atualizada");
     </tbody>
 </table>
 <script>
+    $('#table1').DataTable({
 
-$('#table1').DataTable({
-
-scrollY: 280,
-scrollX: true,
-scrollCollapse: true,
-searching: true,
-dom: 'Bfrtip',
-"paging": true,
-"info": false,
-"ordering": false,
-"lengthMenu": [
-    [50],
-    [50]
-],
-buttons: [
-    {
-        text: 'Salvar Alterações',
-        className: 'estilizaBotao btn',
-        // action: function () {
-        //     var checkede = $('.checkbox:checked');
-        //     if (checkede.length > 0) {
-        //         var cargos = [];
-        //         checkede.each(function () {
-        //             var cargo = $(this).closest('tr').find('#cargo').text().trim(); // Usando o seletor de ID
-        //             cargos.push(cargo);
-        //         });
-        //         $.ajax({
-        //             url: "config/crud_cargoRisco.php",
-        //             method: 'get',
-        //             data: 'cargos=' + cargos,
-        //             success: function (filtro) {
-        //                 if (filtro == 0) {
-        //                     alert("cargo ja existente")
+        scrollY: 280,
+        scrollX: true,
+        scrollCollapse: true,
+        searching: true,
+        dom: 'Bfrtip',
+        "paging": true,
+        "info": false,
+        "ordering": false,
+        "lengthMenu": [
+            [50],
+            [50]
+        ],
+        buttons: [{
+                text: 'Salvar Alterações',
+                className: 'estilizaBotao btn',
+                // action: function () {
+                //     var checkede = $('.checkbox:checked');
+                //     if (checkede.length > 0) {
+                //         var cargos = [];
+                //         checkede.each(function () {
+                //             var cargo = $(this).closest('tr').find('#cargo').text().trim(); // Usando o seletor de ID
+                //             cargos.push(cargo);
+                //         });
+                //         $.ajax({
+                //             url: "config/crud_cargoRisco.php",
+                //             method: 'get',
+                //             data: 'cargos=' + cargos,
+                //             success: function (filtro) {
+                //                 if (filtro == 0) {
+                //                     alert("cargo ja existente")
 
 
-        //                 } else {
-        //                     window.location.href = "cargoRisco.php"
-        //                 }
-        //             }
-        //         });
+                //                 } else {
+                //                     window.location.href = "cargoRisco.php"
+                //                 }
+                //             }
+                //         });
 
-        //     } else {
-        //         alert('Selecione pelo menos um cargo');
-        //     }
-        // }
-    },
-    {
-        text: 'Imprimir',
-        className: 'estilizaBotao btn btnverde',
-        extend: 'print',
-        exportOptions: {
+                //     } else {
+                //         alert('Selecione pelo menos um cargo');
+                //     }
+                // }
+            },
+            {
+                text: 'Imprimir',
+                className: 'estilizaBotao btn btnverde',
+                extend: 'print',
+                exportOptions: {
 
-        }
-    },
-],
-language: {
-    "sEmptyTable": "Nenhum registro encontrado",
+                }
+            },
+        ],
+        language: {
+            "sEmptyTable": "Nenhum registro encontrado",
 
-    "sInfo": " _START_ até _END_ de _TOTAL_ registros...  ",
+            "sInfo": " _START_ até _END_ de _TOTAL_ registros...  ",
 
-    "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+            "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
 
-    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+            "sInfoFiltered": "(Filtrados de _MAX_ registros)",
 
-    "sInfoPostFix": "",
+            "sInfoPostFix": "",
 
-    "sInfoThousands": ".",
+            "sInfoThousands": ".",
 
-    "sLengthMenu": "_MENU_ resultados por página",
+            "sLengthMenu": "_MENU_ resultados por página",
 
-    "sLoadingRecords": "Carregando...",
+            "sLoadingRecords": "Carregando...",
 
-    "sProcessing": "Processando...",
+            "sProcessing": "Processando...",
 
-    "sZeroRecords": "Nenhum registro encontrado",
+            "sZeroRecords": "Nenhum registro encontrado",
 
-    "sSearch": "Pesquisar",
+            "sSearch": "Pesquisar",
 
-    "oPaginate": {
+            "oPaginate": {
 
-        "sNext": "Próximo",
+                "sNext": "Próximo",
 
-        "sPrevious": "Anterior",
+                "sPrevious": "Anterior",
 
-        "sFirst": "Primeiro",
+                "sFirst": "Primeiro",
 
-        "sLast": "Último"
+                "sLast": "Último"
 
-    },
-},
+            },
+        },
 
-});
-
+    });
 </script>
