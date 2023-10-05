@@ -4,8 +4,24 @@ include "php/CRUD_escalaMensal.php";
 $InformacaoFuncionarios = new Funcionarios();
 $dataPesquisada = $_POST['dataPesquisa'];
 // session_start();
-
 ?>
+<input id="dataPesquisa" type="hidden" value="<?= $dataPesquisada ?>">
+<script>
+    var dataPesquisa = $("#dataPesquisa").val();
+    var dataAtual = new Date().toISOString().slice(0, 10);
+
+    console.log("dataPesquisa:", dataPesquisa);
+    console.log("dataAtual:", dataAtual);
+    if (dataPesquisa === dataAtual) {
+        alert("identicos");
+        $('.estilizaSelect2').prop('disabled', false);
+        $('.estilezaSelect').prop('disabled', false);
+    } else {
+        alert("diferentes");
+        $('.estilezaSelect').prop('disabled', true);
+        $('.estilizaSelect2').prop('disabled', true);
+    }
+</script>
 
 
 <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
