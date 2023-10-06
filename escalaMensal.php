@@ -1,7 +1,7 @@
 <?php
 include "../base/Conexao_teste.php";
 include "../MobileNav/docs/index_menucomlogin.php";
-include "config/php/CRUD_escalaMensal.php";
+include "config/php/CRUD_geral.php";
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">

@@ -1,6 +1,6 @@
 <?php
 include "../../base/Conexao_teste.php";
-include "php/CRUD_escalaMensal.php";
+include "php/CRUD_geral.php";
 
 
 $matricula = $_GET['DadosMatricula'];
@@ -9,10 +9,10 @@ $entrada = $_GET['DadosEntrada'];
 $saida = $_GET['DadosSaida'];
 $intervalo = $_GET['DadosIntervalo'];
 $usuarioLogado = $_GET['usuarioLogado'];
-
+$dataPesquisa = $_GET['dataPesquisa'];
 
 $InsertDeDados = new Insert();
 
-$insereDadosFuncManha =$InsertDeDados-> insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado);
+$insereDadosFuncManha =$InsertDeDados-> insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado,$dataPesquisa );
 
 

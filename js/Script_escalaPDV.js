@@ -1,4 +1,9 @@
 import { criandoHtmlmensagemCarregamento, Toasty } from "../../base/jsGeral.js";
+
+
+
+
+
 $('#table1').DataTable({
 
     scrollY: 280,
@@ -12,47 +17,6 @@ $('#table1').DataTable({
     "lengthMenu": [
         [50],
         [50]
-    ],
-    buttons: [
-        {
-            text: 'Salvar Alterações',
-            className: 'estilizaBotao btn',
-            // action: function () {
-            //     var checkede = $('.checkbox:checked');
-            //     if (checkede.length > 0) {
-            //         var cargos = [];
-            //         checkede.each(function () {
-            //             var cargo = $(this).closest('tr').find('#cargo').text().trim(); // Usando o seletor de ID
-            //             cargos.push(cargo);
-            //         });
-            //         $.ajax({
-            //             url: "config/crud_cargoRisco.php",
-            //             method: 'get',
-            //             data: 'cargos=' + cargos,
-            //             success: function (filtro) {
-            //                 if (filtro == 0) {
-            //                     alert("cargo ja existente")
-
-
-            //                 } else {
-            //                     window.location.href = "cargoRisco.php"
-            //                 }
-            //             }
-            //         });
-
-            //     } else {
-            //         alert('Selecione pelo menos um cargo');
-            //     }
-            // }
-        },
-        {
-            text: 'Imprimir',
-            className: 'estilizaBotao btn btnverde',
-            extend: 'print',
-            exportOptions: {
-
-            }
-        },
     ],
     language: {
         "sEmptyTable": "Nenhum registro encontrado",
@@ -198,7 +162,7 @@ $("#selectMes").change(function () {
     var mesPesquisado = $(this).val();
     alert(mesPesquisado);
     $.ajax({
-        url: "config/CRUD_escalaMensal.php",
+        url: "config/CRUD_geral.php",
         method: 'get',
         data: 'mesPesquisado=' + mesPesquisado,
         success: function () {
@@ -254,11 +218,20 @@ iconeRemoveTable2.addEventListener("click", function () {
 
 
 
+
+
+
 var usuarioLogado = $("#usuarioLogado").val();
 var opcoesSelecionadas = [];
 
 $('#table1').on('change', '.estilezaSelect', function () {
-    criandoHtmlmensagemCarregamento("exibir");
+    var dataPesquisa = $("#dataPesquisa").val();
+    var dataAtual = $("#dataAtual").val();
+
+    if (dataPesquisa == "") {
+        dataPesquisa = dataAtual
+    }
+
     var nomeSelecionado = $(this).val();
     var $selects = $('#table1 .estilezaSelect');
     var matricula = $(this).parent().parent().find(".Matricula1").closest(".Matricula1");
@@ -303,9 +276,13 @@ $('#table1').on('change', '.estilezaSelect', function () {
                             "&DadosSaida=" +
                             DadosSaida +
                             "&DadosIntervalo=" +
-                            DadosIntervalo+
+                            DadosIntervalo +
                             "&usuarioLogado=" +
-                            usuarioLogado,
+                            usuarioLogado +
+                            "&dataPesquisa=" +
+                            dataPesquisa,
+
+
                         // dataType: 'json',
                         success: function (retorno2) {
 
@@ -329,10 +306,18 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
 
 
+
+
+
+
 $('#table1').on('change', '.estilizaSelect2', function () {
-    
-    
-    
+    var dataPesquisa = $("#dataPesquisa").val();
+    var dataAtual = $("#dataAtual").val();
+
+    if (dataPesquisa == "") {
+        dataPesquisa = dataAtual
+    }
+
     var nomeSelecionado2 = $(this).val();
     var $selects2 = $('#table1 .estilizaSelect2');
     var matricula2 = $(this).parent().parent().find(".matricula2").closest(".matricula2");
@@ -365,7 +350,7 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                     var DadosEntrada1 = retorno2.horaEntrada;
                     var DadosSaida1 = retorno2.horaSaida;
                     var DadosIntervalo1 = retorno2.horaIntervalo;
-                    alert(DadosEntrada1)
+                  
 
 
                     $.ajax({
@@ -380,9 +365,11 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             "&DadosSaida1=" +
                             DadosSaida1 +
                             "&DadosIntervalo1=" +
-                            DadosIntervalo1+
+                            DadosIntervalo1 +
                             "&usuarioLogado=" +
-                            usuarioLogado,
+                            usuarioLogado +
+                            "&dataPesquisa=" +
+                            dataPesquisa,
                         // dataType: 'json',
                         success: function (retorno2) {
 
@@ -406,6 +393,12 @@ $('#table1').on('change', '.estilizaSelect2', function () {
 
 $('#dataPesquisa').on('change', function () {
     var dataPesquisa = $("#dataPesquisa").val();
+    var dataAtual = $("#dataAtual").val();
+
+    if (dataPesquisa == "") {
+        dataPesquisa = dataAtual
+    }
+
 
     $.ajax({
         url: "config/pesquisar_escalaPDV.php",

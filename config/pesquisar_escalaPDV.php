@@ -1,6 +1,6 @@
 <?php
 include "../../base/Conexao_teste.php";
-include "php/CRUD_escalaMensal.php";
+include "php/CRUD_geral.php";
 $InformacaoFuncionarios = new Funcionarios();
 $FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle);
 $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle);
@@ -111,6 +111,7 @@ $dataPesquisada = $_POST['dataPesquisa'];
         ?>
     </tbody>
 </table>
+<script type="module" src="js/Script_escalaPDV.js" defer></script>
 <script>
     $('#table1').DataTable({
 

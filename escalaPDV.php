@@ -1,7 +1,7 @@
 <?php
 include "../base/Conexao_teste.php";
 include "../MobileNav/docs/index_menucomlogin.php";
-include "config/php/CRUD_escalaMensal.php";
+include "config/php/CRUD_geral.php";
 
 ?>
 <!DOCTYPE html>
@@ -35,7 +35,6 @@ $FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle);
 $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle);
 
 $hoje = date("Y-m-d");
-// echo $hoje;
 
 
 $horarios = array();
@@ -43,12 +42,16 @@ for ($i = 7; $i <= 21; $i++) {
     $horarios[] = sprintf("%02d:00", $i);
 }
 
+
+
+
 ?>
 
 
 
 <body style="background-color:#DCDCDC; ">
 <input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
+<input class="dataAtual" id="dataAtual" value="<?= $hoje ?>">
     <div class="container-fluid">
 
         <div class="row">
