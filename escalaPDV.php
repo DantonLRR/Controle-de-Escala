@@ -35,7 +35,7 @@ $FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle);
 $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle);
 
 $hoje = date("Y-m-d");
-$hoje = date("2023-10-06");
+// $hoje = date("2023-10-06");
 
 $horarios = array();
 for ($i = 7; $i <= 21; $i++) {
@@ -204,10 +204,11 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <?php
                                             } else {
                                                 foreach ($horariosFuncManha as $row2Manha) :
+                                                    // print_r($horariosFuncManha);  
                                                 ?>
                                                     <td scope="row" class="Matricula1" contenteditable="true"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
                                                     <td scope="row" class="NomeFunc">
-                                                        <select class="estilezaSelect form-control" id="selectFuncionario">
+                                                        <select class="estilizaSelect2 form-control" id="selectFuncionario">
                                                             <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
                                                             <?php
                                                             foreach ($FuncManha as $rowManha) :
@@ -237,7 +238,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                             foreach ($FuncTarde as $rowTarde) :
                                                             ?>
                                                                 <div>
-                                                                    <option style="color: black; font-weight: bold;" value=""> </option>
+                                                                    <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"><?= $rowTarde['NOME'] ?>  </option>
                                                                 </div>
                                                             <?php
                                                             endforeach
@@ -250,7 +251,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <?php
                                             } else {
                                                 foreach ($horariosFuncTarde as $row3Tarde) :
-                                                    print_r($horariosFuncTarde);                                                ?>
+                                                    // print_r($horariosFuncTarde);                                                ?>
                                                     <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
                                                     <td scope="row" class="text-center nome2">
                                                         <select class="estilizaSelect2 form-control">

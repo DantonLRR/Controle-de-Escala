@@ -200,7 +200,7 @@ class Insert
         HORAINTERVALO,
         USUINCLUSAO,
         DATAINCLUSAO,
-        DIASELECIONADO
+        DIASELECIONADO,
         NUMPDV
      )
      VALUES (
@@ -215,7 +215,7 @@ class Insert
         '$numPDV'        
      )";
 
-        echo $query;
+        // echo $query;
         $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);

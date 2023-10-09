@@ -158,19 +158,19 @@ $('#tableHeader').DataTable({
 
 
 
-$("#selectMes").change(function () {
-    var mesPesquisado = $(this).val();
-    alert(mesPesquisado);
-    $.ajax({
-        url: "config/CRUD_geral.php",
-        method: 'get',
-        data: 'mesPesquisado=' + mesPesquisado,
-        success: function () {
+// $("#selectMes").change(function () {
+//     var mesPesquisado = $(this).val();
+//     alert(mesPesquisado);
+//     $.ajax({
+//         url: "config/CRUD_geral.php",
+//         method: 'get',
+//         data: 'mesPesquisado=' + mesPesquisado,
+//         success: function () {
 
-        }
-    });
+//         }
+//     });
 
-});
+// });
 
 
 
