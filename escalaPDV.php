@@ -23,6 +23,9 @@ include "config/php/CRUD_geral.php";
 
 </head>
 <?php
+$hoje = date("Y-m-d");
+// $hoje = date("2023-10-06");
+
 
 $InformacaoDosDias = new Dias();
 $InformacaoFuncionarios = new Funcionarios();
@@ -31,11 +34,11 @@ $InformacaoFuncionarios = new Funcionarios();
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
 
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle);
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle);
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle,$hoje);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$hoje);
+print_r( $FuncManha) ;
 
-$hoje = date("Y-m-d");
-// $hoje = date("2023-10-06");
+
 
 $horarios = array();
 for ($i = 7; $i <= 21; $i++) {

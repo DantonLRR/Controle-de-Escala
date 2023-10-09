@@ -52,11 +52,12 @@ class Dias
 class Funcionarios
 {
 
-    public function buscaFuncEHorarioDeTrabalhoManha($oracle)
+    public function buscaFuncEHorarioDeTrabalhoManha($oracle,$dataSelecionadaNoFiltro)
     {
         $lista = array();
-        $query = "select * from HorariosFuncControleDeEscala a 
-        WHERE a.horaentrada  BETWEEN '07:00' AND '11:00'";
+        $query = "select * from HorariosFuncControleDeEscala a    
+        WHERE a.horaentrada  BETWEEN '07:00' AND '11:00' 
+        and  a.matricula not in(select b.matricula from escala_pdv_manha b where b.diaselecionado=TO_DATE('$dataSelecionadaNoFiltro', 'YYYY-MM-DD'))";
 
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
@@ -66,11 +67,13 @@ class Funcionarios
         return $lista;
         echo  $lista;
     }
-    public function buscaFuncEHorarioDeTrabalhoTarde($oracle)
+    public function buscaFuncEHorarioDeTrabalhoTarde($oracle,$dataSelecionadaNoFiltro)
     {
         $lista = array();
-        $query = "select * from HorariosFuncControleDeEscala a 
-        WHERE a.horaentrada  BETWEEN '12:00' AND '22:00'";
+        $query = "select * from HorariosFuncControleDeEscala a    
+        WHERE a.horaentrada  BETWEEN '12:00' AND '22:00' 
+        and  a.matricula not in(select b.matricula from escala_pdv_tarde b where b.diaselecionado=TO_DATE('$dataSelecionadaNoFiltro', 'YYYY-MM-DD'))";
+
 
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);

@@ -6,8 +6,8 @@ import { criandoHtmlmensagemCarregamento, Toasty } from "../../base/jsGeral.js";
 
 $('#table1').DataTable({
 
-    scrollY: 280,
-    scrollX: true,
+    scrollY: 400,
+    
     scrollCollapse: true,
     searching: true,
     dom: 'Bfrtip',
@@ -15,8 +15,8 @@ $('#table1').DataTable({
     "info": false,
     "ordering": false,
     "lengthMenu": [
-        [50],
-        [50]
+        [15],
+      
     ],
     language: {
         "sEmptyTable": "Nenhum registro encontrado",
