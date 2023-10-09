@@ -2,6 +2,7 @@
 include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
 
+$tabela = "ESCALA_PDV_TARDE";
 
 $matricula = $_GET['DadosMatricula1'];
 $nome = $_GET['nomeSelecionado2'];
@@ -11,8 +12,21 @@ $intervalo = $_GET['DadosIntervalo1'];
 $usuarioLogado = $_GET['usuarioLogado'];
 $dataPesquisa = $_GET['dataPesquisa'];
 $numPDV = $_GET['numPDV'];
-$InsertDeDados = new Insert();
 
-$insereDadosFuncTarde =$InsertDeDados-> insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado,$dataPesquisa,$numPDV);
+
+$verificacaoDeDados = new Verifica();
+$InsertDeDados = new Insert();
+$updateDeDados = new Update();
+
+
+$verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV);
+
+if ($retorno === "Já existem dados.") {
+    $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV);
+} else {
+    $insereDadosFuncTarde =$InsertDeDados-> insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado,$dataPesquisa,$numPDV);
+}
+
+
 
 

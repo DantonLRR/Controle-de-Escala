@@ -378,16 +378,9 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             numPDV,
                         // dataType: 'json',
                         success: function (retorno2) {
-
                             criandoHtmlmensagemCarregamento("ocultar");
-
-
                         }
                     });
-
-
-
-
                 }
             });
         }

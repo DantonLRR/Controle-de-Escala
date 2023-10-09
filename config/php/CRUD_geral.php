@@ -80,11 +80,11 @@ class Funcionarios
         return $lista;
         echo  $lista;
     }
-   
 
 
 
-    public function filtroFuncionariosCadastradosManha($oracle, $dia,$i)
+
+    public function filtroFuncionariosCadastradosManha($oracle, $dia, $i)
     {
         $lista = array();
         $query = "SELECT a.matricula,
@@ -101,7 +101,7 @@ class Funcionarios
             and to_char(a.diaselecionado,'YYYY-MM-DD') = '$dia'
             ORDER BY a.numpdv ASC
         ";
-      //   echo "<br>". $query;
+        //   echo "<br>". $query;
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
 
@@ -111,7 +111,7 @@ class Funcionarios
         return $lista;
     }
 
-    public function  filtroFuncionariosCadastradoTarde($oracle, $dia,$i)
+    public function  filtroFuncionariosCadastradoTarde($oracle, $dia, $i)
     {
         $lista = array();
         $query = "SELECT a.matricula,
@@ -123,8 +123,8 @@ class Funcionarios
         a.usuinclusao,
        TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') as DIASELECIONADO
         FROM ESCALA_PDV_TARDE a
- WHERE  TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') = '$dia'
- and a.numpdv = $i";
+         WHERE  TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') = '$dia'
+         and a.numpdv = $i";
 
         // echo $query;
         $resultado = oci_parse($oracle, $query);
@@ -137,15 +137,37 @@ class Funcionarios
     }
 }
 
+class Verifica
+{
+    public function verificaExistenciaNumPDV($oracle,$tabela, $dataPesquisa, $numPDV)
+    {
+        global  $retorno;
+        $query = "SELECT * FROM $tabela a
+                 WHERE a.NUMPDV = '$numPDV'
+                 AND a.DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')";
+        $parse = oci_parse($oracle, $query);
 
+        $retorno = oci_execute($parse);
 
+        if ($retorno) {
+            if (oci_fetch($parse)) {
+              $retorno = "Já existem dados.";
+            } else {
+                $retorno = "Não existem dados.";
+            }
+        } else {
+            // Erro na consulta
+            echo "Erro na consulta.";
+        }
 
+    }
+}
 
 
 class Insert
 {
 
-    public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa,$numPDV)
+    public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV)
     {
         $query = "INSERT INTO  ESCALA_PDV_MANHA (
         MATRICULA,
@@ -170,7 +192,7 @@ class Insert
         '$numPDV'   
      )";
 
-        echo $query;
+        // echo $query;
         $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);
@@ -190,7 +212,7 @@ class Insert
 
 
 
-    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa,$numPDV)
+    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV)
     {
         $query = "INSERT INTO  ESCALA_PDV_TARDE (
         MATRICULA,
@@ -203,7 +225,7 @@ class Insert
         DIASELECIONADO,
         NUMPDV
      )
-     VALUES (
+      VALUES (
         '$matricula',
         '$nome',
         '$entrada',
@@ -229,5 +251,28 @@ class Insert
             //  echo "<br>" . $query;
             return false;
         }
+    }
+}
+
+
+
+Class Update{
+
+    public function updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV){
+        $query = "UPDATE $tabela SET
+        MATRICULA = '$matricula',
+        NOME = '$nome',
+        HORAENTRADA = '$entrada',
+        HORASAIDA = '$saida',
+        HORAINTERVALO = '$intervalo',
+        USUINCLUSAO = '$usuarioLogado',
+        DATAINCLUSAO = sysdate,
+        DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD'),
+        NUMPDV = '$numPDV'
+      WHERE NUMPDV = '$numPDV'";
+       $parse = oci_parse($oracle, $query);
+
+        oci_execute($parse);
+            echo $query;
     }
 }

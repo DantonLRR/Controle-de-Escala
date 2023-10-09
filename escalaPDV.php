@@ -208,7 +208,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 ?>
                                                     <td scope="row" class="Matricula1" contenteditable="true"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
                                                     <td scope="row" class="NomeFunc">
-                                                        <select class="estilizaSelect2 form-control" id="selectFuncionario">
+                                                        <select class="estilezaSelect form-control" id="selectFuncionario">
                                                             <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
                                                             <?php
                                                             foreach ($FuncManha as $rowManha) :
