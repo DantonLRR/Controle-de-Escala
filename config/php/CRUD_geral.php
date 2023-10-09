@@ -80,24 +80,28 @@ class Funcionarios
         return $lista;
         echo  $lista;
     }
+   
 
 
 
-    public function filtroFuncionariosCadastradosManha($oracle, $dia)
+    public function filtroFuncionariosCadastradosManha($oracle, $dia,$i)
     {
         $lista = array();
-        $query = "        SELECT a.matricula,
+        $query = "SELECT a.matricula,
         a.nome,
         a.horaentrada,
         a.horasaida,
         a.horaintervalo,
         a.datainclusao,
         a.usuinclusao,
-       TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') as DIASELECIONADO
-        FROM ESCALA_PDV_MANHA a
- WHERE  TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') = '$dia' 
+        a.diaselecionado,
+        a.numpdv
+            FROM ESCALA_PDV_Manha a
+            where a.numpdv = $i
+            and to_char(a.diaselecionado,'YYYY-MM-DD') = '$dia'
+            ORDER BY a.numpdv ASC
         ";
-        // echo $query;
+      //   echo "<br>". $query;
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
 
@@ -107,10 +111,10 @@ class Funcionarios
         return $lista;
     }
 
-    public function  filtroFuncionariosCadastradoTarde($oracle, $dia)
+    public function  filtroFuncionariosCadastradoTarde($oracle, $dia,$i)
     {
         $lista = array();
-        $query = "        SELECT a.matricula,
+        $query = "SELECT a.matricula,
         a.nome,
         a.horaentrada,
         a.horasaida,
@@ -119,7 +123,8 @@ class Funcionarios
         a.usuinclusao,
        TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') as DIASELECIONADO
         FROM ESCALA_PDV_TARDE a
- WHERE  TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') = '$dia'";
+ WHERE  TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') = '$dia'
+ and a.numpdv = $i";
 
         // echo $query;
         $resultado = oci_parse($oracle, $query);
@@ -140,7 +145,7 @@ class Funcionarios
 class Insert
 {
 
-    public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa)
+    public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa,$numPDV)
     {
         $query = "INSERT INTO  ESCALA_PDV_MANHA (
         MATRICULA,
@@ -150,7 +155,8 @@ class Insert
         HORAINTERVALO,
         USUINCLUSAO,
         DATAINCLUSAO,
-        DIASELECIONADO
+        DIASELECIONADO,
+        NUMPDV
       )
       VALUES (
         '$matricula',
@@ -160,7 +166,8 @@ class Insert
         '$intervalo',
         '$usuarioLogado',
         sysdate,
-        TO_DATE( '$dataPesquisa','YYYY-MM-DD')   
+        TO_DATE( '$dataPesquisa','YYYY-MM-DD'),
+        '$numPDV'   
      )";
 
         echo $query;
@@ -183,7 +190,7 @@ class Insert
 
 
 
-    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa)
+    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa,$numPDV)
     {
         $query = "INSERT INTO  ESCALA_PDV_TARDE (
         MATRICULA,
@@ -194,6 +201,7 @@ class Insert
         USUINCLUSAO,
         DATAINCLUSAO,
         DIASELECIONADO
+        NUMPDV
      )
      VALUES (
         '$matricula',
@@ -203,7 +211,8 @@ class Insert
         '$intervalo',
         '$usuarioLogado',
         sysdate,
-        TO_DATE( '$dataPesquisa','YYYY-MM-DD')        
+        TO_DATE( '$dataPesquisa','YYYY-MM-DD'),
+        '$numPDV'        
      )";
 
         echo $query;

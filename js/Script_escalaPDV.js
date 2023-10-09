@@ -233,6 +233,8 @@ $('#table1').on('change', '.estilezaSelect', function () {
     }
 
     var nomeSelecionado = $(this).val();
+    var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
+    alert(numPDV);
     var $selects = $('#table1 .estilezaSelect');
     var matricula = $(this).parent().parent().find(".Matricula1").closest(".Matricula1");
     var entrada = $(this).parent().parent().find(".horaEntrada1").closest(".horaEntrada1");
@@ -280,8 +282,9 @@ $('#table1').on('change', '.estilezaSelect', function () {
                             "&usuarioLogado=" +
                             usuarioLogado +
                             "&dataPesquisa=" +
-                            dataPesquisa,
-
+                            dataPesquisa+
+                            "&numPDV=" +
+                            numPDV,
 
                         // dataType: 'json',
                         success: function (retorno2) {
@@ -319,6 +322,7 @@ $('#table1').on('change', '.estilizaSelect2', function () {
     }
 
     var nomeSelecionado2 = $(this).val();
+    var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
     var $selects2 = $('#table1 .estilizaSelect2');
     var matricula2 = $(this).parent().parent().find(".matricula2").closest(".matricula2");
     var entrada2 = $(this).parent().parent().find(".horaEntrada2").closest(".horaEntrada2");
@@ -369,7 +373,9 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             "&usuarioLogado=" +
                             usuarioLogado +
                             "&dataPesquisa=" +
-                            dataPesquisa,
+                            dataPesquisa+
+                            "&numPDV=" +
+                            numPDV,
                         // dataType: 'json',
                         success: function (retorno2) {
 
