@@ -1,26 +1,17 @@
 <?php
 include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
-$InformacaoFuncionarios = new Funcionarios();
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle);
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle);
+
 $dataPesquisada = $_POST['dataPesquisa'];
+
+
+$InformacaoFuncionarios = new Funcionarios();
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle,$dataPesquisada);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$dataPesquisada);
+
 // session_start();
 ?>
 <input id="dataPesquisa" type="hidden" value="<?= $dataPesquisada ?>">
-<script>
-    var dataPesquisa = $("#dataPesquisa").val();
-    var dataAtual = new Date().toISOString().slice(0, 10);
-
-    if (dataPesquisa < dataAtual) {
-        $('.estilezaSelect').prop('disabled', true);
-        $('.estilizaSelect2').prop('disabled', true);
-    } else {
-        $('.estilizaSelect2').prop('disabled', false);
-        $('.estilezaSelect').prop('disabled', false);
-    }
-</script>
-
 
 <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
     <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
@@ -161,6 +152,22 @@ $dataPesquisada = $_POST['dataPesquisa'];
 
 
 <script type="module" src="js/Script_escalaPDV.js" defer></script>
+<script defer> 
+
+    var dataPesquisa = $("#dataPesquisa").val();
+    var dataAtual = new Date().toISOString().slice(0, 10);
+
+    if (dataPesquisa < dataAtual) {
+        $('.estilezaSelect').prop('disabled', true);
+        $('.estilizaSelect2').prop('disabled', true);
+    } else {
+        $('.estilizaSelect2').prop('disabled', false);
+        $('.estilezaSelect').prop('disabled', false);
+    }
+
+</script>
+
+
 <script>
     $('#table1').DataTable({
 
