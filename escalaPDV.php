@@ -36,7 +36,7 @@ $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
 
 $FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle,$hoje);
 $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$hoje);
-print_r( $FuncManha) ;
+// print_r( $FuncManha) ;
 
 
 

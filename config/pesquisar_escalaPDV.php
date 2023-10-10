@@ -119,7 +119,7 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$
                     <?php
                 } else {
                     foreach ($horariosFuncTarde as $row3Tarde) :
-                        print_r($horariosFuncTarde);                                                ?>
+                        // print_r($horariosFuncTarde);                                                ?>
                         <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
                         <td scope="row" class="text-center nome2">
                             <select class="estilizaSelect2 form-control">

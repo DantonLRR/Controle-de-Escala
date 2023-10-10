@@ -24,7 +24,11 @@ include "config/php/CRUD_geral.php";
 
 $InformacaoDosDias = new Dias();
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
-$mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle)
+$mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
+$InsertDeDados = new Insert();
+$updateDeDados = new Update();
+$mesAtual = date("Y-m");
+$usuarioLogado = $_SESSION['nome'];
 ?>
 <style>
 
@@ -33,41 +37,30 @@ $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle)
 
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
-
+        <input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
+        <input class="dataAtual" id="mesAtual" value="<?= $mesAtual ?>">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card" style="border-color:#00a550;  ">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">Escala Mensal</h6>
                     <div class="card-body">
                         <label for="validationCustom02" class="form-label">Mês/Ano: </label>
-                        <select name="selectMes" id="selectMes" class="col-lg-1 form-control">>
-                            <?php
-                            foreach ($mesEAnoFiltro as $row) :
-                            ?>
-                                <div>
-                                    <option style="color: black; font-weight: bold;" value="<?= $row['MES'] ?>"> <?= $row['MES'] ?> </option>
-                                </div>
-                            <?php
-                            endforeach
-                            ?>
-                        </select>
+
+                        <div class="col-lg-2">
+                            <input type="month" class="form-control dataPesquisa" id="dataPesquisa">
+                        </div>
 
 
 
                         <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width:100%">
-                            <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
-
-
                             <thead style="background-color: #00a550;">
-
-
 
                                 <tr class="trr ">
                                     <th class="text-center" scope="row">Funcionario</th>
                                     <?php
                                     foreach ($buscandoMesAno as $row) :
                                     ?>
-                                        <th class="text-center" scope="row" id="cargo"><?= $row['DIA'] ?></th>
+                                        <th class="text-center numeroDiaDaSemana" scope="row"><?= $row['DIA'] ?></th>
 
                                     <?php
                                     endforeach
@@ -89,7 +82,7 @@ $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle)
                                     <?php
                                     foreach ($buscandoMesAno as $row) :
                                     ?>
-                                        <td class="text-center" scope="row" id="cargo"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
+                                        <td class="text-center diaDaSemana" scope="row" ><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
 
                                     <?php
                                     endforeach
@@ -103,7 +96,7 @@ $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle)
                                 foreach ($buscandoMesAno as $row) :
                                 ?>
                                     <tr class="trr">
-                                        <td class="text-center" scope="row" id="cargo"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
+                                        <td class="text-center funcionario" scope="row" ><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
 
                                         <?php
                                         foreach ($buscandoMesAno as $row) :
@@ -112,9 +105,9 @@ $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle)
 
                                                 <select class="estilezaSelect" name="" id="">
                                                     <option value=""></option>
-                                                    <option value="">F</option>
-                                                    <option value="">FA</option>
-                                                    <option value="">V</option>
+                                                    <option value="F">F</option>
+                                                    <option value="FA">FA</option>
+                                                    <option value="V">V</option>
 
                                                 </select>
                                             </td>
@@ -158,21 +151,21 @@ $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle)
 
                             <tbody style="background-color: #DCDCDC;">
                                 <tr class="trr">
+                                    <?php
+                                    foreach ($buscandoMesAno as $row) :
+                                    ?>
+                                <tr class="trr">
+                                    <td class="text-center" scope="row" id="cargo"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
+                                    <td class="text-center" scope="row" id="cargo"></td>
+                                    <td class="text-center" scope="row" id="cargo"></td>
+                                    <td class=" text-center " scope="row" id="" contenteditable></textarea>
+                                    </td>
                                 <?php
-                                foreach ($buscandoMesAno as $row) :
+                                    endforeach
                                 ?>
-                                    <tr class="trr">
-                                        <td class="text-center" scope="row" id="cargo"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
-                                        <td class="text-center" scope="row" id="cargo"></td>
-                                        <td class="text-center" scope="row" id="cargo"></td>
-                                            <td class=" text-center " scope="row" id="" contenteditable></textarea>
-                                            </td>
-                                        <?php
-                                        endforeach
-                                        ?>
-                                    </tr>
+                                </tr>
                                 <?php
-                                
+
                                 ?>
                             </tbody>
 
@@ -195,7 +188,102 @@ $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle)
 
         <script src="../base/dist/sidenav.js"></script>
         <script src="js/Script_escalaMensal.js" defer></script>
+<script>
+    $('#table1').DataTable({
+    fixedColumns: 1,
+    scrollXInner: "100%",
+    scrollY: 280,
+    scrollX: true,
+    scrollCollapse: true,
+    searching: true,
+    dom: 'Bfrtip',
+    "paging": true,
+    "info": false,
+    "ordering": false,
+    "lengthMenu": [
+        [50],
+        [50]
+    ],
+    buttons: [
+        {
+            text: 'Salvar Alterações',
+            className: 'estilizaBotao btn',
+            // action: function () {
+            //     var checkede = $('.checkbox:checked');
+            //     if (checkede.length > 0) {
+            //         var cargos = [];
+            //         checkede.each(function () {
+            //             var cargo = $(this).closest('tr').find('#cargo').text().trim(); // Usando o seletor de ID
+            //             cargos.push(cargo);
+            //         });
+            //         $.ajax({
+            //             url: "config/crud_cargoRisco.php",
+            //             method: 'get',
+            //             data: 'cargos=' + cargos,
+            //             success: function (filtro) {
+            //                 if (filtro == 0) {
+            //                     alert("cargo ja existente")
 
+
+            //                 } else {
+            //                     window.location.href = "cargoRisco.php"
+            //                 }
+            //             }
+            //         });
+
+            //     } else {
+            //         alert('Selecione pelo menos um cargo');
+            //     }
+            // }
+        },
+        {
+            text: 'Imprimir',
+            className: 'estilizaBotao btn btnverde',
+            extend: 'print',
+            exportOptions: {
+
+            }
+        },
+    ],
+    language: {
+        "sEmptyTable": "Nenhum registro encontrado",
+
+        "sInfo": " _START_ até _END_ de _TOTAL_ registros...  ",
+
+        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+
+        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+
+        "sInfoPostFix": "",
+
+        "sInfoThousands": ".",
+
+        "sLengthMenu": "_MENU_ resultados por página",
+
+        "sLoadingRecords": "Carregando...",
+
+        "sProcessing": "Processando...",
+
+        "sZeroRecords": "Nenhum registro encontrado",
+
+        "sSearch": "Pesquisar",
+
+        "oPaginate": {
+
+            "sNext": "Próximo",
+
+            "sPrevious": "Anterior",
+
+            "sFirst": "Primeiro",
+
+            "sLast": "Último"
+
+        },
+    },
+
+});
+
+</script>
 
 </body>
 

@@ -49,6 +49,8 @@ class Dias
         return $lista;
     }
 }
+
+
 class Funcionarios
 {
 
@@ -56,7 +58,7 @@ class Funcionarios
     {
         $lista = array();
         $query = "select * from HorariosFuncControleDeEscala a    
-        WHERE a.horaentrada  BETWEEN '07:00' AND '11:00' 
+        WHERE a.horaentrada  BETWEEN '07:00' AND '10:00' 
         and  a.matricula not in(select b.matricula from escala_pdv_manha b where b.diaselecionado=TO_DATE('$dataSelecionadaNoFiltro', 'YYYY-MM-DD'))";
 
         $resultado = oci_parse($oracle, $query);
@@ -65,13 +67,13 @@ class Funcionarios
             array_push($lista, $row);
         }
         return $lista;
-        echo  $lista;
+        // echo  $lista;
     }
     public function buscaFuncEHorarioDeTrabalhoTarde($oracle,$dataSelecionadaNoFiltro)
     {
         $lista = array();
         $query = "select * from HorariosFuncControleDeEscala a    
-        WHERE a.horaentrada  BETWEEN '12:00' AND '22:00' 
+        WHERE a.horaentrada  BETWEEN '12:00' AND '14:00' 
         and  a.matricula not in(select b.matricula from escala_pdv_tarde b where b.diaselecionado=TO_DATE('$dataSelecionadaNoFiltro', 'YYYY-MM-DD'))";
 
 
@@ -81,7 +83,7 @@ class Funcionarios
             array_push($lista, $row);
         }
         return $lista;
-        echo  $lista;
+        // echo  $lista;
     }
 
 
@@ -169,7 +171,42 @@ class Verifica
 
 class Insert
 {
+// mensal
+public function insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPesquisado ,$nome,$opcaoSelect){
+    
+    $query = "INSERT INTO $tabela (
+        datainclusao, 
+        usuinclusao, 
+        mesSelecionado,
+        nome,
+        $dia
+    ) VALUES (
+        SYSDATE,
+        '$usuarioLogado',
+        TO_DATE('$mesPesquisado', 'YYYY-MM'),
+        '$nome',
+        '$opcaoSelect'
+    )";
+    
+    $parse = oci_parse($oracle, $query);
 
+        $retorno = oci_execute($parse);
+        if ($retorno) {
+            global $sucess;
+            $sucess = 1;
+
+            return true;
+        } else {
+            $sucess = 0;
+            //  echo "<br>" . $query;
+            return false;
+        }
+    
+}
+
+
+
+//escala pdv
     public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV)
     {
         $query = "INSERT INTO  ESCALA_PDV_MANHA (
@@ -211,10 +248,6 @@ class Insert
         }
     }
 
-
-
-
-
     public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV)
     {
         $query = "INSERT INTO  ESCALA_PDV_TARDE (
@@ -255,6 +288,12 @@ class Insert
             return false;
         }
     }
+
+//
+    
+
+
+
 }
 
 
@@ -276,6 +315,5 @@ Class Update{
        $parse = oci_parse($oracle, $query);
 
         oci_execute($parse);
-            echo $query;
     }
 }
