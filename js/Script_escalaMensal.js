@@ -1,4 +1,5 @@
 var usuarioLogado = $("#usuarioLogado").val();
+var loja = $("#loja").val();
 
 
 
@@ -44,6 +45,8 @@ $('#table1').on('change', '.estilezaSelect', function () {
     var opcaoSelecionada = $(this).val();
     var $tr = $(this).closest('tr');
     var funcionario = $tr.find('td.funcionario').text();
+    var matriculaFunc = $tr.find('td.matriculaFunc').text();
+    alert(matriculaFunc);
     var colIndex = $(this).closest('td').index();
     var numeroDiaDaSemana = $('#table1 thead tr.trr th').eq(colIndex).text();
     var mesPesquisa = $("#dataPesquisa").val();
@@ -66,7 +69,9 @@ $('#table1').on('change', '.estilezaSelect', function () {
             "&mesAtual=" +
             mesAtual +
             "&usuarioLogado=" +
-            usuarioLogado,
+            usuarioLogado +
+            "&matriculaFunc=" +
+            matriculaFunc,
 
         // dataType: 'json',
         success: function (retorno) {

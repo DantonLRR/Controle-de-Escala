@@ -1,7 +1,7 @@
 <?php
 include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
-
+include "../../base/conexao_tovs.php";
 $tabela = "WEB_ESCALA_MENSAL";
 
 
@@ -10,21 +10,31 @@ $opcaoSelect = $_GET['opcaoSelecionada'];
 $nome = $_GET['funcionario'];
 $mesPesquisado = $_GET['mesAtual'];
 $usuarioLogado = $_GET['usuarioLogado'];
+$matricula = $_GET['matriculaFunc'];
+
+
 // echo $mesPesquisado;
 $InsertDeDados = new Insert();
-$insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPesquisado ,$nome,$opcaoSelect);
 
 
 
 
+$verifica = new Verifica();
 
-// $verificacaoDeDados = new Verifica();
+$update = new Update();
 
 // $updateDeDados = new Update();
-// $verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV);
+$verificaSeJaExistemDados = $verifica ->verificaCadastroNaEscalaMensal($oracle,$matricula,$mesPesquisado );
 
-// if ($retorno === "Já existem dados.") {
-//     $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV);
-// } else {
-//     $insereDadosFuncManha = $InsertDeDados->insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV);
-// }
+if ($retorno === "Já existem dados.") {
+
+
+    $updateDeDadps = $update -> updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$dia,$opcaoSelect, $matricula);
+
+} else {
+
+
+    $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPesquisado ,$nome,$opcaoSelect,$matricula);
+
+
+}

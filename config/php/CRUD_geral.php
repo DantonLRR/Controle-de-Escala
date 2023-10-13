@@ -53,8 +53,144 @@ class Dias
 
 class Funcionarios
 {
+    //mensal
 
-    public function buscaFuncEHorarioDeTrabalhoManha($oracle,$dataSelecionadaNoFiltro)
+    public function informacoesOperadoresDeCaixa($dbDB, $lojaDaPessoaLogada)
+    {
+
+        $lista = array();
+        $statement = $dbDB->prepare("SELECT DISTINCT
+ 
+
+        PFUNC.CHAPA AS MATRICULA,
+
+
+
+        PFUNC.NOME,
+
+
+
+        CONVERT(VARCHAR(10), PFUNC.DATAADMISSAO, 103) AS 'DATA ADMISSAO',
+
+
+
+        SUBSTRING (PSECAO.DESCRICAO, 6,99) AS DEPARTAMENTO,
+
+
+
+        SUBSTRING (PSECAO.DESCRICAO, 0,4) AS LOJA,
+
+
+
+        PFUNC.CODFUNCAO AS 'CODIGO FUNCAO',
+
+
+
+        PFUNCAO.NOME AS FUNCAO,
+
+     ((SELECT DISTINCT 
+                LEFT(FORMAT(MIN(ABATHOR.BATIDA) / 60,'00')+':'+FORMAT((MIN(ABATHOR.BATIDA) % 60.0),'00'),5)
+
+            FROM ABATHOR
+
+            INNER JOIN AHORARIO ON
+                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA
+                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO
+
+            WHERE ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1	AND ABATHOR.NATUREZA = 0 AND AHORARIO.CODCOLIGADA = PFUNC.CODCOLIGADA AND AHORARIO.CODIGO = PFUNC.CODHORARIO) + ' - ' +
+
+
+
+     (SELECT DISTINCT 
+                LEFT(FORMAT(MIN(ABATHOR.BATIDA) / 60,'00')+':'+FORMAT((MIN(ABATHOR.BATIDA) % 60.0),'00'),5)
+
+            FROM ABATHOR
+
+            INNER JOIN AHORARIO ON
+                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA
+                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO
+
+            WHERE ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1	AND ABATHOR.NATUREZA = 1 AND AHORARIO.CODCOLIGADA = PFUNC.CODCOLIGADA AND AHORARIO.CODIGO = PFUNC.CODHORARIO) + ' - ' +
+
+
+
+     (SELECT DISTINCT 
+                LEFT(FORMAT(MAX(ABATHOR.BATIDA) / 60,'00')+':'+FORMAT((MAX(ABATHOR.BATIDA) % 60.0),'00'),5)
+     FROM ABATHOR
+
+            INNER JOIN AHORARIO ON
+                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA
+                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO
+
+            WHERE ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1	AND ABATHOR.NATUREZA = 0 AND AHORARIO.CODCOLIGADA = PFUNC.CODCOLIGADA AND AHORARIO.CODIGO = PFUNC.CODHORARIO) + ' - ' +
+
+
+
+     (SELECT DISTINCT 
+                LEFT(FORMAT(MAX(ABATHOR.BATIDA) / 60,'00')+':'+FORMAT((MAX(ABATHOR.BATIDA) % 60.0),'00'),5)
+
+            FROM ABATHOR
+
+            INNER JOIN AHORARIO ON
+                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA
+                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO
+
+            WHERE ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1	AND ABATHOR.NATUREZA = 1 AND AHORARIO.CODCOLIGADA = PFUNC.CODCOLIGADA AND AHORARIO.CODIGO = PFUNC.CODHORARIO)) AS HORARIO
+
+
+
+     FROM PFUNC (NOLOCK)
+
+
+
+     INNER JOIN PFUNCAO (NOLOCK) ON
+                        (PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA
+                        AND PFUNC.CODFUNCAO = PFUNCAO.CODIGO)
+
+
+
+     INNER JOIN AHORARIO (NOLOCK) ON
+                        (PFUNC.CODCOLIGADA = AHORARIO.CODCOLIGADA
+                        AND PFUNC.CODHORARIO = AHORARIO.CODIGO)
+
+
+
+     INNER JOIN PSECAO (NOLOCK) ON
+                        (PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA
+                        AND PFUNC.CODSECAO = PSECAO.CODIGO)
+
+
+
+     WHERE 
+     PFUNC.CODCOLIGADA = 1 
+     AND PFUNC.CODSITUACAO <> 'D' 
+     AND SUBSTRING(PSECAO.DESCRICAO,0,4) LIKE $lojaDaPessoaLogada
+     and PFUNCAO.NOME = 'OPERADOR DE CAIXA'
+ 
+
+
+     ORDER BY 
+     PFUNC.NOME
+    
+
+    
+     ");
+
+
+        $statement->execute();
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+
+
+
+            array_push($lista, $row);
+        }
+
+        return $lista;
+    }
+
+    //pdv
+    public function buscaFuncEHorarioDeTrabalhoManha($oracle, $dataSelecionadaNoFiltro)
     {
         $lista = array();
         $query = "select * from HorariosFuncControleDeEscala a    
@@ -69,7 +205,7 @@ class Funcionarios
         return $lista;
         // echo  $lista;
     }
-    public function buscaFuncEHorarioDeTrabalhoTarde($oracle,$dataSelecionadaNoFiltro)
+    public function buscaFuncEHorarioDeTrabalhoTarde($oracle, $dataSelecionadaNoFiltro)
     {
         $lista = array();
         $query = "select * from HorariosFuncControleDeEscala a    
@@ -85,8 +221,6 @@ class Funcionarios
         return $lista;
         // echo  $lista;
     }
-
-
 
 
     public function filtroFuncionariosCadastradosManha($oracle, $dia, $i)
@@ -144,7 +278,42 @@ class Funcionarios
 
 class Verifica
 {
-    public function verificaExistenciaNumPDV($oracle,$tabela, $dataPesquisa, $numPDV)
+    //mensal
+
+    public function verificaCadastroNaEscalaMensal($oracle, $matricula, $mesPesquisado,)
+    {
+
+        global  $retorno;
+        $query = " SELECT * FROM WEB_ESCALA_MENSAL a
+        WHERE a.matricula = $matricula
+        AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') ";
+
+        // echo $query;
+
+        $parse = oci_parse($oracle, $query);
+
+        $retorno = oci_execute($parse);
+
+        if ($retorno) {
+            if (oci_fetch($parse)) {
+                $retorno = "Já existem dados.";
+            } else {
+                $retorno = "Não existem dados.";
+            }
+        } else {
+            // Erro na consulta
+            echo "Erro na consulta.";
+        }
+    }
+
+
+
+
+
+
+
+    //escala pdv
+    public function verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV)
     {
         global  $retorno;
         $query = "SELECT * FROM $tabela a
@@ -156,7 +325,7 @@ class Verifica
 
         if ($retorno) {
             if (oci_fetch($parse)) {
-              $retorno = "Já existem dados.";
+                $retorno = "Já existem dados.";
             } else {
                 $retorno = "Não existem dados.";
             }
@@ -164,31 +333,33 @@ class Verifica
             // Erro na consulta
             echo "Erro na consulta.";
         }
-
     }
 }
 
 
 class Insert
 {
-// mensal
-public function insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPesquisado ,$nome,$opcaoSelect){
-    
-    $query = "INSERT INTO $tabela (
+    // mensal
+    public function insertEscalaMensal($oracle, $tabela, $dia, $usuarioLogado, $mesPesquisado, $nome, $opcaoSelect,$matricula)
+    {
+
+        $query = "INSERT INTO $tabela (
         datainclusao, 
         usuinclusao, 
         mesSelecionado,
         nome,
-        $dia
-    ) VALUES (
+        $dia,
+        matricula
+     ) VALUES (
         SYSDATE,
         '$usuarioLogado',
         TO_DATE('$mesPesquisado', 'YYYY-MM'),
         '$nome',
-        '$opcaoSelect'
-    )";
-    
-    $parse = oci_parse($oracle, $query);
+        '$opcaoSelect',
+        $matricula
+     )";
+
+        $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);
         if ($retorno) {
@@ -201,12 +372,13 @@ public function insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPe
             //  echo "<br>" . $query;
             return false;
         }
-    
-}
+
+        echo $query;
+    }
 
 
 
-//escala pdv
+    //escala pdv
     public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV)
     {
         $query = "INSERT INTO  ESCALA_PDV_MANHA (
@@ -289,8 +461,8 @@ public function insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPe
         }
     }
 
-//
-    
+    //
+
 
 
 
@@ -298,9 +470,30 @@ public function insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPe
 
 
 
-Class Update{
+class Update
+{
+    public function updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$dia,$opcaoSelect, $matricula)
+    {
+        $query = "UPDATE WEB_ESCALA_MENSAL a SET
+            datainclusao = SYSDATE,
+            usuinclusao = '$usuarioLogado',
+            mesSelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM'),
+            nome = '$nome',
+            $dia = '$opcaoSelect'
+         WHERE a.matricula = $matricula"; // Substitua $id pelo valor adequado
+    echo $query;
+    $parse = oci_parse($oracle, $query);
 
-    public function updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV){
+    oci_execute($parse);
+    }
+    
+
+
+
+
+//pdv
+    public function updateDeFuncionariosNoPDV($oracle, $tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV)
+    {
         $query = "UPDATE $tabela SET
         MATRICULA = '$matricula',
         NOME = '$nome',
@@ -312,7 +505,7 @@ Class Update{
         DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD'),
         NUMPDV = '$numPDV'
       WHERE NUMPDV = '$numPDV'";
-       $parse = oci_parse($oracle, $query);
+        $parse = oci_parse($oracle, $query);
 
         oci_execute($parse);
     }

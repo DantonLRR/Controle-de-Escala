@@ -1,5 +1,6 @@
 <?php
 include "../base/Conexao_teste.php";
+include "../base/conexao_tovs.php";
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
 ?>
@@ -29,6 +30,8 @@ $InsertDeDados = new Insert();
 $updateDeDados = new Update();
 $mesAtual = date("Y-m");
 $usuarioLogado = $_SESSION['nome'];
+$dadosFunc = new Funcionarios();
+$buscaNomeFuncionario = $dadosFunc -> informacoesOperadoresDeCaixa($dbDB, $_SESSION['LOJA']);
 ?>
 <style>
 
@@ -38,6 +41,7 @@ $usuarioLogado = $_SESSION['nome'];
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
         <input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
+        <input class="usu" id="loja"value="<?= $_SESSION['LOJA'] ?>">
         <input class="dataAtual" id="mesAtual" value="<?= $mesAtual ?>">
         <div class="row">
             <div class="col-lg-12">
@@ -57,6 +61,7 @@ $usuarioLogado = $_SESSION['nome'];
 
                                 <tr class="trr ">
                                     <th class="text-center" scope="row">Funcionario</th>
+                                    <th class="text-center" scope="row">matricula</th>
                                     <?php
                                     foreach ($buscandoMesAno as $row) :
                                     ?>
@@ -78,7 +83,7 @@ $usuarioLogado = $_SESSION['nome'];
 
                                 <tr class="trr" id="quantDias">
                                     <td></td>
-
+                                    <td></td>
                                     <?php
                                     foreach ($buscandoMesAno as $row) :
                                     ?>
@@ -93,10 +98,11 @@ $usuarioLogado = $_SESSION['nome'];
 
 
                                 <?php
-                                foreach ($buscandoMesAno as $row) :
+                                foreach ($buscaNomeFuncionario as $nomeFunc) :
                                 ?>
                                     <tr class="trr">
-                                        <td class="text-center funcionario" scope="row" ><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
+                                        <td class="text-center funcionario" scope="row" ><?= $nomeFunc['NOME'] ?></td>
+                                        <td class="text-center matriculaFunc" scope="row" ><?= $nomeFunc['MATRICULA'] ?></td>
 
                                         <?php
                                         foreach ($buscandoMesAno as $row) :
