@@ -31,7 +31,7 @@ $updateDeDados = new Update();
 $mesAtual = date("Y-m");
 $usuarioLogado = $_SESSION['nome'];
 $dadosFunc = new Funcionarios();
-$buscaNomeFuncionario = $dadosFunc -> informacoesOperadoresDeCaixa($dbDB, $_SESSION['LOJA']);
+$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSION['LOJA']);
 ?>
 <style>
 
@@ -41,7 +41,7 @@ $buscaNomeFuncionario = $dadosFunc -> informacoesOperadoresDeCaixa($dbDB, $_SESS
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
         <input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
-        <input class="usu" id="loja"value="<?= $_SESSION['LOJA'] ?>">
+        <input class="usu" id="loja" value="<?= $_SESSION['LOJA'] ?>">
         <input class="dataAtual" id="mesAtual" value="<?= $mesAtual ?>">
         <div class="row">
             <div class="col-lg-12">
@@ -87,7 +87,7 @@ $buscaNomeFuncionario = $dadosFunc -> informacoesOperadoresDeCaixa($dbDB, $_SESS
                                     <?php
                                     foreach ($buscandoMesAno as $row) :
                                     ?>
-                                        <td class="text-center diaDaSemana" scope="row" ><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
+                                        <td class="text-center diaDaSemana" scope="row"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
 
                                     <?php
                                     endforeach
@@ -101,16 +101,26 @@ $buscaNomeFuncionario = $dadosFunc -> informacoesOperadoresDeCaixa($dbDB, $_SESS
                                 foreach ($buscaNomeFuncionario as $nomeFunc) :
                                 ?>
                                     <tr class="trr">
-                                        <td class="text-center funcionario" scope="row" ><?= $nomeFunc['NOME'] ?></td>
-                                        <td class="text-center matriculaFunc" scope="row" ><?= $nomeFunc['MATRICULA'] ?></td>
+                                        <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
+                                        <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
 
                                         <?php
+                                        $i = 1;
                                         foreach ($buscandoMesAno as $row) :
                                         ?>
                                             <td class=" text-center " scope="row" id="">
+                                                <?php
+                                                $recuperaDadosVerificacao = new verifica();
+                                                $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle, $nomeFunc['MATRICULA'], $mesAtual);
+                                                if ($i < 10) {
+                                                    $d = "0" . $i;
+                                                } else {
+                                                    $d = $i;
+                                                }  ?>
 
                                                 <select class="estilezaSelect" name="" id="">
-                                                    <option value=""></option>
+                                                    <option value=""><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
+
                                                     <option value="F">F</option>
                                                     <option value="FA">FA</option>
                                                     <option value="V">V</option>
@@ -118,6 +128,7 @@ $buscaNomeFuncionario = $dadosFunc -> informacoesOperadoresDeCaixa($dbDB, $_SESS
                                                 </select>
                                             </td>
                                         <?php
+                                            $i++;
                                         endforeach
                                         ?>
                                     </tr>
@@ -194,102 +205,100 @@ $buscaNomeFuncionario = $dadosFunc -> informacoesOperadoresDeCaixa($dbDB, $_SESS
 
         <script src="../base/dist/sidenav.js"></script>
         <script src="js/Script_escalaMensal.js" defer></script>
-<script>
-    $('#table1').DataTable({
-    fixedColumns: 1,
-    scrollXInner: "100%",
-    scrollY: 280,
-    scrollX: true,
-    scrollCollapse: true,
-    searching: true,
-    dom: 'Bfrtip',
-    "paging": true,
-    "info": false,
-    "ordering": false,
-    "lengthMenu": [
-        [50],
-        [50]
-    ],
-    buttons: [
-        {
-            text: 'Salvar Alterações',
-            className: 'estilizaBotao btn',
-            // action: function () {
-            //     var checkede = $('.checkbox:checked');
-            //     if (checkede.length > 0) {
-            //         var cargos = [];
-            //         checkede.each(function () {
-            //             var cargo = $(this).closest('tr').find('#cargo').text().trim(); // Usando o seletor de ID
-            //             cargos.push(cargo);
-            //         });
-            //         $.ajax({
-            //             url: "config/crud_cargoRisco.php",
-            //             method: 'get',
-            //             data: 'cargos=' + cargos,
-            //             success: function (filtro) {
-            //                 if (filtro == 0) {
-            //                     alert("cargo ja existente")
+        <script>
+            $('#table1').DataTable({
+                fixedColumns: 1,
+                scrollXInner: "100%",
+                scrollY: 280,
+                scrollX: true,
+                scrollCollapse: true,
+                searching: true,
+                dom: 'Bfrtip',
+                "paging": true,
+                "info": false,
+                "ordering": false,
+                "lengthMenu": [
+                    [50],
+                    [50]
+                ],
+                buttons: [{
+                        text: 'Salvar Alterações',
+                        className: 'estilizaBotao btn',
+                        // action: function () {
+                        //     var checkede = $('.checkbox:checked');
+                        //     if (checkede.length > 0) {
+                        //         var cargos = [];
+                        //         checkede.each(function () {
+                        //             var cargo = $(this).closest('tr').find('#cargo').text().trim(); // Usando o seletor de ID
+                        //             cargos.push(cargo);
+                        //         });
+                        //         $.ajax({
+                        //             url: "config/crud_cargoRisco.php",
+                        //             method: 'get',
+                        //             data: 'cargos=' + cargos,
+                        //             success: function (filtro) {
+                        //                 if (filtro == 0) {
+                        //                     alert("cargo ja existente")
 
 
-            //                 } else {
-            //                     window.location.href = "cargoRisco.php"
-            //                 }
-            //             }
-            //         });
+                        //                 } else {
+                        //                     window.location.href = "cargoRisco.php"
+                        //                 }
+                        //             }
+                        //         });
 
-            //     } else {
-            //         alert('Selecione pelo menos um cargo');
-            //     }
-            // }
-        },
-        {
-            text: 'Imprimir',
-            className: 'estilizaBotao btn btnverde',
-            extend: 'print',
-            exportOptions: {
+                        //     } else {
+                        //         alert('Selecione pelo menos um cargo');
+                        //     }
+                        // }
+                    },
+                    {
+                        text: 'Imprimir',
+                        className: 'estilizaBotao btn btnverde',
+                        extend: 'print',
+                        exportOptions: {
 
-            }
-        },
-    ],
-    language: {
-        "sEmptyTable": "Nenhum registro encontrado",
+                        }
+                    },
+                ],
+                language: {
+                    "sEmptyTable": "Nenhum registro encontrado",
 
-        "sInfo": " _START_ até _END_ de _TOTAL_ registros...  ",
+                    "sInfo": " _START_ até _END_ de _TOTAL_ registros...  ",
 
-        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                    "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
 
-        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+                    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
 
-        "sInfoPostFix": "",
+                    "sInfoPostFix": "",
 
-        "sInfoThousands": ".",
+                    "sInfoThousands": ".",
 
-        "sLengthMenu": "_MENU_ resultados por página",
+                    "sLengthMenu": "_MENU_ resultados por página",
 
-        "sLoadingRecords": "Carregando...",
+                    "sLoadingRecords": "Carregando...",
 
-        "sProcessing": "Processando...",
+                    "sProcessing": "Processando...",
 
-        "sZeroRecords": "Nenhum registro encontrado",
+                    "sZeroRecords": "Nenhum registro encontrado",
 
-        "sSearch": "Pesquisar",
+                    "sSearch": "Pesquisar",
 
-        "oPaginate": {
+                    "oPaginate": {
 
-            "sNext": "Próximo",
+                        "sNext": "Próximo",
 
-            "sPrevious": "Anterior",
+                        "sPrevious": "Anterior",
 
-            "sFirst": "Primeiro",
+                        "sFirst": "Primeiro",
 
-            "sLast": "Último"
+                        "sLast": "Último"
 
-        },
-    },
+                    },
+                },
 
-});
-
-</script>
+            });
+        </script>
 
 </body>
 

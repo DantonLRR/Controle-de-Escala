@@ -282,13 +282,13 @@ class Verifica
 
     public function verificaCadastroNaEscalaMensal($oracle, $matricula, $mesPesquisado,)
     {
-
+        $lista = array();
         global  $retorno;
-        $query = " SELECT * FROM WEB_ESCALA_MENSAL a
+        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
         WHERE a.matricula = $matricula
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') ";
 
-        // echo $query;
+         echo $query;
 
         $parse = oci_parse($oracle, $query);
 
@@ -297,13 +297,46 @@ class Verifica
         if ($retorno) {
             if (oci_fetch($parse)) {
                 $retorno = "Já existem dados.";
+
             } else {
                 $retorno = "Não existem dados.";
             }
-        } else {
+
+    
+        } 
+        
+        else {
             // Erro na consulta
             echo "Erro na consulta.";
         }
+        while ($row = oci_fetch_assoc($parse)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+
+
+    }
+
+    
+    public function verificaCadastroNaEscalaMensa1($oracle, $matricula, $mesPesquisado,)
+    {
+        $lista = array();
+        global  $retorno;
+        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
+        WHERE a.matricula = $matricula
+        AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') ";
+
+
+        $resultado = oci_parse($oracle, $query);
+
+        oci_execute($resultado);
+
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+
+
     }
 
 
@@ -472,6 +505,7 @@ class Insert
 
 class Update
 {
+    //mensal
     public function updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$dia,$opcaoSelect, $matricula)
     {
         $query = "UPDATE WEB_ESCALA_MENSAL a SET
