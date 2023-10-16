@@ -17,9 +17,9 @@ include "config/php/CRUD_geral.php";
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="../base/dist/sidenav.css" type="text/css">
     <link rel="stylesheet" href="css/Style_escalaMensal.css" type="text/css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
 
     <link rel="stylesheet" href="../../BASE/DataTables/FixedColumns 4.3.0/FixedColumns-4.3.0/css/fixedColumns.dataTables.min.css" type="text/css">
     </link>
@@ -58,7 +58,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
 
                         <div class="atualizaTabela">
                             <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
-                                <thead >
+                                <thead>
 
                                     <tr class="trr ">
                                         <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
@@ -77,7 +77,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
                                 </thead>
 
 
-                                <tbody >
+                                <tbody>
 
 
 
@@ -229,7 +229,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
 
             });
         </script>
-
+    </div>
 </body>
 
 </html>

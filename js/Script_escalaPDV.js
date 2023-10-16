@@ -291,11 +291,6 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
 
 
-
-
-
-
-
 $('#table1').on('change', '.estilizaSelect2', function () {
     var dataPesquisa = $("#dataPesquisa").val();
     var dataAtual = $("#dataAtual").val();

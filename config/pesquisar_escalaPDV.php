@@ -260,4 +260,170 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$
         },
 
     });
+
+
+
+
+    
+var usuarioLogado = $("#usuarioLogado").val();
+var opcoesSelecionadas = [];
+
+$('#table1').on('change', '.estilezaSelect', function () {
+    var dataPesquisa = $("#dataPesquisa").val();
+    var dataAtual = $("#dataAtual").val();
+
+    if (dataPesquisa == "") {
+        dataPesquisa = dataAtual
+    }
+
+    var nomeSelecionado = $(this).val();
+    var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
+    alert(numPDV);
+    var $selects = $('#table1 .estilezaSelect');
+    var matricula = $(this).parent().parent().find(".Matricula1").closest(".Matricula1");
+    var entrada = $(this).parent().parent().find(".horaEntrada1").closest(".horaEntrada1");
+    var saida = $(this).parent().parent().find(".horaSaida1").closest(".horaSaida1");
+    var intervalo = $(this).parent().parent().find(".horaIntervalo1").closest(".horaIntervalo1");
+
+
+    if (nomeSelecionado !== "") {
+        if (opcoesSelecionadas.includes(nomeSelecionado)) {
+            alert('Opção já selecionada em outra linha.');
+            $(this).val("");
+        } else {
+            opcoesSelecionadas.push(nomeSelecionado);
+            $selects.not(this).find('option[value="' + nomeSelecionado + '"]').remove();
+            $.ajax({
+                url: "filtro/busca_infosFuncionarios.php",
+                method: 'get',
+                data: 'nomeSelecionado=' + nomeSelecionado,
+                dataType: 'json',
+                success: function (retorno) {
+                    matricula.text(retorno.matricula);
+                    entrada.text(retorno.horaEntrada);
+                    saida.text(retorno.horaSaida);
+                    intervalo.text(retorno.horaIntervalo);
+
+
+                    var DadosMatricula = retorno.matricula;
+                    var DadosEntrada = retorno.horaEntrada;
+                    var DadosSaida = retorno.horaSaida;
+                    var DadosIntervalo = retorno.horaIntervalo;
+
+                    $.ajax({
+                        url: "config/insertManha_escalaPDV.php",
+                        method: 'get',
+                        data: 'DadosMatricula=' +
+                            DadosMatricula +
+                            "&nomeSelecionado=" +
+                            nomeSelecionado +
+                            "&DadosEntrada=" +
+                            DadosEntrada +
+                            "&DadosSaida=" +
+                            DadosSaida +
+                            "&DadosIntervalo=" +
+                            DadosIntervalo +
+                            "&usuarioLogado=" +
+                            usuarioLogado +
+                            "&dataPesquisa=" +
+                            dataPesquisa+
+                            "&numPDV=" +
+                            numPDV,
+
+                        // dataType: 'json',
+                        success: function (retorno2) {
+
+                            criandoHtmlmensagemCarregamento("ocultar");
+
+
+                        }
+                    });
+
+
+                }
+            });
+
+
+
+
+        }
+    }
+});
+
+
+
+$('#table1').on('change', '.estilizaSelect2', function () {
+    var dataPesquisa = $("#dataPesquisa").val();
+    var dataAtual = $("#dataAtual").val();
+
+    if (dataPesquisa == "") {
+        dataPesquisa = dataAtual
+    }
+
+    var nomeSelecionado2 = $(this).val();
+    var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
+    var $selects2 = $('#table1 .estilizaSelect2');
+    var matricula2 = $(this).parent().parent().find(".matricula2").closest(".matricula2");
+    var entrada2 = $(this).parent().parent().find(".horaEntrada2").closest(".horaEntrada2");
+    var saida2 = $(this).parent().parent().find(".horaSaida2").closest(".horaSaida2");
+    var intervalo2 = $(this).parent().parent().find(".horaIntervalo2").closest(".horaIntervalo2");
+
+
+    if (nomeSelecionado2 !== "") {
+        if (opcoesSelecionadas.includes(nomeSelecionado2)) {
+            alert('Opção já selecionada em outra linha.');
+            $(this).val("");
+        } else {
+            opcoesSelecionadas.push(nomeSelecionado2);
+
+            $selects2.not(this).find('option[value="' + nomeSelecionado2 + '"]').remove();
+
+            $.ajax({
+                url: "filtro/busca_infosFuncionarios.php",
+                method: 'get',
+                data: 'nomeSelecionado=' + nomeSelecionado2,
+                dataType: 'json',
+                success: function (retorno2) {
+                    matricula2.text(retorno2.matricula);
+                    entrada2.text(retorno2.horaEntrada);
+                    saida2.text(retorno2.horaSaida);
+                    intervalo2.text(retorno2.horaIntervalo);
+
+                    var DadosMatricula1 = retorno2.matricula;
+                    var DadosEntrada1 = retorno2.horaEntrada;
+                    var DadosSaida1 = retorno2.horaSaida;
+                    var DadosIntervalo1 = retorno2.horaIntervalo;
+                  
+
+
+                    $.ajax({
+                        url: "config/insertTarde_escalaPDV.php",
+                        method: 'get',
+                        data: 'DadosMatricula1=' +
+                            DadosMatricula1 +
+                            "&nomeSelecionado2=" +
+                            nomeSelecionado2 +
+                            "&DadosEntrada1=" +
+                            DadosEntrada1 +
+                            "&DadosSaida1=" +
+                            DadosSaida1 +
+                            "&DadosIntervalo1=" +
+                            DadosIntervalo1 +
+                            "&usuarioLogado=" +
+                            usuarioLogado +
+                            "&dataPesquisa=" +
+                            dataPesquisa+
+                            "&numPDV=" +
+                            numPDV,
+                        // dataType: 'json',
+                        success: function (retorno2) {
+                            criandoHtmlmensagemCarregamento("ocultar");
+                        }
+                    });
+                }
+            });
+        }
+    }
+});
+
 </script>
