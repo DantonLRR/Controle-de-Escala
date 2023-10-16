@@ -1,4 +1,15 @@
-        .row {
+thead, .theadColor{
+    background-color: #00a550 !important;
+    color:white;
+    font-weight: bold;
+   
+}
+
+th, td { white-space: nowrap !important; }
+
+  
+
+.row {
             display: flex;
             justify-content: space-around;
 

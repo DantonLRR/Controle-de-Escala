@@ -23,7 +23,7 @@ $verifica = new Verifica();
 
 $update = new Update();
 
-// $updateDeDados = new Update();
+
 $verificaSeJaExistemDados = $verifica ->verificaCadastroNaEscalaMensal($oracle,$matricula,$mesPesquisado );
 
 if ($retorno === "Já existem dados.") {

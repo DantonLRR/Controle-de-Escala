@@ -17,7 +17,11 @@ include "config/php/CRUD_geral.php";
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="../base/dist/sidenav.css" type="text/css">
     <link rel="stylesheet" href="css/Style_escalaMensal.css" type="text/css">
-    <link type="text/javascript" src="../base/DataTables/FixedColumns-3.3.1/css/fixedColumns.dataTables.min.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+     
+
+    <link rel="stylesheet" href="../../BASE/DataTables/FixedColumns 4.3.0/FixedColumns-4.3.0/css/fixedColumns.dataTables.min.css" type="text/css">
     </link>
 
 </head>
@@ -33,10 +37,7 @@ $usuarioLogado = $_SESSION['nome'];
 $dadosFunc = new Funcionarios();
 $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSION['LOJA']);
 ?>
-<style>
 
-
-</style>
 
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
@@ -44,8 +45,8 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
         <input class="usu" id="loja" value="<?= $_SESSION['LOJA'] ?>">
         <input class="dataAtual" id="mesAtual" value="<?= $mesAtual ?>">
         <div class="row">
-            <div class="col-lg-12">
-                <div class="card" style="border-color:#00a550;  ">
+            <div class="col-lg-12 ">
+                <div class="card " style="border-color:#00a550;  ">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">Escala Mensal</h6>
                     <div class="card-body">
                         <label for="validationCustom02" class="form-label">Mês/Ano: </label>
@@ -55,143 +56,101 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
                         </div>
 
 
+                        <div class="atualizaTabela">
+                            <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
+                                <thead >
 
-                        <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width:100%">
-                            <thead style="background-color: #00a550;">
-
-                                <tr class="trr ">
-                                    <th class="text-center" scope="row">Funcionario</th>
-                                    <th class="text-center" scope="row">matricula</th>
-                                    <?php
-                                    foreach ($buscandoMesAno as $row) :
-                                    ?>
-                                        <th class="text-center numeroDiaDaSemana" scope="row"><?= $row['DIA'] ?></th>
-
-                                    <?php
-                                    endforeach
-                                    ?>
-                                </tr>
-
-
-                            </thead>
-
-
-                            <tbody style="background-color: #DCDCDC;">
-
-
-
-
-                                <tr class="trr" id="quantDias">
-                                    <td></td>
-                                    <td></td>
-                                    <?php
-                                    foreach ($buscandoMesAno as $row) :
-                                    ?>
-                                        <td class="text-center diaDaSemana" scope="row"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
-
-                                    <?php
-                                    endforeach
-                                    ?>
-                                </tr>
-
-
-
-
-                                <?php
-                                foreach ($buscaNomeFuncionario as $nomeFunc) :
-                                ?>
-                                    <tr class="trr">
-                                        <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
-                                        <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
-
+                                    <tr class="trr ">
+                                        <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
+                                        <th class="text-center theadColor" scope="row" style="width:150px">matricula</th>
                                         <?php
-                                        $i = 1;
                                         foreach ($buscandoMesAno as $row) :
                                         ?>
-                                            <td class=" text-center " scope="row" id="">
-                                                <?php
-                                                $recuperaDadosVerificacao = new verifica();
-                                                $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle, $nomeFunc['MATRICULA'], $mesAtual);
-                                                if ($i < 10) {
-                                                    $d = "0" . $i;
-                                                } else {
-                                                    $d = $i;
-                                                }  ?>
+                                            <th class="text-center numeroDiaDaSemana" scope="row"><?= $row['DIA'] ?></th>
 
-                                                <select class="estilezaSelect" name="" id="">
-                                                    <option value=""><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
-
-                                                    <option value="F">F</option>
-                                                    <option value="FA">FA</option>
-                                                    <option value="V">V</option>
-
-                                                </select>
-                                            </td>
                                         <?php
-                                            $i++;
                                         endforeach
                                         ?>
                                     </tr>
-                                <?php
-                                endforeach
-                                ?>
-                            </tbody>
 
 
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                </thead>
+
+
+                                <tbody >
 
 
 
 
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card" style="border-color:#00a550;  ">
-                    <div class="card-body">
-                        <table id="table2" class="table table-bordered table-striped text-center row-border order-colum" style="width:100%">
-                            <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
+                                    <tr class="trr" id="quantDias">
+                                        <td></td>
+                                        <td></td>
+                                        <?php
+                                        foreach ($buscandoMesAno as $row) :
+                                        ?>
+                                            <td class="text-center diaDaSemana" scope="row"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
 
-                            <thead style="background-color: #00a550;">
-                                <tr class="trr ">
-                                    <th class="text-center" scope="row">Funcionario</th>
-                                    <th class="text-center" scope="row">Horário de trabalho</th>
-                                    <th class="text-center" scope="row">Horário de almoço</th>
-                                    <th class="text-center" scope="row">Observação</th>
-                                </tr>
+                                        <?php
+                                        endforeach
+                                        ?>
+                                    </tr>
 
 
-                            </thead>
 
 
-                            <tbody style="background-color: #DCDCDC;">
-                                <tr class="trr">
                                     <?php
-                                    foreach ($buscandoMesAno as $row) :
+                                    foreach ($buscaNomeFuncionario as $nomeFunc) :
                                     ?>
-                                <tr class="trr">
-                                    <td class="text-center" scope="row" id="cargo"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
-                                    <td class="text-center" scope="row" id="cargo"></td>
-                                    <td class="text-center" scope="row" id="cargo"></td>
-                                    <td class=" text-center " scope="row" id="" contenteditable></textarea>
-                                    </td>
-                                <?php
+                                        <tr class="trr">
+                                            <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
+                                            <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
+
+                                            <?php
+                                            $i = 1;
+                                            foreach ($buscandoMesAno as $row) :
+                                            ?>
+                                                <td class=" text-center " scope="row" id="">
+                                                    <?php
+                                                    $recuperaDadosVerificacao = new verifica();
+                                                    $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle, $nomeFunc['MATRICULA'], $mesAtual);
+                                                    if ($i < 10) {
+                                                        $d = "0" . $i;
+                                                    } else {
+                                                        $d = $i;
+                                                    }  ?>
+
+                                                    <select class="estilezaSelect" name="" id="">
+                                                        <option value=""><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
+
+                                                        <option value="F">F</option>
+                                                        <option value="FA">FA</option>
+                                                        <option value="V">V</option>
+
+                                                    </select>
+                                                </td>
+                                            <?php
+                                                $i++;
+                                            endforeach
+                                            ?>
+                                        </tr>
+                                    <?php
                                     endforeach
-                                ?>
-                                </tr>
-                                <?php
-
-                                ?>
-                            </tbody>
+                                    ?>
+                                </tbody>
 
 
-                        </table>
+                            </table>
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
+
+
+
         <script type="text/javascript" src="../base/mdb/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="../base/mdb/js/jquery.min.js"></script>
         <script type="text/javascript" src="../base/bootstrap-5.0.2/bootstrap-5.0.2/dist/js/bootstrap.bundle.js"></script>
@@ -201,66 +160,37 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
         <script type="text/javascript" src="../base/Buttons/js/dataTables.buttons.js"></script>
         <script type="text/javascript" src="../base/Buttons/js/buttons.html5.js"></script>
         <script type="text/javascript" src="../base/Buttons/js/buttons.print.js"></script>
-        <script type="text/javascript" src="../base/DataTables/FixedColumns/js/dataTables.fixedColumns.min.js"></script>
-
+        <script type="text/javascript" src="../../base/DataTables//FixedColumns 4.3.0//FixedColumns-4.3.0/js/dataTables.fixedColumns.min.js"></script>
         <script src="../base/dist/sidenav.js"></script>
-        <script src="js/Script_escalaMensal.js" defer></script>
+        <script type="module" src="js/Script_escalaMensal.js" defer></script>
         <script>
             $('#table1').DataTable({
-                fixedColumns: 1,
-                scrollXInner: "100%",
-                scrollY: 280,
+                dom: 'Bfrtip',
+                scrollY: 450,
                 scrollX: true,
+
+                scrollXInner: "100%",
                 scrollCollapse: true,
                 searching: true,
-                dom: 'Bfrtip',
+
                 "paging": true,
                 "info": false,
                 "ordering": false,
                 "lengthMenu": [
-                    [50],
-                    [50]
+                    [35],
+                    [35]
                 ],
+                fixedColumns: {
+                    left: 2,
+                },
                 buttons: [{
-                        text: 'Salvar Alterações',
-                        className: 'estilizaBotao btn',
-                        // action: function () {
-                        //     var checkede = $('.checkbox:checked');
-                        //     if (checkede.length > 0) {
-                        //         var cargos = [];
-                        //         checkede.each(function () {
-                        //             var cargo = $(this).closest('tr').find('#cargo').text().trim(); // Usando o seletor de ID
-                        //             cargos.push(cargo);
-                        //         });
-                        //         $.ajax({
-                        //             url: "config/crud_cargoRisco.php",
-                        //             method: 'get',
-                        //             data: 'cargos=' + cargos,
-                        //             success: function (filtro) {
-                        //                 if (filtro == 0) {
-                        //                     alert("cargo ja existente")
+                    text: 'Imprimir',
+                    className: 'estilizaBotao btn btnverde',
+                    extend: 'print',
+                    exportOptions: {
 
-
-                        //                 } else {
-                        //                     window.location.href = "cargoRisco.php"
-                        //                 }
-                        //             }
-                        //         });
-
-                        //     } else {
-                        //         alert('Selecione pelo menos um cargo');
-                        //     }
-                        // }
-                    },
-                    {
-                        text: 'Imprimir',
-                        className: 'estilizaBotao btn btnverde',
-                        extend: 'print',
-                        exportOptions: {
-
-                        }
-                    },
-                ],
+                    }
+                }, ],
                 language: {
                     "sEmptyTable": "Nenhum registro encontrado",
 
