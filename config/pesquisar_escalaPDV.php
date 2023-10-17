@@ -171,49 +171,19 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$
 <script>
     $('#table1').DataTable({
 
-        scrollY: 280,
-        scrollX: true,
-        scrollCollapse: true,
-        searching: true,
-        dom: 'Bfrtip',
-        "paging": true,
-        "info": false,
-        "ordering": false,
-        "lengthMenu": [
-            [50],
-            [50]
-        ],
-        buttons: [{
-                text: 'Salvar Alterações',
-                className: 'estilizaBotao btn',
-                // action: function () {
-                //     var checkede = $('.checkbox:checked');
-                //     if (checkede.length > 0) {
-                //         var cargos = [];
-                //         checkede.each(function () {
-                //             var cargo = $(this).closest('tr').find('#cargo').text().trim(); // Usando o seletor de ID
-                //             cargos.push(cargo);
-                //         });
-                //         $.ajax({
-                //             url: "config/crud_cargoRisco.php",
-                //             method: 'get',
-                //             data: 'cargos=' + cargos,
-                //             success: function (filtro) {
-                //                 if (filtro == 0) {
-                //                     alert("cargo ja existente")
-
-
-                //                 } else {
-                //                     window.location.href = "cargoRisco.php"
-                //                 }
-                //             }
-                //         });
-
-                //     } else {
-                //         alert('Selecione pelo menos um cargo');
-                //     }
-                // }
-            },
+        scrollY: 400,
+    
+    scrollCollapse: true,
+    searching: true,
+    dom: 'Bfrtip',
+    "paging": true,
+    "info": false,
+    "ordering": false,
+    "lengthMenu": [
+        [15],
+      
+    ],
+        buttons: [
             {
                 text: 'Imprimir',
                 className: 'estilizaBotao btn btnverde',

@@ -22,6 +22,8 @@ include "config/php/CRUD_geral.php";
 
 
     <link rel="stylesheet" href="../../BASE/DataTables/FixedColumns 4.3.0/FixedColumns-4.3.0/css/fixedColumns.dataTables.min.css" type="text/css">
+
+    <link rel="stylesheet" href="../BASE/cssGeral.css" type="text/css">
     </link>
 
 </head>

@@ -17,10 +17,8 @@ include "config/php/CRUD_geral.php";
     <link rel="stylesheet" href="../base/dist/sidenav.css" type="text/css">
     <link rel="stylesheet" href="css/style_escalaPDV.css" type="text/css">
     <link type="text/javascript" src="../base/DataTables/FixedColumns-3.3.1/css/fixedColumns.dataTables.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-
-    </link>
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous"></link>
+    <link rel="stylesheet" href="../BASE/cssGeral.css" type="text/css">
 </head>
 <?php
 $hoje = date("Y-m-d");

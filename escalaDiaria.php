@@ -22,6 +22,7 @@ include "../MobileNav/docs/index_menucomlogin.php";
     <link rel='stylesheet' href='http://fonts.googleapis.com/icon?family=Material+Icons' type='text/css'>
     <link rel="stylesheet" href="../base/dist/sidenav.css" type="text/css">
     <link rel="stylesheet" href="css/Style_escalaDiaria.css" type="text/css">
+    <link rel="stylesheet" href="../BASE/cssGeral.css" type="text/css">
     <style>
         .row {
             display: flex;

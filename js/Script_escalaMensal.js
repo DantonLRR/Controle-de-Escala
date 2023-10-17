@@ -6,7 +6,7 @@ var loja = $("#loja").val();
 
 
 $('#dataPesquisa').on('change', function () {
-    
+    criandoHtmlmensagemCarregamento("exibir"); 
     var mesPesquisa = $("#dataPesquisa").val();
     
     var mesAtual = $("#mesAtual").val();
@@ -14,7 +14,6 @@ $('#dataPesquisa').on('change', function () {
     if (mesPesquisa == "") {
         mesPesquisa = mesAtual
     }
-    criandoHtmlmensagemCarregamento("exibir");
 
     $.ajax({
         url: "config/pesquisar_escalaMensal.php",
