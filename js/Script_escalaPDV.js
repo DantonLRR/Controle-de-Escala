@@ -59,8 +59,8 @@ $('#table1').DataTable({
 
 $('#table2').DataTable({
 
-    scrollY: 280,
-    scrollX: true,
+   
+    scrollY: 400,
     scrollCollapse: true,
     searching: true,
     dom: 'Bfrtip',

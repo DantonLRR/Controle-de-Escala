@@ -17,7 +17,8 @@ include "config/php/CRUD_geral.php";
     <link rel="stylesheet" href="../base/dist/sidenav.css" type="text/css">
     <link rel="stylesheet" href="css/style_escalaPDV.css" type="text/css">
     <link type="text/javascript" src="../base/DataTables/FixedColumns-3.3.1/css/fixedColumns.dataTables.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous"></link>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+    </link>
     <link rel="stylesheet" href="../BASE/cssGeral.css" type="text/css">
 </head>
 <?php
@@ -32,8 +33,8 @@ $InformacaoFuncionarios = new Funcionarios();
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
 
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle,$hoje);
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$hoje);
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $hoje);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $hoje);
 // print_r( $FuncManha) ;
 
 
@@ -77,7 +78,7 @@ for ($i = 7; $i <= 21; $i++) {
                                 </label>
 
                                 <table id="tableHeader" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
-                                    <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
+
                                     <thead style="background-color: #00a550; color: white;">
                                         <tr class="trr">
 
@@ -93,35 +94,6 @@ for ($i = 7; $i <= 21; $i++) {
                                     </tbody>
                                 </table>
                             </div>
-                            <!-- <div class="col-lg-2">
-                                <label class="form-label">
-                                    Comprador
-                                </label>
-
-                                <select class="form-control" id="comprador">
-
-                                    <option value=""></option>
-
-                                </select>
-                            </div>
-
-
-
-                            <div class="col-lg-4">
-                                <label for="validationCustom02" class="form-label">
-                                    Fornecedor (Rede)
-                                </label>
-                                <div class="form-group atualizarforn">
-                                    <select name="multiselect[]" multiple="multiple" id="tipoContrato" class="col-lg-4 form-control" style="display: inline;">
-                                    </select>
-                                </div>
-                            </div> -->
-
-
-
-
-
-
                         </div>
                     </div>
                 </div>
@@ -132,11 +104,11 @@ for ($i = 7; $i <= 21; $i++) {
             <div class="col-lg-12">
                 <div class="card" style="border-color:#00a550;  ">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">
-                        <button class="btn" style=" color: white;font-weight:bold;  opacity: 1;" type="button">
-                            <i id="BTNAdicionarDescritivo" class="far fa-plus-square ocultar "> </i>
-                            <i id="BTNremoverDescritivo" class="far fa-minus-square "> </i>
 
-                        </button>
+                        <i id="BTNAdicionarDescritivo" class="far fa-plus-square ocultar "> </i>
+                        <i id="BTNremoverDescritivo" class="far fa-minus-square "> </i>
+
+
                         Escala de Operadores
                     </h6>
                     <div id="cardTable1" class="card-body ">
@@ -146,7 +118,7 @@ for ($i = 7; $i <= 21; $i++) {
                         </div>
                         <div class="table dadosEscalaPDV" style="overflow-x:auto;">
                             <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
-                                <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
+
                                 <thead style="background-color: #00a550; color: white;">
                                     <tr class="trr">
                                         <th class="text-center" colspan="6">Manhã</th>
@@ -184,30 +156,30 @@ for ($i = 7; $i <= 21; $i++) {
                                             <?php
                                             if (empty($horariosFuncManha)) {
                                             ?>
-                                                    <td scope="row" class="Matricula1" contenteditable="true"></td>
-                                                    <td scope="row" class="NomeFunc">
-                                                        <select class="estilezaSelect form-control" id="selectFuncionario">
-                                                            <option value=""></option>
-                                                            <?php
-                                                            foreach ($FuncManha as $rowManha) :
-                                                            ?>
-                                                                <div>
-                                                                    <option style="color: black; font-weight: bold;" value="<?= $rowManha['NOME'] ?>"> <?= $rowManha['NOME'] ?> </option>
-                                                                </div>
-                                                            <?php
-                                                            endforeach
-                                                            ?>
-                                                        </select>
-                                                    </td>
-                                                    <td scope="row" class="text-center horaEntrada1"></td>
-                                                    <td scope="row" class="horaSaida1"></td>
-                                                    <td scope="row" class="horaIntervalo1"></td>
+                                                <td scope="row" class="Matricula1"></td>
+                                                <td scope="row" class="NomeFunc">
+                                                    <select class="estilezaSelect form-control" id="selectFuncionario">
+                                                        <option value=""></option>
+                                                        <?php
+                                                        foreach ($FuncManha as $rowManha) :
+                                                        ?>
+                                                            <div>
+                                                                <option style="color: black; font-weight: bold;" value="<?= $rowManha['NOME'] ?>"> <?= $rowManha['NOME'] ?> </option>
+                                                            </div>
+                                                        <?php
+                                                        endforeach
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td scope="row" class="text-center horaEntrada1"></td>
+                                                <td scope="row" class="horaSaida1"></td>
+                                                <td scope="row" class="horaIntervalo1"></td>
                                                 <?php
                                             } else {
                                                 foreach ($horariosFuncManha as $row2Manha) :
                                                     // print_r($horariosFuncManha);  
                                                 ?>
-                                                    <td scope="row" class="Matricula1" contenteditable="true"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
+                                                    <td scope="row" class="Matricula1"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
                                                     <td scope="row" class="NomeFunc">
                                                         <select class="estilezaSelect form-control" id="selectFuncionario">
                                                             <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
@@ -231,29 +203,30 @@ for ($i = 7; $i <= 21; $i++) {
                                             <?php
                                             if (empty($horariosFuncTarde)) {
                                             ?>
-                                                   <td scope="row" class="matricula2" contenteditable="true"></td>
-                                                    <td scope="row" class="text-center nome2">
-                                                        <select class="estilizaSelect2 form-control">
-                                                            <option value=""></option>
-                                                            <?php
-                                                            foreach ($FuncTarde as $rowTarde) :
-                                                            ?>
-                                                                <div>
-                                                                    <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"><?= $rowTarde['NOME'] ?>  </option>
-                                                                </div>
-                                                            <?php
-                                                            endforeach
-                                                            ?>
-                                                        </select>
-                                                    </td>
-                                                    <td scope="row" class="horaEntrada2"></td>
-                                                    <td scope="row" class="horaSaida2"></td>
-                                                    <td scope="row" class="horaIntervalo2"></td>
+                                                <td scope="row" class="matricula2"></td>
+                                                <td scope="row" class="text-center nome2">
+                                                    <select class="estilizaSelect2 form-control">
+                                                        <option value=""></option>
+                                                        <?php
+                                                        foreach ($FuncTarde as $rowTarde) :
+                                                        ?>
+                                                            <div>
+                                                                <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"><?= $rowTarde['NOME'] ?> </option>
+                                                            </div>
+                                                        <?php
+                                                        endforeach
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td scope="row" class="horaEntrada2"></td>
+                                                <td scope="row" class="horaSaida2"></td>
+                                                <td scope="row" class="horaIntervalo2"></td>
                                                 <?php
                                             } else {
                                                 foreach ($horariosFuncTarde as $row3Tarde) :
-                                                    // print_r($horariosFuncTarde);                                                ?>
-                                                    <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
+                                                    // print_r($horariosFuncTarde);                                                
+                                                ?>
+                                                    <td scope="row" class="matricula2"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
                                                     <td scope="row" class="text-center nome2">
                                                         <select class="estilizaSelect2 form-control">
                                                             <option value="<?= $row3Tarde['NOME'] ?>"><?= $row3Tarde['NOME'] ?? '' ?></option>
@@ -291,11 +264,10 @@ for ($i = 7; $i <= 21; $i++) {
             <div class="col-lg-12">
                 <div class="card" style="border-color:#00a550;  ">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">
-                        <button class="btn" style=" color: white;font-weight:bold;   opacity: 1;" type="button">
-                            <i id="BTNAdicionarDescritivo2" class="far fa-plus-square  ocultar"> </i>
-                            <i id="BTNremoverDescritivo2" class="far fa-minus-square "> </i>
-                        </button>
-                        NECESSIDADE DE OPERADORES POR HORÁRIO
+                        <i id="BTNAdicionarDescritivo2" class="far fa-plus-square  ocultar"> </i>
+                        <i id="BTNremoverDescritivo2" class="far fa-minus-square "> </i>
+
+                        ESCALA DE OPERADORES POR HORÁRIO
                     </h6>
                     <div id="CardTable2" class="card-body ">
                         <table id="table2" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
@@ -315,33 +287,52 @@ for ($i = 7; $i <= 21; $i++) {
 
                             </thead>
                             <tbody style="background-color: #DCDCDC;">
-                                <?php
-                                foreach ($qntPDV as $row) : ?>
+                            <td></td>
+                            <?php
+                                    for ($i = 7; $i <= 21; $i++) {
+                                    ?>
+                                        <td class="text-center recebeQuantPessoasPorPDV" scope="row" id="">
 
-                                    <tr class="trr">
-
-                                        <td class="text-center" scope="row" id="">
-                                            <?= $row ?>
                                         </td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
-                                        <td class="text-center" scope="row" id=""></td>
+                                    <?php
+
+                                     }
+                                    ?>
+                                <?php
+                                $qntPDV = array();
+                                for ($i = 1; $i <= 30; $i++) {
+                                    $i;
+                                    $horariosFuncManha = $InformacaoFuncionarios->filtroFuncionariosCadastradosManha($oracle, $hoje, $i);
+                                    $horariosFuncTarde = $InformacaoFuncionarios->filtroFuncionariosCadastradoTarde($oracle, $hoje, $i);
+                                    $totalManha = count($horariosFuncManha);
+                                    $totalTarde = count($horariosFuncTarde);
+                                ?>
+                                    <tr class="trr">
+                                        <td scope="row" class="numerosPDVS" id="">
+                                            <?= $i ?>
+                                        </td>
+                                  
+
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""></td>
 
                                     </tr>
                                 <?php
-                                endforeach ?>
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
