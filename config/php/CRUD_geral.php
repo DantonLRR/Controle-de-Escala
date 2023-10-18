@@ -288,7 +288,7 @@ class Verifica
         WHERE a.matricula = $matricula
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') ";
 
-         echo $query;
+        echo $query;
 
         $parse = oci_parse($oracle, $query);
 
@@ -301,9 +301,9 @@ class Verifica
             } else {
                 $retorno = "Não existem dados.";
             }
-
-    
-        } 
+        
+        
+        }
         
         else {
             // Erro na consulta
@@ -317,7 +317,7 @@ class Verifica
 
     }
 
-    
+
     public function verificaCadastroNaEscalaMensa1($oracle, $matricula, $mesPesquisado,)
     {
         $lista = array();
@@ -336,7 +336,7 @@ class Verifica
         }
         return $lista;
 
-
+        
     }
 
 
@@ -366,6 +366,34 @@ class Verifica
             // Erro na consulta
             echo "Erro na consulta.";
         }
+    }
+
+    //montagem escala pdv
+
+    public function verificaMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa)
+    {
+
+        global  $retorno;
+        $query = "SELECT * from Web_Montagem_Escala_Diaria_PDV a
+        WHERE a.NUMPDV = $numPDV
+        and a.diaselecionado =TO_DATE( '$dataPesquisa','YYYY-MM-DD')
+        ";
+        $parse = oci_parse($oracle, $query);
+
+        $retorno = oci_execute($parse);
+
+        if ($retorno) {
+            if (oci_fetch($parse)) {
+                $retorno = "Já existem dados.";
+            } else {
+                $retorno = "Não existem dados.";
+            }
+        } else {
+            // Erro na consulta
+            echo "Erro na consulta.";
+        }
+
+        // echo $query;
     }
 }
 
@@ -494,11 +522,41 @@ class Insert
         }
     }
 
-    //
+    //montagem de escala PDV
+    public function insertMontagemEscalaPDV($oracle, $periodoDeHoras, $numPDV, $dataPesquisa, $usuarioLogado, $nome)
+    {
+        global  $retorno;
+        $query = "INSERT INTO Web_Montagem_Escala_Diaria_PDV (
+            NUMPDV,
+            DIASELECIONADO,
+            DATAINCLUSAO,
+            USUINCLUSAO,
+            $periodoDeHoras
+            ) 
+            VALUES (
+            '$numPDV',
+            TO_DATE( '$dataPesquisa','YYYY-MM-DD'),
+            sysdate,
+            '$usuarioLogado',
+            '$nome'
+        )";
 
+        $parse = oci_parse($oracle, $query);
 
+        $retorno = oci_execute($parse);
+        if ($retorno) {
+            global $sucess;
+            $sucess = 1;
 
+            return true;
+        } else {
+            $sucess = 0;
+            //  echo "<br>" . $query;
+            return false;
+        }
 
+        echo $query;
+    }
 }
 
 
@@ -515,17 +573,17 @@ class Update
             nome = '$nome',
             $dia = '$opcaoSelect'
          WHERE a.matricula = $matricula"; // Substitua $id pelo valor adequado
-    echo $query;
-    $parse = oci_parse($oracle, $query);
+        echo $query;
+        $parse = oci_parse($oracle, $query);
 
-    oci_execute($parse);
+        oci_execute($parse);
     }
-    
 
 
 
 
-//pdv
+
+    //pdv
     public function updateDeFuncionariosNoPDV($oracle, $tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV)
     {
         $query = "UPDATE $tabela SET
@@ -542,5 +600,42 @@ class Update
         $parse = oci_parse($oracle, $query);
 
         oci_execute($parse);
+    }
+
+
+    //montagem de escala PDV
+
+
+    public function updateMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa, $usuarioLogado,  $periodoDeHoras, $nome)
+    {
+        global  $retorno;
+        $query = "UPDATE Web_Montagem_Escala_Diaria_PDV SET  
+            
+             DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD'),
+            DATAINCLUSAO = sysdate,
+            USUINCLUSAO = '$usuarioLogado',
+            $periodoDeHoras =  '$nome'
+
+            WHERE NUMPDV = '$numPDV'
+            ";
+
+
+
+        $parse = oci_parse($oracle, $query);
+
+        $retorno = oci_execute($parse);
+        echo $retorno;
+        if ($retorno) {
+            global $sucess;
+            $sucess = 1;
+
+            return true;
+        } else {
+            $sucess = 0;
+            //  echo "<br>" . $query;
+            return false;
+        }
+
+        echo $query;
     }
 }
