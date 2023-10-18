@@ -48,6 +48,26 @@ class Dias
         }
         return $lista;
     }
+
+    //montagem de escala PDV
+public function escalaDiariaDePDV($oracle,$numPDV,$dataAtual){
+
+    $lista = array();
+    $query = "SELECT *
+    FROM Web_Montagem_Escala_Diaria_PDV a
+    WHERE NUMPDV = '$numPDV'
+    AND a.diaselecionado = TO_DATE('$dataAtual' , 'YYYY-MM-DD')
+    ORDER BY NUMPDV ASC
+    ";
+
+    $resultado = oci_parse($oracle, $query);
+    oci_execute($resultado);
+    while ($row = oci_fetch_assoc($resultado)) {
+        array_push($lista, $row);
+    }
+    return $lista;
+    
+}
 }
 
 

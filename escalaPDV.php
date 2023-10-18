@@ -23,7 +23,7 @@ include "config/php/CRUD_geral.php";
 </head>
 <?php
 $hoje = date("Y-m-d");
-// $hoje = date("2023-10-06");
+// $hoje = date("2023-10-23");
 
 
 $InformacaoDosDias = new Dias();
@@ -299,13 +299,13 @@ for ($i = 7; $i <= 21; $i++) {
                                      }
                                     ?>
                                 <?php
+                                $j=0;
                                 $qntPDV = array();
                                 for ($i = 1; $i <= 30; $i++) {
                                     $i;
-                                    $horariosFuncManha = $InformacaoFuncionarios->filtroFuncionariosCadastradosManha($oracle, $hoje, $i);
-                                    $horariosFuncTarde = $InformacaoFuncionarios->filtroFuncionariosCadastradoTarde($oracle, $hoje, $i);
-                                    $totalManha = count($horariosFuncManha);
-                                    $totalTarde = count($horariosFuncTarde);
+                                    $dadosEscalaDiariaDePDV = $InformacaoDosDias ->escalaDiariaDePDV($oracle,$i, $hoje);
+                                   
+                                    
                                 ?>
                                     <tr class="trr">
                                         <td scope="row" class="numerosPDVS" id="">
@@ -313,24 +313,25 @@ for ($i = 7; $i <= 21; $i++) {
                                         </td>
                                   
 
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
-                                    <td class="text-center" scope="row" id=""></td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["07:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["08:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["09:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["10:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["11:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["12:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["13:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["14:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["15:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["16:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["17:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["18:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["19:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["20:00"]?? '' ?> </td>
+                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["21:00"]?? '' ?> </td>
 
                                     </tr>
                                 <?php
+                                
                                 }
                                 ?>
                             </tbody>

@@ -421,15 +421,15 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                     $.ajax({
                         url: "config/exibicao_escala_diaria_pdv.php",
                         method: 'get',
-                        data: 'DadosMatricula1=' +
+                        data: 'DadosMatricula=' +
                             DadosMatricula1 +
-                            "&nomeSelecionado2=" +
+                            "&nomeSelecionado=" +
                             nomeSelecionado2 +
-                            "&DadosEntrada1=" +
+                            "&DadosEntrada=" +
                             DadosEntrada1 +
-                            "&DadosSaida1=" +
+                            "&DadosSaida=" +
                             DadosSaida1 +
-                            "&DadosIntervalo1=" +
+                            "&DadosIntervalo=" +
                             DadosIntervalo1 +
                             "&usuarioLogado=" +
                             usuarioLogado +

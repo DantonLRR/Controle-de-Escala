@@ -238,6 +238,34 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$
 var usuarioLogado = $("#usuarioLogado").val();
 var opcoesSelecionadas = [];
 
+function calcularHorasIntermediarias(horaEntrada, horaSaida, horaParaPular) {
+    var horasIntermediarias = [];
+    var [entradaHora, entradaMinutos] = horaEntrada.split(':').map(Number);
+    var [saidaHora, saidaMinutos] = horaSaida.split(':').map(Number);
+
+    while (entradaHora < saidaHora || (entradaHora === saidaHora && entradaMinutos <= saidaMinutos)) {
+        var horaFormatada = entradaHora.toString().padStart(2, '0') + ':' + entradaMinutos.toString().padStart(2, '0');
+
+        // Verifica se a horaFormatada é igual à horaParaPular e exclui se for diferente.
+        if (horaFormatada !== horaParaPular) {
+            horasIntermediarias.push('"' + horaFormatada + '"');
+        }
+
+        if (entradaMinutos === 0) {
+            entradaHora++;
+            entradaMinutos = 0;
+        } else {
+            entradaMinutos = 0;
+        }
+    }
+
+    return horasIntermediarias;
+}
+
+
+
+
+
 $('#table1').on('change', '.estilezaSelect', function () {
     var dataPesquisa = $("#dataPesquisa").val();
     var dataAtual = $("#dataAtual").val();
@@ -248,13 +276,11 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
     var nomeSelecionado = $(this).val();
     var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
-    alert(numPDV);
     var $selects = $('#table1 .estilezaSelect');
     var matricula = $(this).parent().parent().find(".Matricula1").closest(".Matricula1");
     var entrada = $(this).parent().parent().find(".horaEntrada1").closest(".horaEntrada1");
     var saida = $(this).parent().parent().find(".horaSaida1").closest(".horaSaida1");
     var intervalo = $(this).parent().parent().find(".horaIntervalo1").closest(".horaIntervalo1");
-
 
     if (nomeSelecionado !== "") {
         if (opcoesSelecionadas.includes(nomeSelecionado)) {
@@ -279,6 +305,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
                     var DadosEntrada = retorno.horaEntrada;
                     var DadosSaida = retorno.horaSaida;
                     var DadosIntervalo = retorno.horaIntervalo;
+                    var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada, DadosSaida, DadosIntervalo);
 
                     $.ajax({
                         url: "config/insertManha_escalaPDV.php",
@@ -308,6 +335,42 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
                         }
                     });
+
+                    $.ajax({
+                        url: "config/exibicao_escala_diaria_pdv.php",
+                        method: 'get',
+                        data: 'DadosMatricula=' +
+                            DadosMatricula +
+                            "&nomeSelecionado=" +
+                            nomeSelecionado +
+                            "&DadosEntrada=" +
+                            DadosEntrada +
+                            "&DadosSaida=" +
+                            DadosSaida +
+                            "&DadosIntervalo=" +
+                            DadosIntervalo +
+                            "&usuarioLogado=" +
+                            usuarioLogado +
+                            "&dataPesquisa=" +
+                            dataPesquisa+
+                            "&numPDV=" +
+                            numPDV+
+                            "&horasIntermediarias=" +
+                            horasIntermediarias,
+
+                        // dataType: 'json',
+                        success: function (retorno2) {
+
+                            criandoHtmlmensagemCarregamento("ocultar");
+
+
+                        }
+                    });
+
+
+
+
+
 
 
                 }
@@ -363,9 +426,7 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                     var DadosEntrada1 = retorno2.horaEntrada;
                     var DadosSaida1 = retorno2.horaSaida;
                     var DadosIntervalo1 = retorno2.horaIntervalo;
-                  
-
-
+                    var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada1, DadosSaida1, DadosIntervalo1);
                     $.ajax({
                         url: "config/insertTarde_escalaPDV.php",
                         method: 'get',
@@ -384,16 +445,50 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             "&dataPesquisa=" +
                             dataPesquisa+
                             "&numPDV=" +
+                            numPDV+
+                            "&numPDV=" +
                             numPDV,
                         // dataType: 'json',
                         success: function (retorno2) {
                             criandoHtmlmensagemCarregamento("ocultar");
                         }
                     });
+
+                    $.ajax({
+                        url: "config/exibicao_escala_diaria_pdv.php",
+                        method: 'get',
+                        data: 'DadosMatricula=' +
+                            DadosMatricula1 +
+                            "&nomeSelecionado=" +
+                            nomeSelecionado2 +
+                            "&DadosEntrada=" +
+                            DadosEntrada1 +
+                            "&DadosSaida=" +
+                            DadosSaida1 +
+                            "&DadosIntervalo=" +
+                            DadosIntervalo1 +
+                            "&usuarioLogado=" +
+                            usuarioLogado +
+                            "&dataPesquisa=" +
+                            dataPesquisa+
+                            "&numPDV=" +
+                            numPDV+
+                            "&horasIntermediarias=" +
+                            horasIntermediarias,
+                        // dataType: 'json',
+                        success: function (retorno2) {
+                            criandoHtmlmensagemCarregamento("ocultar");
+                        }
+                    });
+                   
+
+                    
+
                 }
             });
         }
     }
 });
+
 
 </script>
