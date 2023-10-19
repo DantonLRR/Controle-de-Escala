@@ -13,14 +13,14 @@ $intervalo = $_GET['DadosIntervalo'];
 $usuarioLogado = $_GET['usuarioLogado'];
 $dataPesquisa = $_GET['dataPesquisa'];
 $numPDV = $_GET['numPDV'];
-
+$loja = $_GET['loja'];
 $verificacaoDeDados = new Verifica();
 $InsertDeDados = new Insert();
 $updateDeDados = new Update();
-$verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV);
+$verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV,$loja);
 
 if ($retorno === "Já existem dados.") {
-    $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV);
+    $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
 } else {
-    $insereDadosFuncManha = $InsertDeDados->insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV);
+    $insereDadosFuncManha = $InsertDeDados->insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
 }

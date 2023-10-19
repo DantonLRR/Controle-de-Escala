@@ -53,6 +53,7 @@ for ($i = 7; $i <= 21; $i++) {
 
 <body style="background-color:#DCDCDC; ">
     <input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
+    <input class="usu" id="loja" value="<?= $_SESSION['LOJA'] ?>">
     <input class="dataAtual" id="dataAtual" value="<?= $hoje ?>">
     <div class="container-fluid">
 

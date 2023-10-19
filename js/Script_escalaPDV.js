@@ -229,7 +229,7 @@ function calcularHorasIntermediarias(horaEntrada, horaSaida, horaParaPular) {
 
 var usuarioLogado = $("#usuarioLogado").val();
 var opcoesSelecionadas = [];
-
+var loja = $("#loja").val();
 $('#table1').on('change', '.estilezaSelect', function () {
     var dataPesquisa = $("#dataPesquisa").val();
     var dataAtual = $("#dataAtual").val();
@@ -289,7 +289,9 @@ $('#table1').on('change', '.estilezaSelect', function () {
                             "&dataPesquisa=" +
                             dataPesquisa+
                             "&numPDV=" +
-                            numPDV,
+                            numPDV+
+                            "&loja=" +
+                            loja,
 
                         // dataType: 'json',
                         success: function (retorno2) {
@@ -320,7 +322,9 @@ $('#table1').on('change', '.estilezaSelect', function () {
                             "&numPDV=" +
                             numPDV+
                             "&horasIntermediarias=" +
-                            horasIntermediarias,
+                            horasIntermediarias+
+                            "&loja=" +
+                            loja,
 
                         // dataType: 'json',
                         success: function (retorno2) {
@@ -411,7 +415,9 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             "&numPDV=" +
                             numPDV+
                             "&numPDV=" +
-                            numPDV,
+                            numPDV+
+                            "&loja=" +
+                            loja,
                         // dataType: 'json',
                         success: function (retorno2) {
                             criandoHtmlmensagemCarregamento("ocultar");
@@ -438,7 +444,9 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             "&numPDV=" +
                             numPDV+
                             "&horasIntermediarias=" +
-                            horasIntermediarias,
+                            horasIntermediarias+
+                            "&loja=" +
+                            loja,
                         // dataType: 'json',
                         success: function (retorno2) {
                             criandoHtmlmensagemCarregamento("ocultar");
