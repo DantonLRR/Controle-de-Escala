@@ -367,12 +367,13 @@ class Verifica
 
 
     //escala pdv
-    public function verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV)
+    public function verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV,$loja)
     {
         global  $retorno;
         $query = "SELECT * FROM $tabela a
                  WHERE a.NUMPDV = '$numPDV'
-                 AND a.DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')";
+                 AND a.DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')
+                 and a.loja = $loja";
         $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);
@@ -416,7 +417,8 @@ class Verifica
             echo "Erro na consulta.";
         }
 
-        // echo $query;
+        echo $query;
+        echo $retorno;
     }
 }
 
@@ -507,7 +509,7 @@ class Insert
         echo $query;
     }
 
-    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV)
+    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja)
     {
         $query = "INSERT INTO  ESCALA_PDV_TARDE (
         MATRICULA,
@@ -518,7 +520,8 @@ class Insert
         USUINCLUSAO,
         DATAINCLUSAO,
         DIASELECIONADO,
-        NUMPDV
+        NUMPDV,
+        LOJA
      )
       VALUES (
         '$matricula',
@@ -529,7 +532,8 @@ class Insert
         '$usuarioLogado',
         sysdate,
         TO_DATE( '$dataPesquisa','YYYY-MM-DD'),
-        '$numPDV'        
+        '$numPDV',
+        $loja        
      )";
 
         // echo $query;

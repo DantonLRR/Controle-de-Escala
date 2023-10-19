@@ -13,7 +13,7 @@ $usuarioLogado = $_GET['usuarioLogado'] ?? '' ;
 $dataPesquisa = $_GET['dataPesquisa'] ?? '' ;
 $numPDV = $_GET['numPDV'] ?? '' ;
 $loja = $_GET['loja'];
-
+ echo $loja;
 $verificacaoDeDados = new Verifica();
 $InsertDeDados = new Insert();
 $updateDeDados = new Update();
