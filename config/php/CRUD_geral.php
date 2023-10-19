@@ -50,29 +50,50 @@ class Dias
     }
 
     //montagem de escala PDV
-public function escalaDiariaDePDV($oracle,$numPDV,$dataAtual){
+    public function escalaDiariaDePDV($oracle, $numPDV, $dataAtual)
+    {
 
-    $lista = array();
-    $query = "SELECT *
+        $lista = array();
+        $query = "SELECT *
     FROM Web_Montagem_Escala_Diaria_PDV a
     WHERE NUMPDV = '$numPDV'
     AND a.diaselecionado = TO_DATE('$dataAtual' , 'YYYY-MM-DD')
     ORDER BY NUMPDV ASC
     ";
 
-    $resultado = oci_parse($oracle, $query);
-    oci_execute($resultado);
-    while ($row = oci_fetch_assoc($resultado)) {
-        array_push($lista, $row);
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
     }
-    return $lista;
-    
-}
 }
 
 
 class Funcionarios
 {
+
+    //diaria
+    public function informacoesEscalaDiaria($oracle, $loja, $mesPesquisado)
+    {
+        $lista = array();
+        $query = "select * from WEB_ESCALA_MENSAL a    
+        WHERE a.loja = $loja   and  a.messelecionado=TO_DATE('$$mesPesquisado', 'YYYY-MM')";
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+
+
+        echo $query;
+    }
+
+
+
+
     //mensal
 
     public function informacoesOperadoresDeCaixa($dbDB, $lojaDaPessoaLogada)
@@ -300,7 +321,7 @@ class Verifica
 {
     //mensal
 
-    public function verificaCadastroNaEscalaMensal($oracle, $matricula, $mesPesquisado,$loja)
+    public function verificaCadastroNaEscalaMensal($oracle, $matricula, $mesPesquisado, $loja)
     {
         $lista = array();
         global  $retorno;
@@ -318,15 +339,10 @@ class Verifica
         if ($retorno) {
             if (oci_fetch($parse)) {
                 $retorno = "Já existem dados.";
-
             } else {
                 $retorno = "Não existem dados.";
             }
-        
-        
-        }
-        
-        else {
+        } else {
             // Erro na consulta
             echo "Erro na consulta.";
         }
@@ -334,8 +350,8 @@ class Verifica
             array_push($lista, $row);
         }
         return $lista;
-
-
+        echo $query;
+        echo "</br>" + $retorno;
     }
 
 
@@ -356,8 +372,6 @@ class Verifica
             array_push($lista, $row);
         }
         return $lista;
-
-        
     }
 
 
@@ -367,7 +381,7 @@ class Verifica
 
 
     //escala pdv
-    public function verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV,$loja)
+    public function verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV, $loja)
     {
         global  $retorno;
         $query = "SELECT * FROM $tabela a
@@ -393,7 +407,7 @@ class Verifica
 
     //montagem escala pdv
 
-    public function verificaMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa,$loja)
+    public function verificaMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa, $loja)
     {
 
         global  $retorno;
@@ -426,7 +440,7 @@ class Verifica
 class Insert
 {
     // mensal
-    public function insertEscalaMensal($oracle, $tabela, $dia, $usuarioLogado, $mesPesquisado, $nome, $opcaoSelect,$matricula)
+    public function insertEscalaMensal($oracle, $tabela, $dia, $usuarioLogado, $mesPesquisado, $nome, $opcaoSelect, $matricula,$loja )
     {
 
         $query = "INSERT INTO $tabela (
@@ -435,14 +449,16 @@ class Insert
         mesSelecionado,
         nome,
         $dia,
-        matricula
+        matricula,
+        LOJA
      ) VALUES (
         SYSDATE,
         '$usuarioLogado',
         TO_DATE('$mesPesquisado', 'YYYY-MM'),
         '$nome',
         '$opcaoSelect',
-        $matricula
+        $matricula,
+        $loja 
      )";
 
         $parse = oci_parse($oracle, $query);
@@ -465,7 +481,7 @@ class Insert
 
 
     //escala pdv
-    public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja)
+    public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja)
     {
         $query = "INSERT INTO  ESCALA_PDV_MANHA (
         MATRICULA,
@@ -509,7 +525,7 @@ class Insert
         echo $query;
     }
 
-    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja)
+    public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja)
     {
         $query = "INSERT INTO  ESCALA_PDV_TARDE (
         MATRICULA,
@@ -553,7 +569,7 @@ class Insert
     }
 
     //montagem de escala PDV
-    public function insertMontagemEscalaPDV($oracle, $periodoDeHoras, $numPDV, $dataPesquisa, $usuarioLogado, $nome,$loja)
+    public function insertMontagemEscalaPDV($oracle, $periodoDeHoras, $numPDV, $dataPesquisa, $usuarioLogado, $nome, $loja)
     {
         global  $retorno;
         $query = "INSERT INTO Web_Montagem_Escala_Diaria_PDV (
@@ -596,14 +612,15 @@ class Insert
 class Update
 {
     //mensal
-    public function updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$dia,$opcaoSelect, $matricula)
+    public function updateDeFuncionariosNaEscalaMensal($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $matricula,$loja )
     {
         $query = "UPDATE WEB_ESCALA_MENSAL a SET
             datainclusao = SYSDATE,
             usuinclusao = '$usuarioLogado',
             mesSelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM'),
             nome = '$nome',
-            $dia = '$opcaoSelect'
+            $dia = '$opcaoSelect',
+            LOJA = '$loja' 
          WHERE a.matricula = $matricula"; // Substitua $id pelo valor adequado
         echo $query;
         $parse = oci_parse($oracle, $query);
@@ -616,7 +633,7 @@ class Update
 
 
     //pdv
-    public function updateDeFuncionariosNoPDV($oracle, $tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja)
+    public function updateDeFuncionariosNoPDV($oracle, $tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja)
     {
         $query = "UPDATE $tabela SET
         MATRICULA = '$matricula',
@@ -641,7 +658,7 @@ class Update
     //montagem de escala PDV
 
 
-    public function updateMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa, $usuarioLogado,  $periodoDeHoras, $nome,$loja)
+    public function updateMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa, $usuarioLogado,  $periodoDeHoras, $nome, $loja)
     {
         global  $retorno;
         $query = "UPDATE Web_Montagem_Escala_Diaria_PDV SET  

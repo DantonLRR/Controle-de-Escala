@@ -11,9 +11,9 @@ $nome = $_GET['funcionario'];
 $mesPesquisado = $_GET['mesAtual'];
 $usuarioLogado = $_GET['usuarioLogado'];
 $matricula = $_GET['matriculaFunc'];
+$loja = $_GET['loja'];
 
-
-// echo $mesPesquisado;
+// echo $loja;
 $InsertDeDados = new Insert();
 
 
@@ -24,17 +24,17 @@ $verifica = new Verifica();
 $update = new Update();
 
 
-$verificaSeJaExistemDados = $verifica ->verificaCadastroNaEscalaMensal($oracle,$matricula,$mesPesquisado );
+$verificaSeJaExistemDados = $verifica ->verificaCadastroNaEscalaMensal($oracle,$matricula,$mesPesquisado,$loja );
 
 if ($retorno === "Já existem dados.") {
 
 
-    $updateDeDadps = $update -> updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$dia,$opcaoSelect, $matricula);
+    $updateDeDadps = $update -> updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$dia,$opcaoSelect, $matricula,$loja );
 
 } else {
 
 
-    $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPesquisado ,$nome,$opcaoSelect,$matricula);
+    $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPesquisado ,$nome,$opcaoSelect,$matricula,$loja );
 
 
 }

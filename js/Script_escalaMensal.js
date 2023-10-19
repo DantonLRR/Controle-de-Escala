@@ -52,7 +52,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
     var $tr = $(this).closest('tr');
     var funcionario = $tr.find('td.funcionario').text();
     var matriculaFunc = $tr.find('td.matriculaFunc').text();
-    alert(matriculaFunc);
+    
     var colIndex = $(this).closest('td').index();
     var numeroDiaDaSemana = $('#table1 thead tr.trr th').eq(colIndex).text();
     var mesPesquisa = $("#dataPesquisa").val();
@@ -62,6 +62,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
     if (mesPesquisa == "") {
         mesPesquisa = mesAtual
     }
+ 
     // alert(mesPesquisa);
     $.ajax({
         url: "config/insertEUpdate_EscalaMensal.php",
@@ -77,11 +78,15 @@ $('#table1').on('change', '.estilezaSelect', function () {
             "&usuarioLogado=" +
             usuarioLogado +
             "&matriculaFunc=" +
-            matriculaFunc,
+            matriculaFunc+
+            "&loja=" +
+            loja,
 
         // dataType: 'json',
         success: function (retorno) {
             console.log(retorno)
+
+           
         }
     });
 });

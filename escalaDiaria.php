@@ -1,10 +1,16 @@
-
-
-
 <?php
 include "../base/Conexao_teste.php";
+include "../base/conexao_tovs.php";
 include "../MobileNav/docs/index_menucomlogin.php";
+include "config/php/CRUD_geral.php";
 
+$dadosFunc = new Funcionarios();
+$mesAtual = date("Y-m");
+$escalaDiaria = $dadosFunc->informacoesEscalaDiaria($oracle,$_SESSION['LOJA'],$mesAtual );
+print_r($escalaDiaria);
+echo"</br>";
+$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSION['LOJA']);
+// print_r($buscaNomeFuncionario);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -13,7 +19,6 @@ include "../MobileNav/docs/index_menucomlogin.php";
     <link rel="stylesheet" href="../base/fontawesome6.1.1/js/all.js">
     <link href="../base/mdb/css/bootstrap.css" rel="stylesheet">
     <link href="../base/assets/css/paper-dashboard.css" rel="stylesheet">
-    <link href="css/modulo.css" rel="stylesheet">
     <link rel="stylesheet" href="../base/DataTables/datatables.min.css" type="text/css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
@@ -43,7 +48,7 @@ include "../MobileNav/docs/index_menucomlogin.php";
             <div class="col-md-10">
                 <div class="card" style="height:525px;border-color:#00a550;  ">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">Todos os Cargos</h6>
-                    <div class="card-body" >
+                    <div class="card-body">
                         <table id="table1" class="table table-bordered table-striped text-center tableaplicacao">
                             <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
                             <thead style="background-color: #00a550;">
@@ -60,28 +65,33 @@ include "../MobileNav/docs/index_menucomlogin.php";
                                         ajuste na escala padrao
                                     </th>
                                     <th>
-                                    Periodo de validade
+                                        Periodo de validade
                                     </th>
                                 </tr>
                             </thead>
-                            
+
 
                             <tbody style="background-color: #DCDCDC;">
-
+                                <?php
+                                foreach ($dadosFunc as $row) :
+                                ?>
                                     <tr class="trr">
                                         <td class="text-center td checkboxTabela" scope="row"><input type="checkbox" class="checkbox" name="checkbox" id="checkbox" value=""></td>
-                                        <td class="text-center td" scope="row" id="cargo" >nome</td>
-                                        <td class="text-center td" scope="row">Cargo</td>
-                                        <td class="text-center td" scope="row"><a style="color:#00a550"  href="escalaMensal.php">link p/ escala</a></td>
+                                        <td class="text-center td" scope="row" id="cargo"><?= $row['NOME'] ?></td>
+                                        <td class="text-center td" scope="row">Operador de Caixa</td>
+                                        <td class="text-center td" scope="row"><a style="color:#00a550" href="escalaMensal.php">link p/ escala</a></td>
                                         <td class="text-center td" scope="row">Início LJ</td>
                                         <td class="text-center td" scope="row">Inicio Intervalo</td>
                                         <td class="text-center td" scope="row">Fim Intervalo</td>
                                         <td class="text-center td" scope="row">Fim LJ</td>
                                         <td></td>
                                         <td>
-                                            
+
                                         </td>
                                     </tr>
+                                <?php
+                                endforeach
+                                ?>
                             </tbody>
 
 
@@ -98,10 +108,10 @@ include "../MobileNav/docs/index_menucomlogin.php";
 
 
 
-    <script type="text/javascript" src="mdb/js/bootstrap.min.js"></script>
+
     <script type="text/javascript" src="../base/mdb/js/jquery.min.js"></script>
     <script src="../base/bootstrap-5.0.2/bootstrap-5.0.2/dist/js/bootstrap.bundle.js"></script>
-    <script type="text/javascript" src="jquery_ui/jquery/jquery-ui.js"></script>
+
     <script type="text/javascript" src="../base/mdb/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="../base/mdb/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="../base/DataTables/datatables.min.js"></script>
