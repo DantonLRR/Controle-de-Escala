@@ -55,11 +55,11 @@ class Dias
 
         $lista = array();
         $query = "SELECT *
-    FROM Web_Montagem_Escala_Diaria_PDV a
-    WHERE NUMPDV = '$numPDV'
-    AND a.diaselecionado = TO_DATE('$dataAtual' , 'YYYY-MM-DD')
-    ORDER BY NUMPDV ASC
-    ";
+     FROM Web_Montagem_Escala_Diaria_PDV a
+     WHERE NUMPDV = '$numPDV'
+     AND a.diaselecionado = TO_DATE('$dataAtual' , 'YYYY-MM-DD')
+     ORDER BY NUMPDV ASC
+      ";
 
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
@@ -79,7 +79,7 @@ class Funcionarios
     {
         $lista = array();
         $query = "select * from WEB_ESCALA_MENSAL a    
-        WHERE a.loja = $loja   and  a.messelecionado=TO_DATE('$$mesPesquisado', 'YYYY-MM')";
+        WHERE a.loja = $loja   and  a.messelecionado=TO_DATE('$mesPesquisado', 'YYYY-MM')";
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
@@ -440,7 +440,7 @@ class Verifica
 class Insert
 {
     // mensal
-    public function insertEscalaMensal($oracle, $tabela, $dia, $usuarioLogado, $mesPesquisado, $nome, $opcaoSelect, $matricula,$loja )
+    public function insertEscalaMensal($oracle, $tabela, $dia, $usuarioLogado, $mesPesquisado, $nome, $opcaoSelect, $matricula, $loja)
     {
 
         $query = "INSERT INTO $tabela (
@@ -612,7 +612,7 @@ class Insert
 class Update
 {
     //mensal
-    public function updateDeFuncionariosNaEscalaMensal($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $matricula,$loja )
+    public function updateDeFuncionariosNaEscalaMensal($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $matricula, $loja)
     {
         $query = "UPDATE WEB_ESCALA_MENSAL a SET
             datainclusao = SYSDATE,

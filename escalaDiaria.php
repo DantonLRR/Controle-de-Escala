@@ -41,7 +41,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
     </style>
 </head>
 
-
+<input class="dataAtual" id="mesAtual" value="<?= $mesAtual ?>">
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
         <div class="row">
