@@ -75,11 +75,40 @@ class Funcionarios
 {
 
     //diaria
-    public function informacoesEscalaDiaria($oracle, $loja, $mesPesquisado)
+    public function informacoesEscalaDiaria($oracle ,$dia ,$matricula, $loja, $mesPesquisado)
+    {
+        $lista = array();
+        //CASO PRECISE ALTERAR OS VALORES VAZIOS PARA OUTRA NOMENCLATURAL ALTERAR AQUI
+        $query = "SELECT B.NOME, nvl(A.$dia,'') AS $dia, B.CARGO
+        FROM webmartminas.WEB_ESCALA_MENSAL a,web_usuario_hc b
+        where a.matricula(+) = b.chapa
+        AND B.EMPRESA = $loja
+        AND B.CHAPA = $matricula
+        AND B.CARGO LIKE '%OPERADOR DE CAIXA%'
+        and to_char(b.datavigencia, 'YYYY-MM') = '2023-06'
+      ";//TROCAR ESSA ULTIMA
+
+        
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+
+        echo $query;
+        
+    }
+
+    public function informacoesEscalaDiaria2($oracle, $matricula,$loja, $mesPesquisado)
     {
         $lista = array();
         $query = "select * from WEB_ESCALA_MENSAL a    
-        WHERE a.loja = $loja   and  a.messelecionado=TO_DATE('$mesPesquisado', 'YYYY-MM')";
+        WHERE a.loja = $loja 
+        and  a.messelecionado=TO_DATE('$mesPesquisado', 'YYYY-MM')
+        "
+        
+        ;
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
@@ -92,142 +121,27 @@ class Funcionarios
     }
 
 
-
-
     //mensal
 
-    public function informacoesOperadoresDeCaixa($dbDB, $lojaDaPessoaLogada)
+    public function informacoesOperadoresDeCaixa($oracle, $lojaDaPessoaLogada)
     {
 
         $lista = array();
-        $statement = $dbDB->prepare("SELECT DISTINCT
- 
-
-        PFUNC.CHAPA AS MATRICULA,
-
-
-
-        PFUNC.NOME,
-
-
-
-        CONVERT(VARCHAR(10), PFUNC.DATAADMISSAO, 103) AS 'DATA ADMISSAO',
-
-
-
-        SUBSTRING (PSECAO.DESCRICAO, 6,99) AS DEPARTAMENTO,
-
-
-
-        SUBSTRING (PSECAO.DESCRICAO, 0,4) AS LOJA,
-
-
-
-        PFUNC.CODFUNCAO AS 'CODIGO FUNCAO',
-
-
-
-        PFUNCAO.NOME AS FUNCAO,
-
-     ((SELECT DISTINCT 
-                LEFT(FORMAT(MIN(ABATHOR.BATIDA) / 60,'00')+':'+FORMAT((MIN(ABATHOR.BATIDA) % 60.0),'00'),5)
-
-            FROM ABATHOR
-
-            INNER JOIN AHORARIO ON
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO
-
-            WHERE ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1	AND ABATHOR.NATUREZA = 0 AND AHORARIO.CODCOLIGADA = PFUNC.CODCOLIGADA AND AHORARIO.CODIGO = PFUNC.CODHORARIO) + ' - ' +
-
-
-
-     (SELECT DISTINCT 
-                LEFT(FORMAT(MIN(ABATHOR.BATIDA) / 60,'00')+':'+FORMAT((MIN(ABATHOR.BATIDA) % 60.0),'00'),5)
-
-            FROM ABATHOR
-
-            INNER JOIN AHORARIO ON
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO
-
-            WHERE ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1	AND ABATHOR.NATUREZA = 1 AND AHORARIO.CODCOLIGADA = PFUNC.CODCOLIGADA AND AHORARIO.CODIGO = PFUNC.CODHORARIO) + ' - ' +
-
-
-
-     (SELECT DISTINCT 
-                LEFT(FORMAT(MAX(ABATHOR.BATIDA) / 60,'00')+':'+FORMAT((MAX(ABATHOR.BATIDA) % 60.0),'00'),5)
-     FROM ABATHOR
-
-            INNER JOIN AHORARIO ON
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO
-
-            WHERE ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1	AND ABATHOR.NATUREZA = 0 AND AHORARIO.CODCOLIGADA = PFUNC.CODCOLIGADA AND AHORARIO.CODIGO = PFUNC.CODHORARIO) + ' - ' +
-
-
-
-     (SELECT DISTINCT 
-                LEFT(FORMAT(MAX(ABATHOR.BATIDA) / 60,'00')+':'+FORMAT((MAX(ABATHOR.BATIDA) % 60.0),'00'),5)
-
-            FROM ABATHOR
-
-            INNER JOIN AHORARIO ON
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO
-
-            WHERE ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1	AND ABATHOR.NATUREZA = 1 AND AHORARIO.CODCOLIGADA = PFUNC.CODCOLIGADA AND AHORARIO.CODIGO = PFUNC.CODHORARIO)) AS HORARIO
-
-
-
-     FROM PFUNC (NOLOCK)
-
-
-
-     INNER JOIN PFUNCAO (NOLOCK) ON
-                        (PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA
-                        AND PFUNC.CODFUNCAO = PFUNCAO.CODIGO)
-
-
-
-     INNER JOIN AHORARIO (NOLOCK) ON
-                        (PFUNC.CODCOLIGADA = AHORARIO.CODCOLIGADA
-                        AND PFUNC.CODHORARIO = AHORARIO.CODIGO)
-
-
-
-     INNER JOIN PSECAO (NOLOCK) ON
-                        (PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA
-                        AND PFUNC.CODSECAO = PSECAO.CODIGO)
-
-
-
-     WHERE 
-     PFUNC.CODCOLIGADA = 1 
-     AND PFUNC.CODSITUACAO <> 'D' 
-     AND SUBSTRING(PSECAO.DESCRICAO,0,4) LIKE $lojaDaPessoaLogada
-     and PFUNCAO.NOME = 'OPERADOR DE CAIXA'
- 
-
-
-     ORDER BY 
-     PFUNC.NOME
-    
-
-    
-     ");
-
-
-        $statement->execute();
-
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-
-
-
+        $query = "SELECT *  from  WEB_Funcionarios_OP_DE_Caixa a
+        where empresa = $lojaDaPessoaLogada
+        and cargo = 'OPERADOR DE CAIXA'
+        order by a.nome
+              ";
+
+        
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+        while ($row = oci_fetch_assoc($resultado)) {
             array_push($lista, $row);
         }
-
         return $lista;
+
+        echo $query;
     }
 
     //pdv
@@ -326,7 +240,7 @@ class Verifica
         $lista = array();
         global  $retorno;
         $query = "SELECT * FROM WEB_ESCALA_MENSAL a
-        WHERE a.matricula = $matricula
+        WHERE a.matricula = '$matricula'
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
         AND a.loja = $loja ";
 
@@ -457,7 +371,7 @@ class Insert
         TO_DATE('$mesPesquisado', 'YYYY-MM'),
         '$nome',
         '$opcaoSelect',
-        $matricula,
+        '$matricula',
         $loja 
      )";
 
@@ -621,7 +535,7 @@ class Update
             nome = '$nome',
             $dia = '$opcaoSelect',
             LOJA = '$loja' 
-         WHERE a.matricula = $matricula"; // Substitua $id pelo valor adequado
+         WHERE a.matricula = '$matricula'"; // Substitua $id pelo valor adequado
         echo $query;
         $parse = oci_parse($oracle, $query);
 

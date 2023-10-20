@@ -37,7 +37,7 @@ $updateDeDados = new Update();
 $mesAtual = date("Y-m");
 $usuarioLogado = $_SESSION['nome'];
 $dadosFunc = new Funcionarios();
-$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSION['LOJA']);
+$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $_SESSION['LOJA']);
 ?>
 
 
@@ -105,7 +105,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
                                     ?>
                                         <tr class="trr">
                                             <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
-                                            <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
+                                            <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['CHAPA'] ?></td>
 
                                             <?php
                                             $i = 1;
@@ -114,7 +114,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
                                                 <td class=" text-center " scope="row" id="">
                                                     <?php
                                                     $recuperaDadosVerificacao = new verifica();
-                                                    $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle, $nomeFunc['MATRICULA'], $mesAtual);
+                                                    $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle, $nomeFunc['CHAPA'], $mesAtual);
                                                     if ($i < 10) {
                                                         $d = "0" . $i;
                                                     } else {

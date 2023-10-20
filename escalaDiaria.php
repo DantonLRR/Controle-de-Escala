@@ -5,11 +5,15 @@ include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
 
 $dadosFunc = new Funcionarios();
-$mesAtual = date("Y-m");
-$escalaDiaria = $dadosFunc->informacoesEscalaDiaria($oracle,$_SESSION['LOJA'],$mesAtual );
-print_r($escalaDiaria);
-echo"</br>";
-$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSION['LOJA']);
+$mesAtual = date("2023");
+$diaAtual = date("d");
+$diaAtual2 = '"' . date("d") . '"';
+echo $diaAtual2;
+
+
+// print_r($escalaDiaria);
+
+$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $_SESSION['LOJA']);
 // print_r($buscaNomeFuncionario);
 ?>
 <!DOCTYPE html>
@@ -42,6 +46,8 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
 </head>
 
 <input class="dataAtual" id="mesAtual" value="<?= $mesAtual ?>">
+<input class="dataAtual" id="diaAtual" value="<?= $diaAtual ?>">
+
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
         <div class="row">
@@ -53,44 +59,63 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $_SESSIO
                             <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
                             <thead style="background-color: #00a550;">
                                 <tr>
-                                    <th></th>
                                     <th class="text-center">Nome</th>
                                     <th class="text-center">Cargo</th>
-                                    <th class="text-center">Escala mensal</th>
-                                    <th class="text-center">Início LJ</th>
-                                    <th class="text-center">Inicio Intervalo</th>
-                                    <th class="text-center">Fim Intervalo</th>
-                                    <th class="text-center">Fim LJ</th>
-                                    <th>
-                                        ajuste na escala padrao
-                                    </th>
-                                    <th>
-                                        Periodo de validade
-                                    </th>
+                                    <th class="text-center"><a style="color:white" href="escalaMensal.php">link p/ escala</a></th>
+                                    <th class="text-center">HORARIO</th>
+                                    <th>ajuste na escala padrao</th>
+                                    <th>Periodo de validade</th>
                                 </tr>
                             </thead>
 
 
                             <tbody style="background-color: #DCDCDC;">
                                 <?php
-                                foreach ($dadosFunc as $row) :
+
+                                foreach ($buscaNomeFuncionario  as $consultaNomeFUnc) :
                                 ?>
                                     <tr class="trr">
-                                        <td class="text-center td checkboxTabela" scope="row"><input type="checkbox" class="checkbox" name="checkbox" id="checkbox" value=""></td>
-                                        <td class="text-center td" scope="row" id="cargo"><?= $row['NOME'] ?></td>
-                                        <td class="text-center td" scope="row">Operador de Caixa</td>
-                                        <td class="text-center td" scope="row"><a style="color:#00a550" href="escalaMensal.php">link p/ escala</a></td>
-                                        <td class="text-center td" scope="row">Início LJ</td>
-                                        <td class="text-center td" scope="row">Inicio Intervalo</td>
-                                        <td class="text-center td" scope="row">Fim Intervalo</td>
-                                        <td class="text-center td" scope="row">Fim LJ</td>
-                                        <td></td>
-                                        <td>
+                                        <td class="text-center td" scope="row" id="nome"><?= $consultaNomeFUnc['NOME'] ?></td>
+                                        <td class="text-center td" scope="row" id="cargo"><?= $consultaNomeFUnc['CARGO'] ?></td>
+                                        <?php
 
+
+                                        $escalaDiaria = $dadosFunc->informacoesEscalaDiaria($oracle, $diaAtual2, $consultaNomeFUnc['CHAPA'], $_SESSION['LOJA'], $mesAtual);
+
+
+                                        foreach ($escalaDiaria as $consultaMensalOracle) :
+                                        ?>
+                                            <td class="text-center td" scope="row" id="escalaMensal">
+                                                <?= $consultaMensalOracle[$diaAtual] ?>
+                                            </td>
+                                        <?php
+                                        endforeach;
+                                        ?>
+
+
+                                        <td class="text-center td" scope="row">
+                                            <?= $consultaNomeFUnc['HORARIO'] ?></td>
+
+
+                                        <td></td>
+
+                                        <?php
+                                        $escalaDiaria2 = $dadosFunc->informacoesEscalaDiaria2($oracle, $consultaNomeFUnc['CHAPA'], $_SESSION['LOJA'], $mesAtual);
+
+
+                                        foreach ($escalaDiaria2 as $consultaMensalOracle2) :
+                                        ?>
+                                        <?php
+                                        endforeach;
+                                        ?>
+                                        <td class="text-center td" scope="row" id="escalaMensal">
+                                            <?= $consultaMensalOracle2['MESSELECIONADO'] ?>
                                         </td>
+
                                     </tr>
                                 <?php
-                                endforeach
+                                endforeach;
+
                                 ?>
                             </tbody>
 

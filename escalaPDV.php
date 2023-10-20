@@ -342,6 +342,8 @@ for ($i = 7; $i <= 21; $i++) {
             </div>
         </div>
 
+        $escalaDiaria = $dadosFunc->informacoesEscalaDiaria($oracle, $consultaSQL['MATRICULA'], $_SESSION['LOJA'], $mesAtual);
+
 
     </div>
     <script type="text/javascript" src="../base/mdb/js/bootstrap.min.js"></script>
