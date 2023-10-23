@@ -305,7 +305,7 @@ for ($i = 7; $i <= 21; $i++) {
                                 for ($i = 1; $i <= 30; $i++) {
                                     $i;
                                     $dadosEscalaDiariaDePDV = $InformacaoDosDias ->escalaDiariaDePDV($oracle,$i, $hoje);
-                                   
+                                   print_r(  $dadosEscalaDiariaDePDV);
                                     
                                 ?>
                                     <tr class="trr">
@@ -342,7 +342,6 @@ for ($i = 7; $i <= 21; $i++) {
             </div>
         </div>
 
-        $escalaDiaria = $dadosFunc->informacoesEscalaDiaria($oracle, $consultaSQL['MATRICULA'], $_SESSION['LOJA'], $mesAtual);
 
 
     </div>

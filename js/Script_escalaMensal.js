@@ -18,9 +18,12 @@ $('#dataPesquisa').on('change', function () {
     $.ajax({
         url: "config/pesquisar_escalaMensal.php",
         method: 'POST',
-        data: 'mesPesquisa=' + mesPesquisa+
+        data: 'mesPesquisa=' +
+         mesPesquisa+
         "&loja=" +
-        loja,
+        loja+
+        "&usuarioLogado=" +
+        usuarioLogado,
         success: function (mes_Pesquisado) {
 
             $('.atualizaTabela').empty().html(mes_Pesquisado);

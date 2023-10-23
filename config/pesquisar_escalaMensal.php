@@ -7,12 +7,15 @@ include "php/CRUD_geral.php";
 $dataSelecionadaNoFiltro = $_POST['mesPesquisa'];
 $mesAtual = date("Y-m");
 $loja = $_POST['loja'];
+$usuarioLogado = $_POST['usuarioLogado'];
 $InformacaoDosDias = new Dias();
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $dadosFunc = new Funcionarios();
-$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $loja);
+$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja);
 
 ?>
+<input class="usu" id="usuarioLogado" value="<?=  $usuarioLogado ?>">
+<input class="usu" id="loja" value="<?= $loja ?>">
 
 <input class="dataSelecionadaNoFiltro" id="loja" type="hidden" value="<?= $dataSelecionadaNoFiltro ?>">
 <input class="dataAtual" id="mesAtual" type="hidden" value="<?= $mesAtual ?>">
@@ -62,7 +65,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $loja);
         ?>
             <tr class="trr">
                 <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
-                <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
+                <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['CHAPA'] ?></td>
 
                 <?php
                 $i = 1;
@@ -71,7 +74,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $loja);
                     <td class=" text-center " scope="row" id="">
                         <?php
                         $recuperaDadosVerificacao = new verifica();
-                        $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle, $nomeFunc['MATRICULA'], $dataSelecionadaNoFiltro);
+                        $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle, $nomeFunc['CHAPA'], $mesAtual);
                         if ($i < 10) {
                             $d = "0" . $i;
                         } else {
@@ -129,31 +132,80 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($dbDB, $loja);
 
     $('select').on('change', function() {
         $('tr').removeClass('selecionado').css('background-color', '').css('color', '');
+
         var linha = $(this).closest('tr');
         var opcao = $(this).closest('.estilezaSelect');
-
         linha.addClass('selecionado');
         linha.css('background-color', '#00a550d0');
-        linha.css('color', 'white');
-        opcao.css('font-weight', 'bold');
 
+        opcao.css('font-weight', 'bold');
 
     });
 
-
     var dataPesquisa = $(".dataSelecionadaNoFiltro").val();
-var mesAtual = $("#mesAtual").val();
+    var mesAtual = $("#mesAtual").val();
 
-if (dataPesquisa < mesAtual) {
-    $('.estilezaSelect').prop('disabled', true);
-    $('.estilezaSelect').css('background-color', 'grey');
-} else {
-    $('.estilezaSelect').prop('disabled', false);
-    $('.estilezaSelect').css('background-color', ''); 
-}
+    if (dataPesquisa < mesAtual) {
+        $('.estilezaSelect').prop('disabled', true);
+        $('.estilezaSelect').css('background-color', 'grey');
+    } else {
+        $('.estilezaSelect').prop('disabled', false);
+        $('.estilezaSelect').css('background-color', '');
+    }
+
+    var usuarioLogado = $("#usuarioLogado").val();
+    var loja = $("#loja").val();
+
+    $('#table1').on('change', '.estilezaSelect', function() {
+        var opcaoSelecionada = $(this).val();
+        var $tr = $(this).closest('tr');
+        var funcionario = $tr.find('td.funcionario').text();
+        var matriculaFunc = $tr.find('td.matriculaFunc').text();
+
+        var colIndex = $(this).closest('td').index();
+        var numeroDiaDaSemana = $('#table1 thead tr.trr th').eq(colIndex).text();
+        var mesPesquisa = $("#dataPesquisa").val();
+
+        var mesAtual = $("#mesAtual").val();
+
+        if (mesPesquisa == "") {
+            mesPesquisa = mesAtual
+        }
+        alert("numeroDiaDaSemana " + numeroDiaDaSemana);
+        alert("opcaoSelecionada " + opcaoSelecionada);
+        alert("funcionario " + funcionario);
+        alert("mesAtual " + mesAtual);
+        alert("usuarioLogado " + usuarioLogado);
+        alert("matriculaFunc " + matriculaFunc);
+        alert("loja :" + loja);
+
+        $.ajax({
+            url: "config/insertEUpdate_EscalaMensal.php",
+            method: 'get',
+            data: 'numeroDiaDaSemana=' +
+                numeroDiaDaSemana +
+                "&opcaoSelecionada=" +
+                opcaoSelecionada +
+                "&funcionario=" +
+                funcionario +
+                "&mesAtual=" +
+                mesAtual +
+                "&usuarioLogado=" +
+                usuarioLogado +
+                "&matriculaFunc=" +
+                matriculaFunc +
+                "&loja=" +
+                loja,
+
+            // dataType: 'json',
+            success: function(retorno) {
+                console.log(retorno)
 
 
-</Script>   
+            }
+        });
+    });
+</Script>
 <script>
     $('#table1').DataTable({
         dom: 'Bfrtip',

@@ -67,6 +67,7 @@ class Dias
             array_push($lista, $row);
         }
         return $lista;
+        echo $query;
     }
 }
 
@@ -96,7 +97,7 @@ class Funcionarios
         }
         return $lista;
 
-        echo $query;
+        // echo $query;
         
     }
 
@@ -117,7 +118,7 @@ class Funcionarios
         return $lista;
 
 
-        echo $query;
+        // echo $query;
     }
 
 
@@ -244,7 +245,7 @@ class Verifica
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
         AND a.loja = $loja ";
 
-        echo $query;
+        // echo $query;
 
         $parse = oci_parse($oracle, $query);
 
@@ -422,7 +423,7 @@ class Insert
         $loja
      )";
 
-        // echo $query;
+        echo $query;
         $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);
@@ -483,7 +484,7 @@ class Insert
     }
 
     //montagem de escala PDV
-    public function insertMontagemEscalaPDV($oracle, $periodoDeHoras, $numPDV, $dataPesquisa, $usuarioLogado, $nome, $loja)
+    public function insertMontagemEscalaPDV($oracle,$periodoDeHoras,  $numPDV, $dataPesquisa, $usuarioLogado, $nome, $loja)
     {
         global  $retorno;
         $query = "INSERT INTO Web_Montagem_Escala_Diaria_PDV (

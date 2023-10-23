@@ -5,7 +5,7 @@ include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
 
 $dadosFunc = new Funcionarios();
-$mesAtual = date("2023");
+$mesAtual = date("Y-m");
 $diaAtual = date("d");
 $diaAtual2 = '"' . date("d") . '"';
 echo $diaAtual2;
