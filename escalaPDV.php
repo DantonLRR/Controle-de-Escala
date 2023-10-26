@@ -48,29 +48,26 @@ for ($i = 7; $i <= 21; $i++) {
 
 
 ?>
-
-
-
-<body style="background-color:#DCDCDC; ">
+<body>
     <input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
     <input class="usu" id="loja" value="<?= $_SESSION['LOJA'] ?>">
     <input class="dataAtual" id="dataAtual" value="<?= $hoje ?>">
     <div class="container-fluid">
 
-        <div class="row">
+        <div class="row" id="qntPessoasPorPDV">
             <div class="col-lg-12">
-                <div class="card" style="margin-top: 1.2rem;">
+                <div class="card">
                     <div style="font-weight: bold; background-color: #00a550; color:white" class="text-center card-header">NECESSIDADE DE OPERADORES POR HORÁRIO</div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-2">
                                 <label class="form-label">
-                                    Quantidade de operadores por dia
+                                    Dia Vigente Da pesquisa
                                 </label>
-                                <input value="" type="number" class="form-control dataInicialPesquisa" id="dataInicialPesquisa">
-                                <div class="col-lg-2" style="margin-top: 30px;">
+                                <input type="date" class="form-control dataPesquisa" id="dataPesquisa">
+                                <!-- <div class="col-lg-2" style="margin-top: 30px;">
                                     <button type="button" class="btn btnverde">Pesquisar</button>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="col-lg-10">
@@ -103,7 +100,7 @@ for ($i = 7; $i <= 21; $i++) {
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="card" style="border-color:#00a550;  ">
+                <div class="card" style="border-color:#00a550;" >
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">
 
                         <i id="BTNAdicionarDescritivo" class="far fa-plus-square ocultar "> </i>
@@ -113,9 +110,9 @@ for ($i = 7; $i <= 21; $i++) {
                         Escala de Operadores
                     </h6>
                     <div id="cardTable1" class="card-body ">
-                        <label for="validationCustom02" class="form-label"> Mês/Ano: </label>
+                        <!-- <label for="validationCustom02" class="form-label"> Mês/Ano: </label> -->
                         <div class="col-lg-2">
-                            <input type="date" class="form-control dataPesquisa" id="dataPesquisa">
+                            <!-- <input type="date" class="form-control dataPesquisa" id="dataPesquisa"> -->
                         </div>
                         <div class="table dadosEscalaPDV" style="overflow-x:auto;">
                             <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
