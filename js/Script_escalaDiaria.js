@@ -1,5 +1,5 @@
 $('#table1').DataTable({
-    scrollY: 280,
+    scrollY: 480,
     scrollX: false,
     searching: true,
     dom: 'Bfrtip',
@@ -10,11 +10,6 @@ $('#table1').DataTable({
         [50],
         [50]
     ],
-
-
-
-
-
 
     buttons: [
 

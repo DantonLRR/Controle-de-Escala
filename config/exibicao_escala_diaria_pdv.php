@@ -32,7 +32,7 @@ $verifica = $verificacaoDeDados->verificaMontagemEscalaPDV($oracle, $numPDV, $da
 if ($retorno === "Já existem dados.") {
 //    echo"<br>update".$periodoDeHoras;
     $atualizaDados = $updateDeDados->updateMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa, $usuarioLogado,  $periodoDeHoras, $nome,$loja);
-} else {
+} else if ($retorno === "Não existem dados.") {
     // echo "<br>insert".$periodoDeHoras;
     $insereDados = $InsertDeDados-> insertMontagemEscalaPDV($oracle, $periodoDeHoras, $numPDV, $dataPesquisa, $usuarioLogado, $nome,$loja);
     }

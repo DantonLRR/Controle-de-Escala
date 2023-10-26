@@ -1,6 +1,6 @@
 <?php
 include "../base/Conexao_teste.php";
-include "../base/conexao_tovs.php";
+
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
 
@@ -8,7 +8,7 @@ $dadosFunc = new Funcionarios();
 $mesAtual = date("Y-m");
 $diaAtual = date("d");
 $diaAtual2 = '"' . date("d") . '"';
-echo $diaAtual2;
+// echo $diaAtual2;
 
 
 // print_r($escalaDiaria);
@@ -52,16 +52,16 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $_SESS
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-10">
-                <div class="card" style="height:525px;border-color:#00a550;  ">
+                <div class="card" style="border-color:#00a550;  ">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">Todos os Cargos</h6>
                     <div class="card-body">
-                        <table id="table1" class="table table-bordered table-striped text-center tableaplicacao">
+                        <table id="table1" class="table table-bordered table-striped text-center ">
                             <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
                             <thead style="background-color: #00a550;">
                                 <tr>
                                     <th class="text-center">Nome</th>
                                     <th class="text-center">Cargo</th>
-                                    <th class="text-center"><a style="color:white" href="escalaMensal.php">link p/ escala</a></th>
+                                    <th class="text-center"><a style="color:white" href="escalaMensal.php">Escala Mensal</a></th>
                                     <th class="text-center">HORARIO</th>
                                     <th>ajuste na escala padrao</th>
                                     <th>Periodo de validade</th>
@@ -124,19 +124,13 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $_SESS
                     </div>
                 </div>
             </div>
-
-
-
         </div>
     </div>
 
 
 
-
-
     <script type="text/javascript" src="../base/mdb/js/jquery.min.js"></script>
     <script src="../base/bootstrap-5.0.2/bootstrap-5.0.2/dist/js/bootstrap.bundle.js"></script>
-
     <script type="text/javascript" src="../base/mdb/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="../base/mdb/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="../base/DataTables/datatables.min.js"></script>
@@ -146,9 +140,6 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $_SESS
     <script type="text/javascript" src="../base/Buttons/js/buttons.print.js"></script>
     <script src="../base/dist/sidenav.js"></script>
     <script src="js/Script_escalaDiaria.js" defer></script>
-    <script>
-
-    </script>
 
 </body>
 

@@ -67,7 +67,7 @@ class Dias
             array_push($lista, $row);
         }
         return $lista;
-        echo $query;
+       // echo $query;
     }
 }
 
@@ -87,7 +87,7 @@ class Funcionarios
         AND B.CHAPA = $matricula
         AND B.CARGO LIKE '%OPERADOR DE CAIXA%'
         and to_char(b.datavigencia, 'YYYY-MM') = '2023-06'
-      ";//TROCAR ESSA ULTIMA
+      ";//TROCAR ESSA função
 
         
         $resultado = oci_parse($oracle, $query);
@@ -142,7 +142,7 @@ class Funcionarios
         }
         return $lista;
 
-        echo $query;
+       // echo $query;
     }
 
     //pdv
@@ -265,8 +265,8 @@ class Verifica
             array_push($lista, $row);
         }
         return $lista;
-        echo $query;
-        echo "</br>" + $retorno;
+       // echo $query;
+       // echo "</br>" + $retorno;
     }
 
 
@@ -317,7 +317,7 @@ class Verifica
             // Erro na consulta
             echo "Erro na consulta.";
         }
-        echo $query;
+      // echo $query;
     }
 
     //montagem escala pdv
@@ -346,8 +346,8 @@ class Verifica
             echo "Erro na consulta.";
         }
 
-        echo $query;
-        echo $retorno;
+       echo "<br>".$query;
+       echo "<br>".$retorno;
     }
 }
 
@@ -390,7 +390,7 @@ class Insert
             return false;
         }
 
-        echo $query;
+      //  echo $query;
     }
 
 
@@ -423,7 +423,7 @@ class Insert
         $loja
      )";
 
-        echo $query;
+   
         $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);
@@ -437,7 +437,7 @@ class Insert
             //  echo "<br>" . $query;
             return false;
         }
-        echo $query;
+       // echo $query;
     }
 
     public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja)
@@ -518,7 +518,7 @@ class Insert
             return false;
         }
 
-        echo $query;
+       // echo $query;
     }
 }
 
@@ -537,10 +537,10 @@ class Update
             $dia = '$opcaoSelect',
             LOJA = '$loja' 
          WHERE a.matricula = '$matricula'"; // Substitua $id pelo valor adequado
-        echo $query;
-        $parse = oci_parse($oracle, $query);
+          //echo $query;
+         $parse = oci_parse($oracle, $query);
 
-        oci_execute($parse);
+         oci_execute($parse);
     }
 
 
@@ -566,7 +566,7 @@ class Update
         $parse = oci_parse($oracle, $query);
 
         oci_execute($parse);
-        echo $query;
+      //  echo $query;
     }
 
 
@@ -604,6 +604,6 @@ class Update
             return false;
         }
 
-        echo $query;
+       // echo $query;
     }
 }

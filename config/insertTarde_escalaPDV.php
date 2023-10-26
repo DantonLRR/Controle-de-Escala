@@ -23,7 +23,7 @@ $verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dat
 
 if ($retorno === "Já existem dados.") {
     $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
-} else {
+} else if($retorno === "Não existem dados."){
     $insereDadosFuncTarde =$InsertDeDados-> insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado,$dataPesquisa,$numPDV,$loja);
 }
 

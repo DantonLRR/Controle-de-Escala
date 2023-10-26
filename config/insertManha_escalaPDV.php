@@ -21,6 +21,6 @@ $verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dat
 
 if ($retorno === "Já existem dados.") {
     $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
-} else {
+} else if($retorno === "Não existem dados."){
     $insereDadosFuncManha = $InsertDeDados->insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
 }

@@ -1,6 +1,6 @@
 <?php
 include "../base/Conexao_teste.php";
-include "../base/conexao_tovs.php";
+
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
 ?>
@@ -185,14 +185,24 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $_SESS
                 fixedColumns: {
                     left: 2,
                 },
-                buttons: [{
-                    text: 'Imprimir',
-                    className: 'estilizaBotao btn btnverde',
-                    extend: 'print',
-                    exportOptions: {
+                buttons: 
+                [
+                    {
+                        text: 'Escala Diaria',
+                        className: '',
+                        action: function() {
+                            window.location.href = "escalaDiaria.php";
+                        }
+                    },
+                    {
+                        text: 'Imprimir',
+                        className: '',
+                        extend: 'print',
+                        exportOptions: {
 
-                    }
-                }, ],
+                        }
+                    },
+                ],
                 language: {
                     "sEmptyTable": "Nenhum registro encontrado",
 

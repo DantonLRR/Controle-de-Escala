@@ -1,7 +1,7 @@
 <?php
 include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
-include "../../base/conexao_tovs.php";
+
 $tabela = "WEB_ESCALA_MENSAL";
 
 
@@ -31,7 +31,7 @@ if ($retorno === "Já existem dados.") {
 
     $updateDeDadps = $update -> updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$dia,$opcaoSelect, $matricula,$loja );
 
-} else {
+} else if($retorno === "Não existem dados.") {
 
 
     $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPesquisado ,$nome,$opcaoSelect,$matricula,$loja );
