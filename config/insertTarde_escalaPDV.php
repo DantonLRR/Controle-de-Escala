@@ -21,10 +21,15 @@ $updateDeDados = new Update();
 
 $verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV,$loja);
 
-if ($retorno === "Já existem dados.") {
+if ($retorno == "Já existem dados.") {
+    // echo "Já existem dados. 01 Update";
+
     $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
-} else if($retorno === "Não existem dados."){
+} else if($retorno == "Não existem dados."){
+    // echo "Não existem dados. 02 INSERT";
+
     $insereDadosFuncTarde =$InsertDeDados-> insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado,$dataPesquisa,$numPDV,$loja);
+    
 }
 
 

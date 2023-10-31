@@ -48,6 +48,7 @@ for ($i = 7; $i <= 21; $i++) {
 
 
 ?>
+
 <body>
     <input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
     <input class="usu" id="loja" value="<?= $_SESSION['LOJA'] ?>">
@@ -100,7 +101,7 @@ for ($i = 7; $i <= 21; $i++) {
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="card" style="border-color:#00a550;" >
+                <div class="card" style="border-color:#00a550;">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">
 
                         <i id="BTNAdicionarDescritivo" class="far fa-plus-square ocultar "> </i>
@@ -267,7 +268,7 @@ for ($i = 7; $i <= 21; $i++) {
 
                         ESCALA DE OPERADORES POR HORÁRIO
                     </h6>
-                    <div id="CardTable2" class="card-body ">
+                    <div id="relatorioPDV" class="card-body ">
                         <table id="table2" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
                             <thead style="background-color: #00a550; color: white;">
@@ -285,51 +286,47 @@ for ($i = 7; $i <= 21; $i++) {
 
                             </thead>
                             <tbody style="background-color: #DCDCDC;">
-                            <td></td>
-                            <?php
-                                    for ($i = 7; $i <= 21; $i++) {
-                                    ?>
-                                        <td class="text-center recebeQuantPessoasPorPDV" scope="row" id="">
-
-                                        </td>
-                                    <?php
-
-                                     }
-                                    ?>
+                                <td></td>
                                 <?php
-                                $j=0;
+                                for ($i = 7; $i <= 21; $i++) {
+                                ?>
+                                    <td class="text-center recebeQuantPessoasPorPDV" scope="row" id="">
+
+                                    </td>
+                                <?php
+
+                                }
+                                ?>
+                                <?php
+                                $j = 0;
                                 $qntPDV = array();
                                 for ($i = 1; $i <= 30; $i++) {
                                     $i;
-                                    $dadosEscalaDiariaDePDV = $InformacaoDosDias ->escalaDiariaDePDV($oracle,$i, $hoje);
-                                   print_r(  $dadosEscalaDiariaDePDV);
-                                    
+                                    $dadosEscalaDiariaDePDV = $InformacaoDosDias->escalaDiariaDePDV($oracle, $i, $hoje);
                                 ?>
                                     <tr class="trr">
                                         <td scope="row" class="numerosPDVS" id="">
                                             <?= $i ?>
                                         </td>
-                                  
-
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["07:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["08:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["09:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["10:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["11:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["12:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["13:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["14:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["15:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["16:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["17:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["18:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["19:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["20:00"]?? '' ?> </td>
-                                    <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV [$j]["21:00"]?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["07:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["08:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["09:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["10:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["11:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["12:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["13:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["14:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["15:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["16:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["17:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["18:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["19:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["20:00"] ?? '' ?> </td>
+                                        <td class="text-center" scope="row" id=""><?= $dadosEscalaDiariaDePDV[$j]["21:00"] ?? '' ?> </td>
 
                                     </tr>
                                 <?php
-                                
+
                                 }
                                 ?>
                             </tbody>

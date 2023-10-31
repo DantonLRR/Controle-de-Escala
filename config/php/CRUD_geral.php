@@ -6,11 +6,6 @@ class Dias
     public function mesEAnoFiltro($oracle)
     {
         $lista = array();
-        // $query = "SELECT TO_DATE(ADD_MONTHS(TRUNC(SYSDATE, 'YYYY'), LEVEL - 1), 'YYYY-MM') AS mes
-        // FROM DUAL
-        // CONNECT BY LEVEL <= 12";
-        // $resultado = oci_parse($oracle, $query);
-        // oci_execute($resultado);
         $query = "SELECT TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'YYYY'), LEVEL - 1), 'YYYY-MM') AS mes
         FROM DUAL
         CONNECT BY LEVEL <= 12";
@@ -55,19 +50,18 @@ class Dias
 
         $lista = array();
         $query = "SELECT *
-     FROM Web_Montagem_Escala_Diaria_PDV a
-     WHERE NUMPDV = '$numPDV'
-     AND a.diaselecionado = TO_DATE('$dataAtual' , 'YYYY-MM-DD')
-     ORDER BY NUMPDV ASC
-      ";
-
+         FROM Web_Montagem_Escala_Diaria_PDV a
+         WHERE NUMPDV = '$numPDV'
+         AND a.diaselecionado = TO_DATE('$dataAtual' , 'YYYY-MM-DD')
+         ORDER BY NUMPDV ASC ";
+        // echo "<br>" . $query;
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
             array_push($lista, $row);
         }
         return $lista;
-       // echo $query;
+
     }
 }
 
@@ -76,10 +70,9 @@ class Funcionarios
 {
 
     //diaria
-    public function informacoesEscalaDiaria($oracle ,$dia ,$matricula, $loja, $mesPesquisado)
+    public function informacoesEscalaDiaria($oracle, $dia, $matricula, $loja, $mesPesquisado)
     {
         $lista = array();
-        //CASO PRECISE ALTERAR OS VALORES VAZIOS PARA OUTRA NOMENCLATURAL ALTERAR AQUI
         $query = "SELECT B.NOME, nvl(A.$dia,'') AS $dia, B.CARGO
         FROM webmartminas.WEB_ESCALA_MENSAL a,web_usuario_hc b
         where a.matricula(+) = b.chapa
@@ -87,9 +80,9 @@ class Funcionarios
         AND B.CHAPA = $matricula
         AND B.CARGO LIKE '%OPERADOR DE CAIXA%'
         and to_char(b.datavigencia, 'YYYY-MM') = '2023-06'
-      ";//TROCAR ESSA função
+      ";
 
-        
+
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
@@ -97,19 +90,16 @@ class Funcionarios
         }
         return $lista;
 
-        // echo $query;
-        
+        echo $query;
     }
 
-    public function informacoesEscalaDiaria2($oracle, $matricula,$loja, $mesPesquisado)
+    public function informacoesEscalaDiaria2($oracle, $matricula, $loja, $mesPesquisado)
     {
         $lista = array();
         $query = "select * from WEB_ESCALA_MENSAL a    
         WHERE a.loja = $loja 
         and  a.messelecionado=TO_DATE('$mesPesquisado', 'YYYY-MM')
-        "
-        
-        ;
+        ";
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
@@ -124,25 +114,63 @@ class Funcionarios
 
     //mensal
 
-    public function informacoesOperadoresDeCaixa($oracle, $lojaDaPessoaLogada)
+    public function informacoesOperadoresDeCaixa($TotvsOracle, $lojaDaPessoaLogada)
     {
 
         $lista = array();
-        $query = "SELECT *  from  WEB_Funcionarios_OP_DE_Caixa a
-        where empresa = $lojaDaPessoaLogada
-        and cargo = 'OPERADOR DE CAIXA'
-        order by a.nome
-              ";
-
-        
-        $resultado = oci_parse($oracle, $query);
+        $query = "SELECT DISTINCT
+        PFUNC.CHAPA,
+        PFUNC.NOME AS NOME,
+        PFUNCAO.NOME AS CARGO,
+        PCCUSTO.NOME AS CENTROCUSTO,
+        PCCUSTO.CODCCUSTO,
+        PSECAO.CODIGO AS NROEMPRESA,
+        PPESSOA.CPF,
+        PFUNC.SALARIO AS SALARIO,
+        TO_CHAR(PFUNC.SALARIO, 'L999G999D99', 'NLS_NUMERIC_CHARACTERS='',.'' NLS_CURRENCY=''R$''') AS FORMATOMOEDA,
+        PFUNC.CODSITUACAO AS CODSITUACAO,
+        PFUNC.DATAADMISSAO AS DATA_ADMISSAO,
+        SUBSTR(PSECAO.DESCRICAO, 1, 4) AS LOJA,
+        SUBSTR(PSECAO.DESCRICAO, 6) AS SETOR1,
+        TRIM(SUBSTR(PSECAO.DESCRICAO, 6)) AS SETORSEMESPACO,
+        TO_DATE(PFUNC.DATAADMISSAO, 'YYYY-MM-DD') AS DATA_ADMISSAO_CONVERTIDA,
+        PSECAO.DESCRICAO AS SETOR,
+        PFUNCAO.CODIGO AS CODFUNCAO,
+        TRUNC(MONTHS_BETWEEN(SYSDATE, PFUNC.DATAADMISSAO) / 12) AS ANOS_TEMPO_CASA,
+        TRUNC(MONTHS_BETWEEN(SYSDATE, PFUNC.DATAADMISSAO)) - 
+        CASE WHEN TO_NUMBER(TO_CHAR(SYSDATE, 'DD')) < TO_NUMBER(TO_CHAR(PFUNC.DATAADMISSAO, 'DD')) THEN 1 ELSE 0 END - 
+        12 * TRUNC(MONTHS_BETWEEN(SYSDATE, PFUNC.DATAADMISSAO) / 12) AS MESES_TEMPO_CASA,
+        ABS(EXTRACT(DAY FROM PFUNC.DATAADMISSAO) - EXTRACT(DAY FROM SYSDATE)) AS DIAS_TEMPO_CASA,
+        TRUNC(MONTHS_BETWEEN(SYSDATE, FUNCAO.DATAMUDANCA) / 12) AS ANOS_TEMPO_FUNCAO,
+        TRUNC(MONTHS_BETWEEN(SYSDATE, FUNCAO.DATAMUDANCA)) - 
+        CASE WHEN TO_NUMBER(TO_CHAR(SYSDATE, 'DD')) < TO_NUMBER(TO_CHAR(FUNCAO.DATAMUDANCA, 'DD')) THEN 1 ELSE 0 END - 
+        12 * TRUNC(MONTHS_BETWEEN(SYSDATE, FUNCAO.DATAMUDANCA) / 12) AS MESES_TEMPO_FUNCAO,
+        ABS(EXTRACT(DAY FROM FUNCAO.DATAMUDANCA) - EXTRACT(DAY FROM SYSDATE)) AS DIAS_TEMPO_FUNCAO
+            FROM PFUNC
+            INNER JOIN PPESSOA ON PFUNC.CODPESSOA = PPESSOA.CODIGO
+            INNER JOIN PFRATEIOFIXO ON PFUNC.CODCOLIGADA = PFRATEIOFIXO.CODCOLIGADA AND PFUNC.CHAPA = PFRATEIOFIXO.CHAPA
+            INNER JOIN PCCUSTO ON PFRATEIOFIXO.CODCOLIGADA = PCCUSTO.CODCOLIGADA AND PFRATEIOFIXO.CODCCUSTO = PCCUSTO.CODCCUSTO
+            INNER JOIN PFUNCAO ON PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA AND PFUNC.CODFUNCAO = PFUNCAO.CODIGO
+            INNER JOIN PSECAO ON PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA AND PFUNC.CODSECAO = PSECAO.CODIGO
+            LEFT JOIN (
+                SELECT PFHSTFCO.CODCOLIGADA, PFHSTFCO.CHAPA, MAX(PFHSTFCO.DTMUDANCA) AS DATAMUDANCA
+                FROM PFHSTFCO
+                WHERE PFHSTFCO.CODCOLIGADA = 1
+                GROUP BY PFHSTFCO.CODCOLIGADA, PFHSTFCO.CHAPA
+            ) FUNCAO ON PFUNC.CODCOLIGADA = FUNCAO.CODCOLIGADA AND PFUNC.CHAPA = FUNCAO.CHAPA
+            WHERE PFUNC.CODCOLIGADA = 1
+            AND PFUNCAO.NOME LIKE '%OPERADOR DE CAIXA%'
+            AND SUBSTR(PSECAO.DESCRICAO, 1, 3) = '$lojaDaPessoaLogada'
+            AND  PFUNC.CODSITUACAO = 'A'
+             ORDER BY PFUNC.NOME ASC
+      ";
+        $resultado = oci_parse($TotvsOracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
             array_push($lista, $row);
         }
         return $lista;
-
-       // echo $query;
+        echo $query;
     }
 
     //pdv
@@ -265,8 +293,8 @@ class Verifica
             array_push($lista, $row);
         }
         return $lista;
-       // echo $query;
-       // echo "</br>" + $retorno;
+        // echo $query;
+        // echo "</br>" + $retorno;
     }
 
 
@@ -305,50 +333,47 @@ class Verifica
                  and a.loja = $loja";
         $parse = oci_parse($oracle, $query);
 
-        $retorno = oci_execute($parse);
+        $retorno2 = oci_execute($parse);
 
-        if ($retorno) {
+        if ($retorno2) {
             if (oci_fetch($parse)) {
                 $retorno = "Já existem dados.";
             } else {
                 $retorno = "Não existem dados.";
             }
         } else {
-            // Erro na consulta
+
             echo "Erro na consulta.";
         }
-      // echo $query;
     }
 
     //montagem escala pdv
 
-    public function verificaMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa, $loja)
-    {
+    //     public function verificaMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa, $loja)
+    //     {
+    //         global  $retorno;
+    //         $query = "SELECT * from Web_Montagem_Escala_Diaria_PDV a
+    //         WHERE a.NUMPDV = '$numPDV'
+    //         and a.diaselecionado = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')
+    //         and a.loja = $loja";
+    //         $parse = oci_parse($oracle, $query);
 
-        global  $retorno;
-        $query = "SELECT * from Web_Montagem_Escala_Diaria_PDV a
-        WHERE a.NUMPDV = $numPDV
-        and a.diaselecionado =TO_DATE( '$dataPesquisa','YYYY-MM-DD')
-        and a.loja = $loja
-        ";
-        $parse = oci_parse($oracle, $query);
+    //         $retorno2 = oci_execute($parse);
 
-        $retorno = oci_execute($parse);
+    //         if ( $retorno2) {
+    //             if (oci_fetch($parse)) {
+    //                 $retorno = "Já existem dados.";
+    //             } else {
+    //                 $retorno = "Não existem dados.";
+    //             }
+    //         } else {
+    //             // Erro na consulta
+    //             echo "Erro na consulta.";
+    //         }
 
-        if ($retorno) {
-            if (oci_fetch($parse)) {
-                $retorno = "Já existem dados.";
-            } else {
-                $retorno = "Não existem dados.";
-            }
-        } else {
-            // Erro na consulta
-            echo "Erro na consulta.";
-        }
-
-       echo "<br>".$query;
-       echo "<br>".$retorno;
-    }
+    //         echo "<br>" . $query;
+    //         echo "<br>" . $retorno;
+    //     }
 }
 
 
@@ -390,7 +415,7 @@ class Insert
             return false;
         }
 
-      //  echo $query;
+        //  echo $query;
     }
 
 
@@ -422,22 +447,18 @@ class Insert
         '$numPDV',
         $loja
      )";
-
-   
         $parse = oci_parse($oracle, $query);
-
         $retorno = oci_execute($parse);
         if ($retorno) {
             global $sucess;
             $sucess = 1;
-
             return true;
         } else {
             $sucess = 0;
             //  echo "<br>" . $query;
             return false;
         }
-       // echo $query;
+        echo "<br>" . "insert manha :" . $query;
     }
 
     public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja)
@@ -466,25 +487,23 @@ class Insert
         '$numPDV',
         $loja        
      )";
-
         // echo $query;
         $parse = oci_parse($oracle, $query);
-
         $retorno = oci_execute($parse);
         if ($retorno) {
             global $sucess;
             $sucess = 1;
-
             return true;
         } else {
             $sucess = 0;
             //  echo "<br>" . $query;
             return false;
         }
+        echo "<br>" . " insert tarde : " . $query;
     }
 
     //montagem de escala PDV
-    public function insertMontagemEscalaPDV($oracle,$periodoDeHoras,  $numPDV, $dataPesquisa, $usuarioLogado, $nome, $loja)
+    public function insertMontagemEscalaPDV($oracle, $periodoDeHoras,  $numPDV, $dataPesquisa, $usuarioLogado, $nome, $loja)
     {
         global  $retorno;
         $query = "INSERT INTO Web_Montagem_Escala_Diaria_PDV (
@@ -514,11 +533,10 @@ class Insert
             return true;
         } else {
             $sucess = 0;
-            //  echo "<br>" . $query;
+
             return false;
         }
-
-       // echo $query;
+        echo "<br>" . "insertMontagemEscalaPDV: " . $query;
     }
 }
 
@@ -536,11 +554,11 @@ class Update
             nome = '$nome',
             $dia = '$opcaoSelect',
             LOJA = '$loja' 
-         WHERE a.matricula = '$matricula'"; // Substitua $id pelo valor adequado
-          //echo $query;
-         $parse = oci_parse($oracle, $query);
+         WHERE a.matricula = '$matricula'";
+        //echo $query;
+        $parse = oci_parse($oracle, $query);
 
-         oci_execute($parse);
+        oci_execute($parse);
     }
 
 
@@ -562,11 +580,13 @@ class Update
         NUMPDV = '$numPDV',
         LOJA = '$loja'
       WHERE NUMPDV = '$numPDV'
-      AND loja = $loja";
+      AND loja = $loja
+      and DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')
+      ";
         $parse = oci_parse($oracle, $query);
 
         oci_execute($parse);
-      //  echo $query;
+        echo "<br>" . "update : " . $query;
     }
 
 
@@ -604,6 +624,6 @@ class Update
             return false;
         }
 
-       // echo $query;
+        // echo $query;
     }
 }

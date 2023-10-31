@@ -17,10 +17,14 @@ $loja = $_GET['loja'];
 $verificacaoDeDados = new Verifica();
 $InsertDeDados = new Insert();
 $updateDeDados = new Update();
-$verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV,$loja);
 
-if ($retorno === "Já existem dados.") {
-    $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
-} else if($retorno === "Não existem dados."){
-    $insereDadosFuncManha = $InsertDeDados->insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
+$verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV, $loja);
+
+if ($retorno == "Já existem dados.") {
+    // echo "Já existem dados. 01";
+    
+     $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
+} else if ($retorno == "Não existem dados.") {
+    // echo "Não existem dados. 02 INSERT";
+     $insereDadosFuncManha = $InsertDeDados->insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
 }

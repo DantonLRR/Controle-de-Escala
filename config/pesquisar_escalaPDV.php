@@ -1,19 +1,20 @@
 <?php
 include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
-
+$loja = $_POST['loja'] ?? '';
 $dataPesquisada = $_POST['dataPesquisa'];
 
 
 $InformacaoFuncionarios = new Funcionarios();
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle,$dataPesquisada);
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$dataPesquisada);
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $dataPesquisada);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $dataPesquisada);
 
 // session_start();
 ?>
-<input id="dataPesquisa" type="hidden" value="<?= $dataPesquisada ?>">
 
 <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
+    <input id="dataPesquisa" type="hidden" value="<?= $dataPesquisada ?>">
+    <input class="usu" type="hidden" id="loja" value="<?= $loja ?>">
     <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
     <thead style="background-color: #00a550; color: white;">
         <tr class="trr">
@@ -119,7 +120,8 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$
                     <?php
                 } else {
                     foreach ($horariosFuncTarde as $row3Tarde) :
-                        // print_r($horariosFuncTarde);                                                ?>
+                        print_r($horariosFuncTarde);
+                    ?>
                         <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
                         <td scope="row" class="text-center nome2">
                             <select class="estilizaSelect2 form-control">
@@ -152,8 +154,7 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$
 
 
 <script type="module" src="js/Script_escalaPDV.js" defer></script>
-<script defer> 
-
+<script defer>
     var dataPesquisa = $("#dataPesquisa").val();
     var dataAtual = new Date().toISOString().slice(0, 10);
 
@@ -164,7 +165,6 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$
         $('.estilizaSelect2').prop('disabled', false);
         $('.estilezaSelect').prop('disabled', false);
     }
-
 </script>
 
 
@@ -172,27 +172,25 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$
     $('#table1').DataTable({
 
         scrollY: 400,
-    
-    scrollCollapse: true,
-    searching: true,
-    dom: 'Bfrtip',
-    "paging": true,
-    "info": false,
-    "ordering": false,
-    "lengthMenu": [
-        [15],
-      
-    ],
-        buttons: [
-            {
-                text: 'Imprimir',
-                className: 'estilizaBotao btn btnverde',
-                extend: 'print',
-                exportOptions: {
 
-                }
-            },
+        scrollCollapse: true,
+        searching: true,
+        dom: 'Bfrtip',
+        "paging": true,
+        "info": false,
+        "ordering": false,
+        "lengthMenu": [
+            [15],
+
         ],
+        buttons: [{
+            text: 'Imprimir',
+            className: 'estilizaBotao btn btnverde',
+            extend: 'print',
+            exportOptions: {
+
+            }
+        }, ],
         language: {
             "sEmptyTable": "Nenhum registro encontrado",
 
@@ -234,138 +232,143 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$
 
 
 
-    
-var usuarioLogado = $("#usuarioLogado").val();
-var opcoesSelecionadas = [];
 
-function calcularHorasIntermediarias(horaEntrada, horaSaida, horaParaPular) {
-    var horasIntermediarias = [];
-    var [entradaHora, entradaMinutos] = horaEntrada.split(':').map(Number);
-    var [saidaHora, saidaMinutos] = horaSaida.split(':').map(Number);
+    var usuarioLogado = $("#usuarioLogado").val();
+    var loja = $("#loja").val();
+    var opcoesSelecionadas = [];
 
-    while (entradaHora < saidaHora || (entradaHora === saidaHora && entradaMinutos <= saidaMinutos)) {
-        var horaFormatada = entradaHora.toString().padStart(2, '0') + ':' + entradaMinutos.toString().padStart(2, '0');
+    function calcularHorasIntermediarias(horaEntrada, horaSaida, horaParaPular) {
+        var horasIntermediarias = [];
+        var [entradaHora, entradaMinutos] = horaEntrada.split(':').map(Number);
+        var [saidaHora, saidaMinutos] = horaSaida.split(':').map(Number);
 
-        // Verifica se a horaFormatada é igual à horaParaPular e exclui se for diferente.
-        if (horaFormatada !== horaParaPular) {
-            horasIntermediarias.push('"' + horaFormatada + '"');
+        while (entradaHora < saidaHora || (entradaHora === saidaHora && entradaMinutos <= saidaMinutos)) {
+            var horaFormatada = entradaHora.toString().padStart(2, '0') + ':' + entradaMinutos.toString().padStart(2, '0');
+
+            // Verifica se a horaFormatada é igual à horaParaPular e exclui se for diferente.
+            if (horaFormatada !== horaParaPular) {
+                horasIntermediarias.push('"' + horaFormatada + '"');
+            }
+
+            if (entradaMinutos === 0) {
+                entradaHora++;
+                entradaMinutos = 0;
+            } else {
+                entradaMinutos = 0;
+            }
         }
 
-        if (entradaMinutos === 0) {
-            entradaHora++;
-            entradaMinutos = 0;
-        } else {
-            entradaMinutos = 0;
+        return horasIntermediarias;
+    }
+
+
+
+
+
+    $('#table1').on('change', '.estilezaSelect', function() {
+        var dataPesquisa = $("#dataPesquisa").val();
+        var dataAtual = $("#dataAtual").val();
+
+        if (dataPesquisa == "") {
+            dataPesquisa = dataAtual
         }
-    }
 
-    return horasIntermediarias;
-}
+        var nomeSelecionado = $(this).val();
+        var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
+        var $selects = $('#table1 .estilezaSelect');
+        var matricula = $(this).parent().parent().find(".Matricula1").closest(".Matricula1");
+        var entrada = $(this).parent().parent().find(".horaEntrada1").closest(".horaEntrada1");
+        var saida = $(this).parent().parent().find(".horaSaida1").closest(".horaSaida1");
+        var intervalo = $(this).parent().parent().find(".horaIntervalo1").closest(".horaIntervalo1");
 
-
-
-
-
-$('#table1').on('change', '.estilezaSelect', function () {
-    var dataPesquisa = $("#dataPesquisa").val();
-    var dataAtual = $("#dataAtual").val();
-
-    if (dataPesquisa == "") {
-        dataPesquisa = dataAtual
-    }
-
-    var nomeSelecionado = $(this).val();
-    var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
-    var $selects = $('#table1 .estilezaSelect');
-    var matricula = $(this).parent().parent().find(".Matricula1").closest(".Matricula1");
-    var entrada = $(this).parent().parent().find(".horaEntrada1").closest(".horaEntrada1");
-    var saida = $(this).parent().parent().find(".horaSaida1").closest(".horaSaida1");
-    var intervalo = $(this).parent().parent().find(".horaIntervalo1").closest(".horaIntervalo1");
-
-    if (nomeSelecionado !== "") {
-        if (opcoesSelecionadas.includes(nomeSelecionado)) {
-            alert('Opção já selecionada em outra linha.');
-            $(this).val("");
-        } else {
-            opcoesSelecionadas.push(nomeSelecionado);
-            $selects.not(this).find('option[value="' + nomeSelecionado + '"]').remove();
-            $.ajax({
-                url: "filtro/busca_infosFuncionarios.php",
-                method: 'get',
-                data: 'nomeSelecionado=' + nomeSelecionado,
-                dataType: 'json',
-                success: function (retorno) {
-                    matricula.text(retorno.matricula);
-                    entrada.text(retorno.horaEntrada);
-                    saida.text(retorno.horaSaida);
-                    intervalo.text(retorno.horaIntervalo);
+        if (nomeSelecionado !== "") {
+            if (opcoesSelecionadas.includes(nomeSelecionado)) {
+                alert('Opção já selecionada em outra linha.');
+                $(this).val("");
+            } else {
+                opcoesSelecionadas.push(nomeSelecionado);
+                $selects.not(this).find('option[value="' + nomeSelecionado + '"]').remove();
+                $.ajax({
+                    url: "filtro/busca_infosFuncionarios.php",
+                    method: 'get',
+                    data: 'nomeSelecionado=' + nomeSelecionado,
+                    dataType: 'json',
+                    success: function(retorno) {
+                        matricula.text(retorno.matricula);
+                        entrada.text(retorno.horaEntrada);
+                        saida.text(retorno.horaSaida);
+                        intervalo.text(retorno.horaIntervalo);
 
 
-                    var DadosMatricula = retorno.matricula;
-                    var DadosEntrada = retorno.horaEntrada;
-                    var DadosSaida = retorno.horaSaida;
-                    var DadosIntervalo = retorno.horaIntervalo;
-                    var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada, DadosSaida, DadosIntervalo);
+                        var DadosMatricula = retorno.matricula;
+                        var DadosEntrada = retorno.horaEntrada;
+                        var DadosSaida = retorno.horaSaida;
+                        var DadosIntervalo = retorno.horaIntervalo;
+                        var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada, DadosSaida, DadosIntervalo);
 
-                    $.ajax({
-                        url: "config/insertManha_escalaPDV.php",
-                        method: 'get',
-                        data: 'DadosMatricula=' +
-                            DadosMatricula +
-                            "&nomeSelecionado=" +
-                            nomeSelecionado +
-                            "&DadosEntrada=" +
-                            DadosEntrada +
-                            "&DadosSaida=" +
-                            DadosSaida +
-                            "&DadosIntervalo=" +
-                            DadosIntervalo +
-                            "&usuarioLogado=" +
-                            usuarioLogado +
-                            "&dataPesquisa=" +
-                            dataPesquisa+
-                            "&numPDV=" +
-                            numPDV,
+                        $.ajax({
+                            url: "config/insertManha_escalaPDV.php",
+                            method: 'get',
+                            data: 'DadosMatricula=' +
+                                DadosMatricula +
+                                "&nomeSelecionado=" +
+                                nomeSelecionado +
+                                "&DadosEntrada=" +
+                                DadosEntrada +
+                                "&DadosSaida=" +
+                                DadosSaida +
+                                "&DadosIntervalo=" +
+                                DadosIntervalo +
+                                "&usuarioLogado=" +
+                                usuarioLogado +
+                                "&dataPesquisa=" +
+                                dataPesquisa +
+                                "&numPDV=" +
+                                numPDV +
+                                "&loja=" +
+                                loja,
 
-                        // dataType: 'json',
-                        success: function (retorno2) {
+                            // dataType: 'json',
+                            success: function(retorno2) {
 
-                            criandoHtmlmensagemCarregamento("ocultar");
-
-
-                        }
-                    });
-
-                    $.ajax({
-                        url: "config/exibicao_escala_diaria_pdv.php",
-                        method: 'get',
-                        data: 'DadosMatricula=' +
-                            DadosMatricula +
-                            "&nomeSelecionado=" +
-                            nomeSelecionado +
-                            "&DadosEntrada=" +
-                            DadosEntrada +
-                            "&DadosSaida=" +
-                            DadosSaida +
-                            "&DadosIntervalo=" +
-                            DadosIntervalo +
-                            "&usuarioLogado=" +
-                            usuarioLogado +
-                            "&dataPesquisa=" +
-                            dataPesquisa+
-                            "&numPDV=" +
-                            numPDV+
-                            "&horasIntermediarias=" +
-                            horasIntermediarias,
-
-                        // dataType: 'json',
-                        success: function (retorno2) {
-
-                            criandoHtmlmensagemCarregamento("ocultar");
+                                criandoHtmlmensagemCarregamento("ocultar");
 
 
-                        }
-                    });
+                            }
+                        });
+
+                        $.ajax({
+                            url: "config/exibicao_escala_diaria_pdv.php",
+                            method: 'get',
+                            data: 'DadosMatricula=' +
+                                DadosMatricula +
+                                "&nomeSelecionado=" +
+                                nomeSelecionado +
+                                "&DadosEntrada=" +
+                                DadosEntrada +
+                                "&DadosSaida=" +
+                                DadosSaida +
+                                "&DadosIntervalo=" +
+                                DadosIntervalo +
+                                "&usuarioLogado=" +
+                                usuarioLogado +
+                                "&dataPesquisa=" +
+                                dataPesquisa +
+                                "&numPDV=" +
+                                numPDV +
+                                "&horasIntermediarias=" +
+                                horasIntermediarias +
+                                "&loja=" +
+                                loja,
+
+                            // dataType: 'json',
+                            success: function(retorno2) {
+
+                                criandoHtmlmensagemCarregamento("ocultar");
+
+
+                            }
+                        });
 
 
 
@@ -373,122 +376,124 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
 
 
-                }
-            });
+                    }
+                });
 
 
 
 
+            }
         }
-    }
-});
+    });
 
 
 
-$('#table1').on('change', '.estilizaSelect2', function () {
-    var dataPesquisa = $("#dataPesquisa").val();
-    var dataAtual = $("#dataAtual").val();
+    $('#table1').on('change', '.estilizaSelect2', function() {
+        var dataPesquisa = $("#dataPesquisa").val();
+        var dataAtual = $("#dataAtual").val();
 
-    if (dataPesquisa == "") {
-        dataPesquisa = dataAtual
-    }
-
-    var nomeSelecionado2 = $(this).val();
-    var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
-    var $selects2 = $('#table1 .estilizaSelect2');
-    var matricula2 = $(this).parent().parent().find(".matricula2").closest(".matricula2");
-    var entrada2 = $(this).parent().parent().find(".horaEntrada2").closest(".horaEntrada2");
-    var saida2 = $(this).parent().parent().find(".horaSaida2").closest(".horaSaida2");
-    var intervalo2 = $(this).parent().parent().find(".horaIntervalo2").closest(".horaIntervalo2");
-
-
-    if (nomeSelecionado2 !== "") {
-        if (opcoesSelecionadas.includes(nomeSelecionado2)) {
-            alert('Opção já selecionada em outra linha.');
-            $(this).val("");
-        } else {
-            opcoesSelecionadas.push(nomeSelecionado2);
-
-            $selects2.not(this).find('option[value="' + nomeSelecionado2 + '"]').remove();
-
-            $.ajax({
-                url: "filtro/busca_infosFuncionarios.php",
-                method: 'get',
-                data: 'nomeSelecionado=' + nomeSelecionado2,
-                dataType: 'json',
-                success: function (retorno2) {
-                    matricula2.text(retorno2.matricula);
-                    entrada2.text(retorno2.horaEntrada);
-                    saida2.text(retorno2.horaSaida);
-                    intervalo2.text(retorno2.horaIntervalo);
-
-                    var DadosMatricula1 = retorno2.matricula;
-                    var DadosEntrada1 = retorno2.horaEntrada;
-                    var DadosSaida1 = retorno2.horaSaida;
-                    var DadosIntervalo1 = retorno2.horaIntervalo;
-                    var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada1, DadosSaida1, DadosIntervalo1);
-                    $.ajax({
-                        url: "config/insertTarde_escalaPDV.php",
-                        method: 'get',
-                        data: 'DadosMatricula1=' +
-                            DadosMatricula1 +
-                            "&nomeSelecionado2=" +
-                            nomeSelecionado2 +
-                            "&DadosEntrada1=" +
-                            DadosEntrada1 +
-                            "&DadosSaida1=" +
-                            DadosSaida1 +
-                            "&DadosIntervalo1=" +
-                            DadosIntervalo1 +
-                            "&usuarioLogado=" +
-                            usuarioLogado +
-                            "&dataPesquisa=" +
-                            dataPesquisa+
-                            "&numPDV=" +
-                            numPDV+
-                            "&numPDV=" +
-                            numPDV,
-                        // dataType: 'json',
-                        success: function (retorno2) {
-                            criandoHtmlmensagemCarregamento("ocultar");
-                        }
-                    });
-
-                    $.ajax({
-                        url: "config/exibicao_escala_diaria_pdv.php",
-                        method: 'get',
-                        data: 'DadosMatricula=' +
-                            DadosMatricula1 +
-                            "&nomeSelecionado=" +
-                            nomeSelecionado2 +
-                            "&DadosEntrada=" +
-                            DadosEntrada1 +
-                            "&DadosSaida=" +
-                            DadosSaida1 +
-                            "&DadosIntervalo=" +
-                            DadosIntervalo1 +
-                            "&usuarioLogado=" +
-                            usuarioLogado +
-                            "&dataPesquisa=" +
-                            dataPesquisa+
-                            "&numPDV=" +
-                            numPDV+
-                            "&horasIntermediarias=" +
-                            horasIntermediarias,
-                        // dataType: 'json',
-                        success: function (retorno2) {
-                            criandoHtmlmensagemCarregamento("ocultar");
-                        }
-                    });
-                   
-
-                    
-
-                }
-            });
+        if (dataPesquisa == "") {
+            dataPesquisa = dataAtual
         }
-    }
-});
+
+        var nomeSelecionado2 = $(this).val();
+        var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
+        var $selects2 = $('#table1 .estilizaSelect2');
+        var matricula2 = $(this).parent().parent().find(".matricula2").closest(".matricula2");
+        var entrada2 = $(this).parent().parent().find(".horaEntrada2").closest(".horaEntrada2");
+        var saida2 = $(this).parent().parent().find(".horaSaida2").closest(".horaSaida2");
+        var intervalo2 = $(this).parent().parent().find(".horaIntervalo2").closest(".horaIntervalo2");
 
 
+        if (nomeSelecionado2 !== "") {
+            if (opcoesSelecionadas.includes(nomeSelecionado2)) {
+                alert('Opção já selecionada em outra linha.');
+                $(this).val("");
+            } else {
+                opcoesSelecionadas.push(nomeSelecionado2);
+
+                $selects2.not(this).find('option[value="' + nomeSelecionado2 + '"]').remove();
+
+                $.ajax({
+                    url: "filtro/busca_infosFuncionarios.php",
+                    method: 'get',
+                    data: 'nomeSelecionado=' + nomeSelecionado2,
+                    dataType: 'json',
+                    success: function(retorno2) {
+                        matricula2.text(retorno2.matricula);
+                        entrada2.text(retorno2.horaEntrada);
+                        saida2.text(retorno2.horaSaida);
+                        intervalo2.text(retorno2.horaIntervalo);
+
+                        var DadosMatricula1 = retorno2.matricula;
+                        var DadosEntrada1 = retorno2.horaEntrada;
+                        var DadosSaida1 = retorno2.horaSaida;
+                        var DadosIntervalo1 = retorno2.horaIntervalo;
+                        var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada1, DadosSaida1, DadosIntervalo1);
+                        $.ajax({
+                            url: "config/insertTarde_escalaPDV.php",
+                            method: 'get',
+                            data: 'DadosMatricula1=' +
+                                DadosMatricula1 +
+                                "&nomeSelecionado2=" +
+                                nomeSelecionado2 +
+                                "&DadosEntrada1=" +
+                                DadosEntrada1 +
+                                "&DadosSaida1=" +
+                                DadosSaida1 +
+                                "&DadosIntervalo1=" +
+                                DadosIntervalo1 +
+                                "&usuarioLogado=" +
+                                usuarioLogado +
+                                "&dataPesquisa=" +
+                                dataPesquisa +
+                                "&numPDV=" +
+                                numPDV +
+                                "&numPDV=" +
+                                numPDV +
+                                "&loja=" +
+                                loja,
+                            // dataType: 'json',
+                            success: function(retorno2) {
+                                criandoHtmlmensagemCarregamento("ocultar");
+                            }
+                        });
+
+                        $.ajax({
+                            url: "config/exibicao_escala_diaria_pdv.php",
+                            method: 'get',
+                            data: 'DadosMatricula=' +
+                                DadosMatricula1 +
+                                "&nomeSelecionado=" +
+                                nomeSelecionado2 +
+                                "&DadosEntrada=" +
+                                DadosEntrada1 +
+                                "&DadosSaida=" +
+                                DadosSaida1 +
+                                "&DadosIntervalo=" +
+                                DadosIntervalo1 +
+                                "&usuarioLogado=" +
+                                usuarioLogado +
+                                "&dataPesquisa=" +
+                                dataPesquisa +
+                                "&numPDV=" +
+                                numPDV +
+                                "&horasIntermediarias=" +
+                                horasIntermediarias +
+                                "&loja=" +
+                                loja,
+                            // dataType: 'json',
+                            success: function(retorno2) {
+                                criandoHtmlmensagemCarregamento("ocultar");
+                            }
+                        });
+
+
+
+
+                    }
+                });
+            }
+        }
+    });
 </script>

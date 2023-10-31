@@ -7,7 +7,7 @@ import { criandoHtmlmensagemCarregamento, Toasty } from "../../base/jsGeral.js";
 $('#table1').DataTable({
 
     scrollY: 400,
-    
+
     scrollCollapse: true,
     searching: true,
     dom: 'Bfrtip',
@@ -16,7 +16,7 @@ $('#table1').DataTable({
     "ordering": false,
     "lengthMenu": [
         [15],
-      
+
     ],
     language: {
         "sEmptyTable": "Nenhum registro encontrado",
@@ -59,7 +59,7 @@ $('#table1').DataTable({
 
 $('#table2').DataTable({
 
-   
+
     scrollY: 400,
     scrollCollapse: true,
     searching: true,
@@ -156,21 +156,9 @@ $('#tableHeader').DataTable({
 
 
 
-
-
-
-
-
-
-
-
-
 var iconeAddTables = document.getElementById("BTNAdicionarDescritivo");
 var iconeRemoveTable = document.getElementById("BTNremoverDescritivo");
-var iconeAddTables2 = document.getElementById("BTNAdicionarDescritivo2");
-var iconeRemoveTable2 = document.getElementById("BTNremoverDescritivo2");
 var table1 = document.getElementById("cardTable1");
-var table2 = document.getElementById("CardTable2");
 
 iconeAddTables.addEventListener("click", function () {
     table1.classList.remove("ocultar");
@@ -184,17 +172,7 @@ iconeRemoveTable.addEventListener("click", function () {
     iconeRemoveTable.classList.add("ocultar");
 });
 
-iconeAddTables2.addEventListener("click", function () {
-    table2.classList.remove("ocultar");
-    iconeAddTables2.classList.add("ocultar");
-    iconeRemoveTable2.classList.remove("ocultar");
-});
 
-iconeRemoveTable2.addEventListener("click", function () {
-    table2.classList.add("ocultar");
-    iconeAddTables2.classList.remove("ocultar");
-    iconeRemoveTable2.classList.add("ocultar");
-});
 
 
 function calcularHorasIntermediarias(horaEntrada, horaSaida, horaParaPular) {
@@ -287,9 +265,9 @@ $('#table1').on('change', '.estilezaSelect', function () {
                             "&usuarioLogado=" +
                             usuarioLogado +
                             "&dataPesquisa=" +
-                            dataPesquisa+
+                            dataPesquisa +
                             "&numPDV=" +
-                            numPDV+
+                            numPDV +
                             "&loja=" +
                             loja,
 
@@ -318,11 +296,11 @@ $('#table1').on('change', '.estilezaSelect', function () {
                             "&usuarioLogado=" +
                             usuarioLogado +
                             "&dataPesquisa=" +
-                            dataPesquisa+
+                            dataPesquisa +
                             "&numPDV=" +
-                            numPDV+
+                            numPDV +
                             "&horasIntermediarias=" +
-                            horasIntermediarias+
+                            horasIntermediarias +
                             "&loja=" +
                             loja,
 
@@ -411,11 +389,11 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             "&usuarioLogado=" +
                             usuarioLogado +
                             "&dataPesquisa=" +
-                            dataPesquisa+
+                            dataPesquisa +
                             "&numPDV=" +
-                            numPDV+
+                            numPDV +
                             "&numPDV=" +
-                            numPDV+
+                            numPDV +
                             "&loja=" +
                             loja,
                         // dataType: 'json',
@@ -440,11 +418,11 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             "&usuarioLogado=" +
                             usuarioLogado +
                             "&dataPesquisa=" +
-                            dataPesquisa+
+                            dataPesquisa +
                             "&numPDV=" +
-                            numPDV+
+                            numPDV +
                             "&horasIntermediarias=" +
-                            horasIntermediarias+
+                            horasIntermediarias +
                             "&loja=" +
                             loja,
                         // dataType: 'json',
@@ -452,9 +430,9 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             criandoHtmlmensagemCarregamento("ocultar");
                         }
                     });
-                   
 
-                    
+
+
 
                 }
             });
@@ -477,10 +455,27 @@ $('#dataPesquisa').on('change', function () {
     $.ajax({
         url: "config/pesquisar_escalaPDV.php",
         method: 'POST',
-        data: 'dataPesquisa=' + dataPesquisa,
+        data: 'dataPesquisa=' +
+         dataPesquisa+
+        "&loja=" +
+        loja,
         success: function (data_pesquisada) {
 
             $('.dadosEscalaPDV').empty().html(data_pesquisada);
+
+            $.ajax({
+                url: "config/pesquisar_relatorio_pdv.php",
+                method: 'POST',
+                data: 'dataPesquisa=' + 
+                dataPesquisa,
+                success: function (relatorio_atualizado) {
+
+                    $('#relatorioPDV').empty().html(relatorio_atualizado);
+                
+
+                }
+            });
         }
     });
+
 });

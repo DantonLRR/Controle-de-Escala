@@ -3,7 +3,7 @@ include "../base/Conexao_teste.php";
 
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
-
+include "../base/conexao_TotvzOracle.php";
 $dadosFunc = new Funcionarios();
 $mesAtual = date("Y-m");
 $diaAtual = date("d");
@@ -13,7 +13,7 @@ $diaAtual2 = '"' . date("d") . '"';
 
 // print_r($escalaDiaria);
 
-$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $_SESSION['LOJA']);
+$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA']);
 // print_r($buscaNomeFuncionario);
 ?>
 <!DOCTYPE html>
