@@ -3,7 +3,7 @@ include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
 $InformacaoDosDias = new Dias();
 $dataPesquisada = $_POST['dataPesquisa'];
-var_dump( $dataPesquisada);
+
 
 $horarios = array();
 for ($i = 7; $i <= 21; $i++) {

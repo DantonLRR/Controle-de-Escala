@@ -57,7 +57,7 @@ $('#table1').DataTable({
 });
 
 
-$('#table2').DataTable({
+var tabela2 = $('#table2').DataTable({
 
 
     scrollY: 400,
@@ -272,7 +272,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
                             loja,
 
                         // dataType: 'json',
-                        success: function (retorno2) {
+                        success: function (retornoinsertManha) {
 
                             criandoHtmlmensagemCarregamento("ocultar");
 
@@ -306,10 +306,18 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
                         // dataType: 'json',
                         success: function (retorno2) {
+                            $.ajax({
+                                url: "config/pesquisar_relatorio_pdv.php",
+                                method: 'POST',
+                                data: 'dataPesquisa=' +
+                                    dataPesquisa,
+                                success: function (relatorio_atualizado2) {
 
-                            criandoHtmlmensagemCarregamento("ocultar");
+                                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                                    criandoHtmlmensagemCarregamento("ocultar");
 
-
+                                }
+                            });
                         }
                     });
 
@@ -427,7 +435,18 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             loja,
                         // dataType: 'json',
                         success: function (retorno2) {
-                            criandoHtmlmensagemCarregamento("ocultar");
+                            $.ajax({
+                                url: "config/pesquisar_relatorio_pdv.php",
+                                method: 'POST',
+                                data: 'dataPesquisa=' +
+                                    dataPesquisa,
+                                success: function (relatorio_atualizado2) {
+
+                                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                                    criandoHtmlmensagemCarregamento("ocultar");
+
+                                }
+                            });
                         }
                     });
 
@@ -444,6 +463,7 @@ $('#table1').on('change', '.estilizaSelect2', function () {
 
 
 $('#dataPesquisa').on('change', function () {
+    criandoHtmlmensagemCarregamento("exibir");
     var dataPesquisa = $("#dataPesquisa").val();
     var dataAtual = $("#dataAtual").val();
 
@@ -456,9 +476,9 @@ $('#dataPesquisa').on('change', function () {
         url: "config/pesquisar_escalaPDV.php",
         method: 'POST',
         data: 'dataPesquisa=' +
-         dataPesquisa+
-        "&loja=" +
-        loja,
+            dataPesquisa +
+            "&loja=" +
+            loja,
         success: function (data_pesquisada) {
 
             $('.dadosEscalaPDV').empty().html(data_pesquisada);
@@ -466,12 +486,12 @@ $('#dataPesquisa').on('change', function () {
             $.ajax({
                 url: "config/pesquisar_relatorio_pdv.php",
                 method: 'POST',
-                data: 'dataPesquisa=' + 
-                dataPesquisa,
+                data: 'dataPesquisa=' +
+                    dataPesquisa,
                 success: function (relatorio_atualizado) {
 
                     $('#relatorioPDV').empty().html(relatorio_atualizado);
-                
+                    criandoHtmlmensagemCarregamento("ocultar");
 
                 }
             });
