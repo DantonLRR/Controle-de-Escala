@@ -64,3 +64,22 @@ th, td {
     text-align: center;
     border: 1px solid #000;
 }
+
+
+
+.informacoesEsquerda1Card {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10%;
+
+  
+}
+
+.informacoesEsquerda1Card p {
+    font-weight: bold;
+}
+.informacoesEsquerda1Card label{
+    font-weight: bold;
+  
+}

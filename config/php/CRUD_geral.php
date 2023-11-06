@@ -258,6 +258,22 @@ class Funcionarios
         }
         return $lista;
     }
+
+    public function funcionariosDisponiveisNoDia($oracle, $dia,$mesSelecionado){
+        $lista = array();
+        $query =  "SELECT *FROM WEB_ESCALA_MENSAL WHERE $dia is null  AND to_char(MESSELECIONADO , 'YYYY-MM') = '$mesSelecionado'";
+        // echo $query."<br>";
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+// print_r( $lista);
+    }
+
+
 }
 
 class Verifica

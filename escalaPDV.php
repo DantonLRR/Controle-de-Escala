@@ -23,7 +23,12 @@ include "config/php/CRUD_geral.php";
 </head>
 <?php
 $hoje = date("Y-m-d");
-// $hoje = date("2023-10-23");
+$diaDeHoje = date("d");
+$mesEAnoAtual = date("Y-m");
+
+
+$diaDeHojeComAspas = '"' . $diaDeHoje . '"';
+// $diaDeHoje = date("2023-10-23");
 
 
 $InformacaoDosDias = new Dias();
@@ -35,7 +40,7 @@ $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
 
 $FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $hoje);
 $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $hoje);
-// print_r( $FuncManha) ;
+
 
 
 
@@ -45,14 +50,14 @@ for ($i = 7; $i <= 21; $i++) {
 }
 
 
-
-
 ?>
 
 <body>
     <input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
     <input class="usu" id="loja" value="<?= $_SESSION['LOJA'] ?>">
     <input class="dataAtual" id="dataAtual" value="<?= $hoje ?>">
+    <input class="" id="" value="<?= $diaDeHojeComAspas ?>">
+    <input class="" id="" value="<?= $mesEAnoAtual ?>">
     <div class="container-fluid">
 
         <div class="row" id="qntPessoasPorPDV">
@@ -61,16 +66,25 @@ for ($i = 7; $i <= 21; $i++) {
                     <div style="font-weight: bold; background-color: #00a550; color:white" class="text-center card-header">NECESSIDADE DE OPERADORES POR HORÁRIO</div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-lg-2">
+                            <div class="col-lg-2 informacoesEsquerda1Card">
+                                <label class="form-label">
+                                    Quantidade de operadores</label>
+                                <?php
+                                $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual);
+                                
+                                if (empty($quantidadePorDiaDeFuncionarios)){
+                                    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para o dia de hoje, gentileza verificar a escala mensal";}
+                                    else {
+                                        $quantidadePorDiaDeFuncionariosImpressao = count($quantidadePorDiaDeFuncionarios);
+                                    }
+                                    
+                                ?>
+                                <p><?= $quantidadePorDiaDeFuncionariosImpressao ?></p>
                                 <label class="form-label">
                                     Dia Vigente Da pesquisa
                                 </label>
                                 <input type="date" class="form-control dataPesquisa" id="dataPesquisa">
-                                <!-- <div class="col-lg-2" style="margin-top: 30px;">
-                                    <button type="button" class="btn btnverde">Pesquisar</button>
-                                </div> -->
                             </div>
-
                             <div class="col-lg-10">
                                 <label class="form-label">
                                     Bips Total:
@@ -111,10 +125,6 @@ for ($i = 7; $i <= 21; $i++) {
                         Escala de Operadores
                     </h6>
                     <div id="cardTable1" class="card-body ">
-                        <!-- <label for="validationCustom02" class="form-label"> Mês/Ano: </label> -->
-                        <div class="col-lg-2">
-                            <!-- <input type="date" class="form-control dataPesquisa" id="dataPesquisa"> -->
-                        </div>
                         <div class="table dadosEscalaPDV" style="overflow-x:auto;">
                             <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
@@ -345,16 +355,9 @@ for ($i = 7; $i <= 21; $i++) {
     <script type="text/javascript" src="../base/mdb/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="../base/mdb/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="../base/DataTables/datatables.min.js"></script>
-
     <script type="text/javascript" src="../base/DataTables/FixedColumns/js/dataTables.fixedColumns.min.js"></script>
-
     <script src="../base/dist/sidenav.js"></script>
     <script type="module" src="js/Script_escalaPDV.js" defer></script>
-
-    <script>
-
-    </script>
-
 </body>
 
 </html>

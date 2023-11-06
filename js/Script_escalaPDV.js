@@ -303,8 +303,6 @@ $('#table1').on('change', '.estilezaSelect', function () {
                             horasIntermediarias +
                             "&loja=" +
                             loja,
-
-                        // dataType: 'json',
                         success: function (retorno2) {
                             $.ajax({
                                 url: "config/pesquisar_relatorio_pdv.php",
@@ -433,7 +431,6 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                             horasIntermediarias +
                             "&loja=" +
                             loja,
-                        // dataType: 'json',
                         success: function (retorno2) {
                             $.ajax({
                                 url: "config/pesquisar_relatorio_pdv.php",
