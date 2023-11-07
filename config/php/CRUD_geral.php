@@ -223,6 +223,7 @@ class Funcionarios
             FROM ESCALA_PDV_Manha a
             where a.numpdv = $i
             and to_char(a.diaselecionado,'YYYY-MM-DD') = '$dia'
+            and  status = 'A'
             ORDER BY a.numpdv ASC
         ";
         //   echo "<br>". $query;
@@ -248,6 +249,7 @@ class Funcionarios
        TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') as DIASELECIONADO
         FROM ESCALA_PDV_TARDE a
          WHERE  TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') = '$dia'
+         and  status = 'A'
          and a.numpdv = $i";
 
         // echo $query;
@@ -289,7 +291,7 @@ class Verifica
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
         AND a.loja = $loja ";
 
-        // echo $query;
+        echo $query;
 
         $parse = oci_parse($oracle, $query);
 
@@ -362,7 +364,7 @@ class Verifica
 
             echo "Erro na consulta.";
         }
-        // echo $query;
+        echo $query;
     }
 }
 
@@ -625,12 +627,12 @@ class Update
         // echo $query;
     }
 
-    public function updateRemocaoEscalaPDV($oracle, $numPDV, $dataPesquisa, $loja)
+    public function updateRemocaoEscalaPDV($oracle, $tabela, $numPDV, $dataPesquisa, $loja)
     {
         global  $retorno;
-        $query = " UPDATE Web_Montagem_Escala_Diaria_PDV
-       SET status = 'R' 
-       WHERE NUMPDV = '$numPDV'
+        $query = " UPDATE $tabela
+         SET status = 'R' 
+         WHERE NUMPDV = '$numPDV'
          AND diaselecionado = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')
          AND loja = '$loja'
          AND status = 'A'";
@@ -638,7 +640,7 @@ class Update
         $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);
-        
+
         if ($retorno) {
             global $sucess;
             $sucess = 1;

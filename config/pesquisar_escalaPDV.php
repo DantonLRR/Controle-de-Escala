@@ -1,9 +1,8 @@
 <?php
 include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
-$loja = $_POST['loja'] ?? '';
+$loja = $_POST['loja'];
 $dataPesquisada = $_POST['dataPesquisa'];
-
 
 $InformacaoFuncionarios = new Funcionarios();
 $FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $dataPesquisada);
@@ -13,7 +12,8 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
 ?>
 
 <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
-    <input id="dataPesquisa" type="hidden" value="<?= $dataPesquisada ?>">
+    <input id="dataPesquisar" type="hidden" value="<?= $dataPesquisada ?>">
+
     <input class="usu" type="hidden" id="loja" value="<?= $loja ?>">
     <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
     <thead style="background-color: #00a550; color: white;">
@@ -34,6 +34,7 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
             <th class="text-center">ENTRADA:</th>
             <th class="text-center">SAIDA</th>
             <th class="text-center">INTERVALO</th>
+            <th class="text-center">EXCLUSÃO</th>
         </tr>
     </thead>
     <tbody style="background-color: #DCDCDC;">
@@ -117,10 +118,10 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                     <td scope="row" class="horaEntrada2"></td>
                     <td scope="row" class="horaSaida2"></td>
                     <td scope="row" class="horaIntervalo2"></td>
-                    <?php
+                    <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style ="color:red"></i></td>
+                 <?php
                 } else {
                     foreach ($horariosFuncTarde as $row3Tarde) :
-                        print_r($horariosFuncTarde);
                     ?>
                         <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
                         <td scope="row" class="text-center nome2">
@@ -140,7 +141,8 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                         <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>
                         <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?? '' ?></td>
                         <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?? '' ?></td>
-                <?php
+                        <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style ="color:red"></i></td>
+             <?php
                     endforeach;
                 } ?>
             </tr>
@@ -155,9 +157,11 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
 
 <script type="module" src="js/Script_escalaPDV.js" defer></script>
 <script defer>
-    var dataPesquisa = $("#dataPesquisa").val();
+    var dataPesquisa = $("#dataPesquisar").val();
     var dataAtual = new Date().toISOString().slice(0, 10);
+        console.log("dataPesquisa: "+ dataPesquisa)
 
+        console.log("dataAtual: "+ dataAtual)
     if (dataPesquisa < dataAtual) {
         $('.estilezaSelect').prop('disabled', true);
         $('.estilizaSelect2').prop('disabled', true);
@@ -364,7 +368,20 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                             // dataType: 'json',
                             success: function(retorno2) {
 
-                                criandoHtmlmensagemCarregamento("ocultar");
+                                $.ajax({
+                                url: "config/pesquisar_relatorio_pdv.php",
+                                method: 'POST',
+                                data: 'dataPesquisa=' +
+                                    dataPesquisa +
+                                    "&loja=" +
+                                    loja,
+                                success: function (relatorio_atualizado2) {
+
+                                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                                    criandoHtmlmensagemCarregamento("ocultar");
+
+                                }
+                            });
 
 
                             }
@@ -484,7 +501,20 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                                 loja,
                             // dataType: 'json',
                             success: function(retorno2) {
-                                criandoHtmlmensagemCarregamento("ocultar");
+                                $.ajax({
+                                url: "config/pesquisar_relatorio_pdv.php",
+                                method: 'POST',
+                                data: 'dataPesquisa=' +
+                                    dataPesquisa +
+                                    "&loja=" +
+                                    loja,
+                                success: function (relatorio_atualizado2) {
+
+                                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                                    criandoHtmlmensagemCarregamento("ocultar");
+
+                                }
+                            });
                             }
                         });
 
@@ -496,4 +526,103 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
             }
         }
     });
+
+    
+$('#dataPesquisa').on('change', function () {
+    criandoHtmlmensagemCarregamento("exibir");
+    var dataPesquisa = $("#dataPesquisa").val();
+    var dataAtual = $("#dataAtual").val();
+
+    if (dataPesquisa == "") {
+        dataPesquisa = dataAtual
+    }
+
+
+    $.ajax({
+        url: "config/pesquisar_escalaPDV.php",
+        method: 'POST',
+        data: 'dataPesquisa=' +
+            dataPesquisa +
+            "&loja=" +
+            loja,
+        success: function (data_pesquisada) {
+
+            $('.dadosEscalaPDV').empty().html(data_pesquisada);
+
+            $.ajax({
+                url: "config/pesquisar_relatorio_pdv.php",
+                method: 'POST',
+                data: 'dataPesquisa=' +
+                    dataPesquisa +
+                    "&loja=" +
+                    loja,
+                success: function (relatorio_atualizado) {
+
+                    $('#relatorioPDV').empty().html(relatorio_atualizado);
+                    criandoHtmlmensagemCarregamento("ocultar");
+
+                }
+            });
+        }
+    });
+
+});
+
+$('.fa-trash').on('click', function () {
+    var dataPesquisa = $("#dataPesquisa").val();
+    var dataAtual = $("#dataAtual").val();
+
+    if (dataPesquisa == "") {
+        dataPesquisa = dataAtual
+    }
+    var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
+
+    $.ajax({
+        url: "config/remove_linha_relatorio_pdv.php",
+        method: 'get',
+        data:
+            "dataPesquisa=" +
+            dataPesquisa +
+            "&numPDV=" +
+            numPDV +
+            "&loja=" +
+            loja,
+
+        // dataType: 'json',
+        success: function (atualizaTabela) {
+
+            $.ajax({
+                url: "config/pesquisar_relatorio_pdv.php",
+                method: 'POST',
+                data: 'dataPesquisa=' +
+                    dataPesquisa +
+                    "&loja=" +
+                    loja,
+                success: function (relatorio_atualizado2) {
+
+                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                    criandoHtmlmensagemCarregamento("ocultar");
+                }
+            });
+
+            $.ajax({
+                url: "config/pesquisar_escalaPDV.php",
+                method: 'POST',
+                data: 'dataPesquisa=' +
+                    dataPesquisa +
+                    "&loja=" +
+                    loja,
+                success: function (data_pesquisada2) {
+
+                    $('.dadosEscalaPDV').empty().html(data_pesquisada2);
+
+                }
+            });
+
+        }
+    });
+
+
+});
+
 </script>

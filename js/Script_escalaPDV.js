@@ -438,7 +438,7 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                                 url: "config/pesquisar_relatorio_pdv.php",
                                 method: 'POST',
                                 data: 'dataPesquisa=' +
-                                    dataPesquisa+
+                                    dataPesquisa +
                                     "&loja=" +
                                     loja,
                                 success: function (relatorio_atualizado2) {
@@ -488,7 +488,7 @@ $('#dataPesquisa').on('change', function () {
                 url: "config/pesquisar_relatorio_pdv.php",
                 method: 'POST',
                 data: 'dataPesquisa=' +
-                    dataPesquisa+
+                    dataPesquisa +
                     "&loja=" +
                     loja,
                 success: function (relatorio_atualizado) {
@@ -504,16 +504,12 @@ $('#dataPesquisa').on('change', function () {
 });
 
 $('.fa-trash').on('click', function () {
-
-    alert("danton")
     var dataPesquisa = $("#dataPesquisa").val();
     var dataAtual = $("#dataAtual").val();
 
     if (dataPesquisa == "") {
         dataPesquisa = dataAtual
     }
-
-
     var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
 
     $.ajax({
@@ -528,23 +524,35 @@ $('.fa-trash').on('click', function () {
             loja,
 
         // dataType: 'json',
-        success: function () {
+        success: function (atualizaTabela) {
 
             $.ajax({
                 url: "config/pesquisar_relatorio_pdv.php",
                 method: 'POST',
                 data: 'dataPesquisa=' +
-                    dataPesquisa+
+                    dataPesquisa +
                     "&loja=" +
                     loja,
                 success: function (relatorio_atualizado2) {
 
                     $('#relatorioPDV').empty().html(relatorio_atualizado2);
                     criandoHtmlmensagemCarregamento("ocultar");
-
                 }
             });
 
+            $.ajax({
+                url: "config/pesquisar_escalaPDV.php",
+                method: 'POST',
+                data: 'dataPesquisa=' +
+                    dataPesquisa +
+                    "&loja=" +
+                    loja,
+                success: function (data_pesquisada2) {
+
+                    $('.dadosEscalaPDV').empty().html(data_pesquisada2);
+
+                }
+            });
 
         }
     });
