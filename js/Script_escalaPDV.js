@@ -308,7 +308,9 @@ $('#table1').on('change', '.estilezaSelect', function () {
                                 url: "config/pesquisar_relatorio_pdv.php",
                                 method: 'POST',
                                 data: 'dataPesquisa=' +
-                                    dataPesquisa,
+                                    dataPesquisa +
+                                    "&loja=" +
+                                    loja,
                                 success: function (relatorio_atualizado2) {
 
                                     $('#relatorioPDV').empty().html(relatorio_atualizado2);
@@ -436,7 +438,9 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                                 url: "config/pesquisar_relatorio_pdv.php",
                                 method: 'POST',
                                 data: 'dataPesquisa=' +
-                                    dataPesquisa,
+                                    dataPesquisa+
+                                    "&loja=" +
+                                    loja,
                                 success: function (relatorio_atualizado2) {
 
                                     $('#relatorioPDV').empty().html(relatorio_atualizado2);
@@ -484,7 +488,9 @@ $('#dataPesquisa').on('change', function () {
                 url: "config/pesquisar_relatorio_pdv.php",
                 method: 'POST',
                 data: 'dataPesquisa=' +
-                    dataPesquisa,
+                    dataPesquisa+
+                    "&loja=" +
+                    loja,
                 success: function (relatorio_atualizado) {
 
                     $('#relatorioPDV').empty().html(relatorio_atualizado);
@@ -494,5 +500,54 @@ $('#dataPesquisa').on('change', function () {
             });
         }
     });
+
+});
+
+$('.fa-trash').on('click', function () {
+
+    alert("danton")
+    var dataPesquisa = $("#dataPesquisa").val();
+    var dataAtual = $("#dataAtual").val();
+
+    if (dataPesquisa == "") {
+        dataPesquisa = dataAtual
+    }
+
+
+    var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
+
+    $.ajax({
+        url: "config/remove_linha_relatorio_pdv.php",
+        method: 'get',
+        data:
+            "dataPesquisa=" +
+            dataPesquisa +
+            "&numPDV=" +
+            numPDV +
+            "&loja=" +
+            loja,
+
+        // dataType: 'json',
+        success: function () {
+
+            $.ajax({
+                url: "config/pesquisar_relatorio_pdv.php",
+                method: 'POST',
+                data: 'dataPesquisa=' +
+                    dataPesquisa+
+                    "&loja=" +
+                    loja,
+                success: function (relatorio_atualizado2) {
+
+                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                    criandoHtmlmensagemCarregamento("ocultar");
+
+                }
+            });
+
+
+        }
+    });
+
 
 });

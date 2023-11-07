@@ -28,7 +28,7 @@ $mesEAnoAtual = date("Y-m");
 
 
 $diaDeHojeComAspas = '"' . $diaDeHoje . '"';
-// $diaDeHoje = date("2023-10-23");
+
 
 
 $InformacaoDosDias = new Dias();
@@ -56,7 +56,6 @@ for ($i = 7; $i <= 21; $i++) {
     <input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
     <input class="usu" id="loja" value="<?= $_SESSION['LOJA'] ?>">
     <input class="dataAtual" id="dataAtual" value="<?= $hoje ?>">
-    <input class="" id="" value="<?= $diaDeHojeComAspas ?>">
     <input class="" id="" value="<?= $mesEAnoAtual ?>">
     <div class="container-fluid">
 
@@ -67,23 +66,25 @@ for ($i = 7; $i <= 21; $i++) {
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-2 informacoesEsquerda1Card">
+                            <label class="form-label">
+                                    Dia Vigente Da pesquisa
+                                </label>
+                                <input type="date" class="form-control dataPesquisa" id="dataPesquisa">
                                 <label class="form-label">
-                                    Quantidade de operadores</label>
+                                    Quantidade de operadores :</label>
                                 <?php
                                 $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual);
                                 
                                 if (empty($quantidadePorDiaDeFuncionarios)){
-                                    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para o dia de hoje, gentileza verificar a escala mensal";}
+                                    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para hoje"
+                                    ;}
                                     else {
                                         $quantidadePorDiaDeFuncionariosImpressao = count($quantidadePorDiaDeFuncionarios);
                                     }
                                     
                                 ?>
                                 <p><?= $quantidadePorDiaDeFuncionariosImpressao ?></p>
-                                <label class="form-label">
-                                    Dia Vigente Da pesquisa
-                                </label>
-                                <input type="date" class="form-control dataPesquisa" id="dataPesquisa">
+
                             </div>
                             <div class="col-lg-10">
                                 <label class="form-label">
@@ -146,6 +147,7 @@ for ($i = 7; $i <= 21; $i++) {
                                         <th class="text-center">ENTRADA:</th>
                                         <th class="text-center">SAIDA</th>
                                         <th class="text-center">INTERVALO</th>
+                                        <th class="text-center">EXCLUSÃO</th>
                                     </tr>
                                 </thead>
                                 <tbody style="background-color: #DCDCDC;">
@@ -183,6 +185,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <td scope="row" class="text-center horaEntrada1"></td>
                                                 <td scope="row" class="horaSaida1"></td>
                                                 <td scope="row" class="horaIntervalo1"></td>
+                                              
                                                 <?php
                                             } else {
                                                 foreach ($horariosFuncManha as $row2Manha) :
@@ -206,6 +209,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?? '' ?></td>
                                                     <td scope="row" class="horaSaida1"><?= $row2Manha['HORASAIDA'] ?? '' ?></td>
                                                     <td scope="row" class="horaIntervalo1"><?= $row2Manha['HORAINTERVALO'] ?? '' ?></td>
+                                                   
                                             <?php
                                                 endforeach;
                                             } ?>
@@ -230,6 +234,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <td scope="row" class="horaEntrada2"></td>
                                                 <td scope="row" class="horaSaida2"></td>
                                                 <td scope="row" class="horaIntervalo2"></td>
+                                                <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style ="color:red"></i></td>
                                                 <?php
                                             } else {
                                                 foreach ($horariosFuncTarde as $row3Tarde) :
@@ -253,6 +258,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>
                                                     <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?? '' ?></td>
                                                     <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?? '' ?></td>
+                                                    <td scope="row" class="btnExcluir"><i class="fa-solid fa-trash fa-2xl" style ="color:red"></i></td>
                                             <?php
                                                 endforeach;
                                             } ?>
@@ -260,6 +266,7 @@ for ($i = 7; $i <= 21; $i++) {
                                     <?php
                                     }
                                     ?>
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -312,7 +319,8 @@ for ($i = 7; $i <= 21; $i++) {
                                 $qntPDV = array();
                                 for ($i = 1; $i <= 30; $i++) {
                                     $i;
-                                    $dadosEscalaDiariaDePDV = $InformacaoDosDias->escalaDiariaDePDV($oracle, $i, $hoje);
+                                    $dadosEscalaDiariaDePDV = $InformacaoDosDias->escalaDiariaDePDV($oracle, $i, $hoje,$_SESSION['LOJA']);
+                                    // print_r($dadosEscalaDiariaDePDV) ;
                                 ?>
                                     <tr class="trr">
                                         <td scope="row" class="numerosPDVS" id="">

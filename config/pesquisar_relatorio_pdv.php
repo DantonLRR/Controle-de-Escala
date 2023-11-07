@@ -4,6 +4,7 @@ include "php/CRUD_geral.php";
 $InformacaoDosDias = new Dias();
 $dataPesquisada = $_POST['dataPesquisa'];
 
+$loja = $_POST['loja'];
 
 $horarios = array();
 for ($i = 7; $i <= 21; $i++) {
@@ -46,7 +47,7 @@ for ($i = 7; $i <= 21; $i++) {
         $qntPDV = array();
         for ($i = 1; $i <= 30; $i++) {
             $i;
-            $dadosEscalaDiariaDePDV = $InformacaoDosDias->escalaDiariaDePDV($oracle, $i, $dataPesquisada);
+            $dadosEscalaDiariaDePDV = $InformacaoDosDias->escalaDiariaDePDV($oracle, $i, $dataPesquisada,$loja);
             // PRINT_R( $dadosEscalaDiariaDePDV);
         ?>
             <tr class="trr">

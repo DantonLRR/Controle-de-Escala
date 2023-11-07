@@ -13,7 +13,7 @@ $usuarioLogado = $_GET['usuarioLogado'] ?? '';
 $dataPesquisa = $_GET['dataPesquisa'] ?? '';
 $numPDV = $_GET['numPDV'] ?? '';
 $loja = $_GET['loja'] ?? '';
-
+$status = "A";
 $verificacaoDeDados = new Verifica();
 $InsertDeDados = new Insert();
 $updateDeDados = new Update();
@@ -27,12 +27,12 @@ print_r($horasIntermediariasArray);
 foreach ($horasIntermediariasArray as $periodoDeHoras) :
 
     $verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV, $loja);
-
+echo $verifica;
     if ($retorno == "Já existem dados.") {
         echo "<br>caiu no update   :" . $periodoDeHoras;
         $atualizaDados = $updateDeDados->updateMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa, $usuarioLogado,  $periodoDeHoras, $nome, $loja);
     } else if ($retorno == "Não existem dados.") {
         echo "<br> caiu no insert   :" . $periodoDeHoras;
-        $insereDados = $InsertDeDados->insertMontagemEscalaPDV($oracle, $periodoDeHoras, $numPDV, $dataPesquisa, $usuarioLogado, $nome, $loja);
+        $insereDados = $InsertDeDados->insertMontagemEscalaPDV($oracle, $periodoDeHoras, $numPDV, $dataPesquisa, $usuarioLogado, $nome, $loja,$status);
     }
 endforeach;

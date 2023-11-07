@@ -13,7 +13,7 @@ $usuarioLogado = $_GET['usuarioLogado'];
 $dataPesquisa = $_GET['dataPesquisa'];
 $numPDV = $_GET['numPDV'];
 $loja = $_GET['loja'];
-
+$status = 'A';
 $verificacaoDeDados = new Verifica();
 $InsertDeDados = new Insert();
 $updateDeDados = new Update();
@@ -24,11 +24,11 @@ $verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dat
 if ($retorno == "Já existem dados.") {
     // echo "Já existem dados. 01 Update";
 
-    $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
+    $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja,$status);
 } else if($retorno == "Não existem dados."){
     // echo "Não existem dados. 02 INSERT";
 
-    $insereDadosFuncTarde =$InsertDeDados-> insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado,$dataPesquisa,$numPDV,$loja);
+    $insereDadosFuncTarde =$InsertDeDados-> insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo,$usuarioLogado,$dataPesquisa,$numPDV,$loja,$status);
     
 }
 
