@@ -13,7 +13,16 @@ $usuarioLogado = $_GET['usuarioLogado'];
 $matricula = $_GET['matriculaFunc'];
 $loja = $_GET['loja'];
 
-// echo $loja;
+$horarioEntradaFunc = $_GET['horarioEntradaFunc'];
+$horarioSaidaFunc = $_GET['horarioSaidaFunc'];
+$horarioIntervaloFunc = $_GET['horarioIntervaloFunc'];
+ echo $horarioEntradaFunc ."<br>";
+ echo $horarioSaidaFunc ."<br>";
+ echo $horarioIntervaloFunc ."<br>";
+ $cargoFunc = $_GET['cargoFunc'];
+
+
+
 $InsertDeDados = new Insert();
 
 
@@ -34,7 +43,7 @@ if ($retorno === "Já existem dados.") {
 } else if($retorno === "Não existem dados.") {
 
 
-    $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle,$tabela, $dia, $usuarioLogado, $mesPesquisado ,$nome,$opcaoSelect,$matricula,$loja );
+    $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle, $tabela,$dia,  $matricula,$nome,$loja,  $cargoFunc,$mesPesquisado, $horarioEntradaFunc,$horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado);
 
 
 }

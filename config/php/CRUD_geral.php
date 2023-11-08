@@ -93,24 +93,52 @@ class Funcionarios
 
         echo $query;
     }
+    public function DadosAPartirDaEscalaMensal($oracle,$dia,$lojaDaPessoaLogada,$mesSelecionado){
 
-    public function informacoesEscalaDiaria2($oracle, $matricula, $loja, $mesPesquisado)
-    {
+    
         $lista = array();
-        $query = "select * from WEB_ESCALA_MENSAL a    
-        WHERE a.loja = $loja 
-        and  a.messelecionado=TO_DATE('$mesPesquisado', 'YYYY-MM')
-        ";
+        $query = "SELECT a.matricula,
+          a.nome,
+          a.loja,
+          a.cargo,
+          a.horaentrada,
+          a.horasaida,
+         a.horaintervalo,
+         a.$dia,
+         TO_CHAR(a.mesSelecionado, 'Month- yyyy', 'NLS_DATE_LANGUAGE=PORTUGUESE') as mesSelecionadoFormatado
+         FROM WEB_ESCALA_MENSAL a
+         where loja = '$lojaDaPessoaLogada'
+          and a.mesSelecionado = TO_DATE('$mesSelecionado','YYYY-MM')
+          order by a.nome asc
+          ";
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
             array_push($lista, $row);
         }
         return $lista;
-
-
-        // echo $query;
+        echo $query;
     }
+    
+    
+
+    // public function informacoesEscalaDiaria2($oracle, $matricula, $loja, $mesPesquisado)
+    // {
+    //     $lista = array();
+    //     $query = "select * from WEB_ESCALA_MENSAL a    
+    //     WHERE a.loja = $loja 
+    //     and  a.messelecionado=TO_DATE('$mesPesquisado', 'YYYY-MM')
+    //     ";
+    //     $resultado = oci_parse($oracle, $query);
+    //     oci_execute($resultado);
+    //     while ($row = oci_fetch_assoc($resultado)) {
+    //         array_push($lista, $row);
+    //     }
+    //     return $lista;
+
+
+    //     // echo $query;
+    // }
 
 
     //mensal
@@ -181,7 +209,7 @@ class Funcionarios
         $query = "select * from HorariosFuncControleDeEscala a    
         WHERE a.horaentrada  BETWEEN '07:00' AND '10:00' 
         and  a.matricula not in(select b.matricula from escala_pdv_manha b where b.diaselecionado=TO_DATE('$dataSelecionadaNoFiltro', 'YYYY-MM-DD'))";
-
+        echo $query;
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
@@ -197,7 +225,7 @@ class Funcionarios
         WHERE a.horaentrada  BETWEEN '12:00' AND '14:00' 
         and  a.matricula not in(select b.matricula from escala_pdv_tarde b where b.diaselecionado=TO_DATE('$dataSelecionadaNoFiltro', 'YYYY-MM-DD'))";
 
-
+        echo "<br><br>" . $query;
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
@@ -372,25 +400,33 @@ class Verifica
 class Insert
 {
     // mensal
-    public function insertEscalaMensal($oracle, $tabela, $dia, $usuarioLogado, $mesPesquisado, $nome, $opcaoSelect, $matricula, $loja)
+    public function insertEscalaMensal($oracle, $tabela,$dia,  $matricula,$nome,$loja,$cargoFunc, $mesPesquisado, $horarioEntradaFunc,$horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado)
     {
 
         $query = "INSERT INTO $tabela (
+             matricula,
+             nome,
+             LOJA,
+             CARGO,
+             mesSelecionado,
+            horaEntrada,
+            horaSaida,
+            horaintervalo,
+             $dia,
         datainclusao, 
-        usuinclusao, 
-        mesSelecionado,
-        nome,
-        $dia,
-        matricula,
-        LOJA
+        usuinclusao
      ) VALUES (
-        SYSDATE,
-        '$usuarioLogado',
-        TO_DATE('$mesPesquisado', 'YYYY-MM'),
-        '$nome',
-        '$opcaoSelect',
         '$matricula',
-        $loja 
+        '$nome',
+        $loja ,
+        '$cargoFunc',
+        TO_DATE('$mesPesquisado', 'YYYY-MM'),  
+        '$horarioEntradaFunc',
+     '$horarioSaidaFunc', 
+        '$horarioIntervaloFunc ',
+        '$opcaoSelect',
+        SYSDATE,
+        '$usuarioLogado'
      )";
 
         $parse = oci_parse($oracle, $query);
@@ -407,7 +443,7 @@ class Insert
             return false;
         }
 
-        //  echo $query;
+        echo $query;
     }
 
 

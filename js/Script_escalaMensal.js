@@ -55,7 +55,11 @@ $('#table1').on('change', '.estilezaSelect', function () {
     var $tr = $(this).closest('tr');
     var funcionario = $tr.find('td.funcionario').text();
     var matriculaFunc = $tr.find('td.matriculaFunc').text();
-    
+    var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
+    var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
+    var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
+    var cargoFunc = $tr.find('td.cargo').text();
+   
     var colIndex = $(this).closest('td').index();
     var numeroDiaDaSemana = $('#table1 thead tr.trr th').eq(colIndex).text();
     var mesPesquisa = $("#dataPesquisa").val();
@@ -83,7 +87,15 @@ $('#table1').on('change', '.estilezaSelect', function () {
             "&matriculaFunc=" +
             matriculaFunc+
             "&loja=" +
-            loja,
+            loja+
+            "&horarioEntradaFunc=" +
+            horarioEntradaFunc+
+            "&horarioSaidaFunc=" +
+            horarioSaidaFunc+
+            "&horarioIntervaloFunc=" +
+            horarioIntervaloFunc+
+            "&cargoFunc=" +
+            cargoFunc,
 
         // dataType: 'json',
         success: function (retorno) {

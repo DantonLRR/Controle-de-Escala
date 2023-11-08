@@ -13,7 +13,9 @@ $diaAtual2 = '"' . date("d") . '"';
 
 // print_r($escalaDiaria);
 
-$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA']);
+$dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensal($oracle, $diaAtual2, $_SESSION['LOJA'], $mesAtual);
+print_r($dadosDoFuncionarioAPartirDaEscalaMensal);
+
 // print_r($buscaNomeFuncionario);
 ?>
 <!DOCTYPE html>
@@ -51,7 +53,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-12">
                 <div class="card" style="border-color:#00a550;  ">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">Todos os Cargos</h6>
                     <div class="card-body">
@@ -62,7 +64,9 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                                     <th class="text-center">Nome</th>
                                     <th class="text-center">Cargo</th>
                                     <th class="text-center"><a style="color:white" href="escalaMensal.php">Escala Mensal</a></th>
-                                    <th class="text-center">HORARIO</th>
+                                    <th class="text-center">Hora Entrada</th>
+                                    <th>Hora Saida</th>
+                                    <th>Hora Intervalo</th>
                                     <th>ajuste na escala padrao</th>
                                     <th>Periodo de validade</th>
                                 </tr>
@@ -72,44 +76,32 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                             <tbody style="background-color: #DCDCDC;">
                                 <?php
 
-                                foreach ($buscaNomeFuncionario  as $consultaNomeFUnc) :
+                                foreach ($dadosDoFuncionarioAPartirDaEscalaMensal as $ROWconsultaNomeFunc) :
                                 ?>
+
                                     <tr class="trr">
-                                        <td class="text-center td" scope="row" id="nome"><?= $consultaNomeFUnc['NOME'] ?></td>
-                                        <td class="text-center td" scope="row" id="cargo"><?= $consultaNomeFUnc['CARGO'] ?></td>
-                                        <?php
-
-
-                                        $escalaDiaria = $dadosFunc->informacoesEscalaDiaria($oracle, $diaAtual2, $consultaNomeFUnc['CHAPA'], $_SESSION['LOJA'], $mesAtual);
-
-
-                                        foreach ($escalaDiaria as $consultaMensalOracle) :
-                                        ?>
-                                            <td class="text-center td" scope="row" id="escalaMensal">
-                                                <?= $consultaMensalOracle[$diaAtual] ?>
-                                            </td>
-                                        <?php
-                                        endforeach;
-                                        ?>
-
-
-                                        <td class="text-center td" scope="row">
-                                            <?= $consultaNomeFUnc['HORARIO'] ?></td>
-
-
-                                        <td></td>
-
-                                        <?php
-                                        $escalaDiaria2 = $dadosFunc->informacoesEscalaDiaria2($oracle, $consultaNomeFUnc['CHAPA'], $_SESSION['LOJA'], $mesAtual);
-
-
-                                        foreach ($escalaDiaria2 as $consultaMensalOracle2) :
-                                        ?>
-                                        <?php
-                                        endforeach;
-                                        ?>
+                                        <td class="text-center td" scope="row" id="nome">
+                                            <?= $ROWconsultaNomeFunc['NOME'] ?>
+                                        </td>
+                                        <td class="text-center td" scope="row" id="cargo">
+                                            <?= $ROWconsultaNomeFunc['CARGO'] ?>
+                                        </td>
                                         <td class="text-center td" scope="row" id="escalaMensal">
-                                            <?= $consultaMensalOracle2['MESSELECIONADO'] ?>
+                                            <?= $ROWconsultaNomeFunc[$diaAtual] ?? '' ?>
+                                        </td>
+                                        <td class="text-center td" scope="row">
+                                            <?= $ROWconsultaNomeFunc['HORAENTRADA']?>
+                                        </td>
+                                        <td class="text-center td" scope="row">
+                                            <?= $ROWconsultaNomeFunc['HORASAIDA']?>
+                                        </td>
+                                        <td class="text-center td" scope="row">
+                                            <?= $ROWconsultaNomeFunc['HORAINTERVALO']?>
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                        <td class="text-center td" scope="row"> <?= $ROWconsultaNomeFunc['MESSELECIONADOFORMATADO'] ?>
                                         </td>
 
                                     </tr>

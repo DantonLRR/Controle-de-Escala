@@ -66,6 +66,10 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                                     <tr class="trr ">
                                         <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
                                         <th class="text-center theadColor" scope="row" style="width:150px">matricula</th>
+                                        <th class="text-center theadColor"> HoraEntrada</th>
+                                        <th class="text-center theadColor"> HoraSaida</th>
+                                        <th class="text-center theadColor"> HoraIntervalo</th>
+                                        <th class="text-center theadColor"> cargo</th>
                                         <?php
                                         foreach ($buscandoMesAno as $row) :
                                         ?>
@@ -88,6 +92,10 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                                     <tr class="trr" id="quantDias">
                                         <td></td>
                                         <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+<td></td>
                                         <?php
                                         foreach ($buscandoMesAno as $row) :
                                         ?>
@@ -107,7 +115,10 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                                         <tr class="trr">
                                             <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
                                             <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['CHAPA'] ?></td>
-
+                                            <td class="text-center horarioEntradaFunc" scope="row">07:00</td>
+                                            <td class="text-center horarioSaidaFunc" scope="row">16:00</td>
+                                            <td class="text-center horarioIntervaloFunc" scope="row">12:00</td>
+                                            <td class="text-center cargo" scope="row">op de cx</td>
                                             <?php
                                             $i = 1;
                                             foreach ($buscandoMesAno as $row) :
@@ -124,10 +135,11 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
 
                                                     <select class="estilezaSelect" name="" id="">
                                                         <option value=""><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
-
+                                                       
                                                         <option value="F">F</option>
                                                         <option value="FA">FA</option>
                                                         <option value="V">V</option>
+                                                        <option value=""></option>
 
                                                     </select>
                                                 </td>
@@ -218,8 +230,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                 "info": false,
                 "ordering": false,
                 "lengthMenu": [
-                    [35],
-                    [35]
+                    [40],
                 ],
                 fixedColumns: {
                     left: 2,
