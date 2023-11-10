@@ -237,16 +237,16 @@ $('#table1').on('change', '.estilezaSelect', function () {
                 data: 'nomeSelecionado=' + nomeSelecionado,
                 dataType: 'json',
                 success: function (retorno) {
-                    matricula.text(retorno.matricula);
-                    entrada.text(retorno.horaEntrada);
-                    saida.text(retorno.horaSaida);
-                    intervalo.text(retorno.horaIntervalo);
+                    matricula.text(retorno.MATRICULA);
+                    entrada.text(retorno.HORAENTRADA);
+                    saida.text(retorno.HORASAIDA);
+                    intervalo.text(retorno.SAIDAPARAALMOCO);
+                    var DadosMatricula = retorno.MATRICULA;
+                    var DadosEntrada = retorno.HORAENTRADA;
+                    var DadosSaida = retorno.HORASAIDA;
+                    var DadosIntervalo = retorno.SAIDAPARAALMOCO;
 
 
-                    var DadosMatricula = retorno.matricula;
-                    var DadosEntrada = retorno.horaEntrada;
-                    var DadosSaida = retorno.horaSaida;
-                    var DadosIntervalo = retorno.horaIntervalo;
                     var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada, DadosSaida, DadosIntervalo);
 
                     $.ajax({
@@ -273,7 +273,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
                         // dataType: 'json',
                         success: function (retornoinsertManha) {
-
+                            alert("insert manha ")
                             criandoHtmlmensagemCarregamento("ocultar");
 
 
@@ -372,14 +372,14 @@ $('#table1').on('change', '.estilizaSelect2', function () {
                 dataType: 'json',
                 success: function (retorno2) {
                     matricula2.text(retorno2.matricula);
-                    entrada2.text(retorno2.horaEntrada);
-                    saida2.text(retorno2.horaSaida);
-                    intervalo2.text(retorno2.horaIntervalo);
+                    entrada2.text(retorno2.HORAENTRADA);
+                    saida2.text(retorno2.HORASAIDA);
+                    intervalo2.text(retorno2.SAIDAPARAALMOCO);
 
-                    var DadosMatricula1 = retorno2.matricula;
-                    var DadosEntrada1 = retorno2.horaEntrada;
-                    var DadosSaida1 = retorno2.horaSaida;
-                    var DadosIntervalo1 = retorno2.horaIntervalo;
+                    var DadosMatricula1 = retorno2.MATRICULA;
+                    var DadosEntrada1 = retorno2.HORAENTRADA;
+                    var DadosSaida1 = retorno2.HORASAIDA;
+                    var DadosIntervalo1 = retorno2.SAIDAPARAALMOCO;
                     var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada1, DadosSaida1, DadosIntervalo1);
                     $.ajax({
                         url: "config/insertTarde_escalaPDV.php",

@@ -114,11 +114,11 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                                     ?>
                                         <tr class="trr">
                                             <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
-                                            <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['CHAPA'] ?></td>
-                                            <td class="text-center horarioEntradaFunc" scope="row">07:00</td>
-                                            <td class="text-center horarioSaidaFunc" scope="row">16:00</td>
-                                            <td class="text-center horarioIntervaloFunc" scope="row">12:00</td>
-                                            <td class="text-center cargo" scope="row">op de cx</td>
+                                            <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
+                                            <td class="text-center horarioEntradaFunc" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
+                                            <td class="text-center horarioSaidaFunc" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
+                                            <td class="text-center horarioIntervaloFunc" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
+                                            <td class="text-center cargo" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
                                             <?php
                                             $i = 1;
                                             foreach ($buscandoMesAno as $row) :
@@ -126,7 +126,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                                                 <td class=" text-center " scope="row" id="">
                                                     <?php
                                                     $recuperaDadosVerificacao = new verifica();
-                                                    $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle, $nomeFunc['CHAPA'], $mesAtual);
+                                                    $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle,  $nomeFunc['MATRICULA'] , $mesAtual);
                                                     if ($i < 10) {
                                                         $d = "0" . $i;
                                                     } else {

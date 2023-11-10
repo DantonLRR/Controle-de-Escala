@@ -14,7 +14,7 @@ $diaAtual2 = '"' . date("d") . '"';
 // print_r($escalaDiaria);
 
 $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensal($oracle, $diaAtual2, $_SESSION['LOJA'], $mesAtual);
-print_r($dadosDoFuncionarioAPartirDaEscalaMensal);
+// print_r($dadosDoFuncionarioAPartirDaEscalaMensal);
 
 // print_r($buscaNomeFuncionario);
 ?>

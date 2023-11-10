@@ -2,7 +2,7 @@
 include "../base/Conexao_teste.php";
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
-
+include "../base/conexao_TotvzOracle.php";
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -38,8 +38,8 @@ $InformacaoFuncionarios = new Funcionarios();
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
 
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $hoje);
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $hoje);
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($TotvsOracle, $hoje);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOracle, $hoje);
 
 
 
