@@ -135,55 +135,50 @@ $('.table_man_dados').DataTable({
 
 
 
+var usuInclusao = $("#usuLogado").val();
 
+var loja = $("#loja").val();
 
+var diaDeAlteracaoDoHorario = $("#diaDeHoje").val();
 
+$('#table1').on('blur', '.horaEntrada, .horarioSaidaFunc, .horarioIntervalo', function() {
 
-// Função para aplicar a cor de fundo da linha inteira manualmente
-function aplicarCorFundoEClasseSelecionado(linha) {
-    linha.classList.toggle("selecionado");
+    var $tr = $(this).closest('tr');
+        console.log($tr.html());
+    var nomeFuncionario = $tr.find('td.nomeFuncionario').text().trim();
+    var matriculaFunc = $tr.find('td.matriculaFunc').text().trim();
+    var horarioEntradaFunc = $tr.find('td.horaEntrada input').val().trim();
+    var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc input').val().trim();
+    var horarioIntervaloFunc = $tr.find('td.horarioIntervalo input').val().trim();
+    
 
-    if (linha.classList.contains("selecionado")) {
-        linha.style.backgroundColor = "#00a550d0"; // Aplica a cor de fundo azul
-        linha.style.color = "white";
+    console.log(nomeFuncionario);
+    console.log(matriculaFunc);
+    console.log(horarioEntradaFunc);
+    console.log(horarioSaidaFunc);
+    console.log(horarioIntervaloFunc);
+    console.log(loja);
+    console.log(usuInclusao);
+     console.log(diaDeAlteracaoDoHorario);
 
-    } else {
-        linha.style.backgroundColor = ""; // Remove a cor de fundo
-        linha.style.color = "";
-    }
-}
-
-
-
-// adiciona cor na linha da primeira tabela
-
-var tabela = $("#table1");
-var linhas = tabela.find('.trr');
-
-for (var i = 0; i < linhas.length; i++) {
-    var linha = linhas[i];
-    var checkbox = linha.querySelector('input[type="checkbox"]');
-
-    checkbox.addEventListener("change", function () {
-        aplicarCorFundoEClasseSelecionado(this.closest('tr'));
-    });
-}
-
-
-
-// adiciona cor na linha da segunda tabela
-var tabela = $("#table2");
-var linhas = tabela.find('.trteste');
-
-for (var i = 0; i < linhas.length; i++) {
-    var linha = linhas[i];
-    var checkbox = linha.querySelector('input[type="checkbox"]');
-
-    checkbox.addEventListener("change", function () {
-        aplicarCorFundoEClasseSelecionado(this.closest('tr'));
-    });
-}
-
-
-
-
+        $.ajax({
+        url:"config/alteracao_horario_escalaDiaria.php",
+        method:"POST",
+        data: 'nomeFuncionario=' +
+        nomeFuncionario +
+        "&matriculaFunc=" +
+        matriculaFunc+
+        "&horarioEntradaFunc=" +
+        horarioEntradaFunc+
+        "&horarioSaidaFunc=" +
+        horarioSaidaFunc+
+        "&horarioIntervaloFunc=" +
+        horarioIntervaloFunc+
+        "&loja=" +
+        loja+
+        "&usuInclusao=" +
+        usuInclusao+
+        "&diaDeAlteracaoDoHorario=" +
+        diaDeAlteracaoDoHorario,
+    })
+});

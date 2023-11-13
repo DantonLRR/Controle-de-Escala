@@ -82,7 +82,7 @@ class Funcionarios
           a.cargo,
           a.horaentrada,
           a.horasaida,
-         a.horaintervalo,
+         trim(a.horaintervalo) as horaintervalo,
          a.$dia,
          TO_CHAR(a.mesSelecionado, 'Month- yyyy', 'NLS_DATE_LANGUAGE=PORTUGUESE') as mesSelecionadoFormatado
          FROM WEB_ESCALA_MENSAL a
@@ -546,7 +546,36 @@ class Verifica
 
 
 
+    //diaria
 
+    public function verificaAlteracaoNoHorarioDiario($oracle, $tabela, $matricula, $diaselecionado,$nome,$loja)
+    {
+        global  $retorno;
+        $query = "Select * from $tabela a 
+
+    WHERE a.matricula = '$matricula'
+    and trim(a.nome) = '$nome'
+    and a.loja = $loja      
+    and a.diaselecionado = TO_DATE('$diaselecionado', 'YYYY-MM-DD')
+    
+    ";
+        $parse = oci_parse($oracle, $query);
+
+        $retorno2 = oci_execute($parse);
+
+        if ($retorno2) {
+            if (oci_fetch($parse)) {
+                $retorno = "Já existem dados.";
+            } else {
+                $retorno = "Não existem dados.";
+            }
+        } else {
+
+            echo "Erro na consulta.";
+        }
+
+        echo $query;
+    }
 
 
 
@@ -594,21 +623,21 @@ class Insert
             horaSaida,
             horaintervalo,
              $dia,
-        datainclusao, 
-        usuinclusao
-     ) VALUES (
-        '$matricula',
-        '$nome',
-        $loja ,
-        '$cargoFunc',
-        TO_DATE('$mesPesquisado', 'YYYY-MM'),  
-        '$horarioEntradaFunc',
-     '$horarioSaidaFunc', 
-        '$horarioIntervaloFunc ',
-        '$opcaoSelect',
-        SYSDATE,
-        '$usuarioLogado'
-     )";
+          datainclusao, 
+           usuinclusao
+         ) VALUES (
+         '$matricula',
+          '$nome',
+          $loja ,
+          '$cargoFunc',
+         TO_DATE('$mesPesquisado', 'YYYY-MM'),  
+          '$horarioEntradaFunc',
+         '$horarioSaidaFunc', 
+          '$horarioIntervaloFunc ',
+          '$opcaoSelect',
+           SYSDATE,
+           '$usuarioLogado'
+        )";
 
         $parse = oci_parse($oracle, $query);
 
@@ -627,8 +656,51 @@ class Insert
         echo $query;
     }
 
+    //diaria
 
+    public function insertNaTblIntermediariaEscalaDiaria($oracle, $tabela, $matricula, $nome, $loja, $diaSelecionado, $horaEntrada, $horaSaida, $horaIntervalo, $usuInclusao)
+    {
+        $query = "INSERT INTO $tabela
+     (matricula,
+        nome,
+     loja,
+     diaselecionado,
+      status,
+     horaentrada,
+      horasaida,
+      horaintervalo,
+     datainclusao,
+     usuinclusao)
+     VALUES
+     (
+     '$matricula',
+     '$nome ',
+     $loja,
+     TO_DATE('$diaSelecionado', 'YYYY-MM-DD'),
+     '',
+     '$horaEntrada',
+     '$horaSaida',
+     '$horaIntervalo',
+     SYSDATE,
+     '$usuInclusao'
+     )";
 
+        $parse = oci_parse($oracle, $query);
+
+        $retorno = oci_execute($parse);
+        if ($retorno) {
+            global $sucess;
+            $sucess = 1;
+
+            return true;
+        } else {
+            $sucess = 0;
+            //  echo "<br>" . $query;
+            return false;
+        }
+
+        echo $query;
+    }
     //escala pdv
     public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja, $status)
     {
@@ -779,7 +851,36 @@ class Update
     }
 
 
+    //diaria
+    public function updateDeFuncionariosNaEscalaIntermediaria($oracle,$tabela, $horaEntrada,$horaSaida,$horaIntervalo,$usuInclusao,$matricula,$nome,$loja,$diaSelecionado)
+    {
+        $query = "UPDATE $tabela
+        SET 
+          horaentrada = '$horaEntrada',
+          horasaida = '$horaSaida',
+          horaintervalo = '$horaIntervalo',
+          usuinclusao = '$usuInclusao'
+        WHERE matricula = '$matricula'
+          and trim(nome) = '$nome'
+          and loja = $loja
+          and diaselecionado = TO_DATE('$diaSelecionado', 'YYYY-MM-DD')
+          ";
 
+        $parse = oci_parse($oracle, $query);
+
+        $retorno = oci_execute($parse);
+        if ($retorno) {
+            global $sucess;
+            $sucess = 1;
+            return true;
+        } else {
+            $sucess = 0;
+            // echo "<br>" . $query;
+            return false;
+        }
+
+        echo $query;
+    }
 
 
     //pdv

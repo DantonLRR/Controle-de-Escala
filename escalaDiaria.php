@@ -8,6 +8,8 @@ $dadosFunc = new Funcionarios();
 $mesAtual = date("Y-m");
 $diaAtual = date("d");
 $diaAtual2 = '"' . date("d") . '"';
+$hoje = date("Y-m-d");
+
 // echo $diaAtual2;
 
 
@@ -47,9 +49,11 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
     </style>
 </head>
 
-<input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
-<input class="dataAtual" type="hidden" id="diaAtual" value="<?= $diaAtual ?>">
-
+<input class="dataAtual"  id="mesAtual" value="<?= $mesAtual ?>">
+<input class="dataAtual"  id="diaAtual" value="<?= $diaAtual ?>">
+<input id="usuLogado" value="<?= $_SESSION['nome'] ?>">
+<input id="loja" value="<?= $_SESSION['LOJA'] ?>">
+<input id="diaDeHoje" value="<?= $hoje ?>">
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
         <div class="row">
@@ -62,13 +66,14 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
                             <thead style="background-color: #00a550;">
                                 <tr>
                                     <th class="text-center">Nome</th>
+                                    <th>matricula</th>
                                     <th class="text-center">Cargo</th>
                                     <th class="text-center"><a style="color:white" href="escalaMensal.php">Escala Mensal</a></th>
                                     <th class="text-center">Hora Entrada</th>
-                                    <th>Hora Saida</th>
-                                    <th>Hora Intervalo</th>
-                                    <th>ajuste na escala padrao</th>
-                                    <th>Periodo de validade</th>
+                                    <th class="text-center">Hora Saida</th>
+                                    <th class="text-center">Hora Intervalo</th>
+                                    <th class="text-center">ajuste na escala padrao</th>
+                                    <th class="text-center">Periodo de validade</th>
                                 </tr>
                             </thead>
 
@@ -77,31 +82,38 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
                                 <?php
 
                                 foreach ($dadosDoFuncionarioAPartirDaEscalaMensal as $ROWconsultaNomeFunc) :
+                                print_r( $ROWconsultaNomeFunc);
                                 ?>
 
                                     <tr class="trr">
-                                        <td class="text-center td" scope="row" id="nome">
+                                        <td class="text-center td nomeFuncionario" scope="row" id="nome">
                                             <?= $ROWconsultaNomeFunc['NOME'] ?>
                                         </td>
-                                        <td class="text-center td" scope="row" id="cargo">
+                                        <td class=" text-center td matriculaFunc">
+                                        <?= $ROWconsultaNomeFunc['MATRICULA'] ?>
+                                        </td>
+                                        <td class="text-center td cargo" scope="row" id="cargo">
                                             <?= $ROWconsultaNomeFunc['CARGO'] ?>
                                         </td>
                                         <td class="text-center td" scope="row" id="escalaMensal">
                                             <?= $ROWconsultaNomeFunc[$diaAtual] ?? '' ?>
                                         </td>
-                                        <td class="text-center td" scope="row">
-                                            <?= $ROWconsultaNomeFunc['HORAENTRADA']?>
+                                        <td class="text-center td horaEntrada " scope="row">
+                                            <input class=" " id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAENTRADA'] ?>">
+
                                         </td>
-                                        <td class="text-center td" scope="row">
-                                            <?= $ROWconsultaNomeFunc['HORASAIDA']?>
+                                        <td class="text-center td horaSaida horarioSaidaFunc" scope="row">
+                                            <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORASAIDA'] ?>">
+
                                         </td>
-                                        <td class="text-center td" scope="row">
-                                            <?= $ROWconsultaNomeFunc['HORAINTERVALO']?>
+                                        <td class="text-center td horaSaida horarioIntervalo" scope="row">
+                                        <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAINTERVALO'] ?>">
                                         </td>
                                         <td>
 
                                         </td>
-                                        <td class="text-center td" scope="row"> <?= $ROWconsultaNomeFunc['MESSELECIONADOFORMATADO'] ?>
+                                        <td class="text-center td" scope="row"> 
+                                            <?= $ROWconsultaNomeFunc['MESSELECIONADOFORMATADO'] ?>
                                         </td>
 
                                     </tr>
