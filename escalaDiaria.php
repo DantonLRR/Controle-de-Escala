@@ -47,8 +47,8 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
     </style>
 </head>
 
-<input class="dataAtual" id="mesAtual" value="<?= $mesAtual ?>">
-<input class="dataAtual" id="diaAtual" value="<?= $diaAtual ?>">
+<input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
+<input class="dataAtual" type="hidden" id="diaAtual" value="<?= $diaAtual ?>">
 
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
