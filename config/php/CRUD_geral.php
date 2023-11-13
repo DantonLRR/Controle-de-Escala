@@ -500,7 +500,7 @@ class Verifica
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
         AND a.loja = $loja ";
 
-        echo $query;
+
 
         $parse = oci_parse($oracle, $query);
 
@@ -520,8 +520,8 @@ class Verifica
             array_push($lista, $row);
         }
         return $lista;
-        // echo $query;
-        // echo "</br>" + $retorno;
+        echo "select para verificaCadastroNaEscalaMensal :" . $query;
+        echo "</br>" + $retorno;
     }
 
 
@@ -769,8 +769,10 @@ class Update
             nome = '$nome',
             $dia = '$opcaoSelect',
             LOJA = '$loja' 
-         WHERE a.matricula = '$matricula'";
-        //echo $query;
+         WHERE a.matricula = '$matricula'
+          and messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
+          and loja = $loja";
+        echo $query;
         $parse = oci_parse($oracle, $query);
 
         oci_execute($parse);

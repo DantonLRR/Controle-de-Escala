@@ -8,7 +8,8 @@ $tabela = "WEB_ESCALA_MENSAL";
 $dia= '"'.$_GET['numeroDiaDaSemana'].'"';
 $opcaoSelect = $_GET['opcaoSelecionada'];
 $nome = $_GET['funcionario'];
-$mesPesquisado = $_GET['mesAtual'];
+$mesAtual = $_GET['mesAtual'];
+$mesPesquisado = $_GET['mesPesquisa'];
 $usuarioLogado = $_GET['usuarioLogado'];
 $matricula = $_GET['matriculaFunc'];
 $loja = $_GET['loja'];
@@ -16,17 +17,9 @@ $loja = $_GET['loja'];
 $horarioEntradaFunc = $_GET['horarioEntradaFunc'];
 $horarioSaidaFunc = $_GET['horarioSaidaFunc'];
 $horarioIntervaloFunc = $_GET['horarioIntervaloFunc'];
- echo $horarioEntradaFunc ."<br>";
- echo $horarioSaidaFunc ."<br>";
- echo $horarioIntervaloFunc ."<br>";
  $cargoFunc = $_GET['cargoFunc'];
 
-
-
 $InsertDeDados = new Insert();
-
-
-
 
 $verifica = new Verifica();
 
@@ -38,7 +31,7 @@ $verificaSeJaExistemDados = $verifica ->verificaCadastroNaEscalaMensal($oracle,$
 if ($retorno === "Já existem dados.") {
 
 
-    $updateDeDadps = $update -> updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$dia,$opcaoSelect, $matricula,$loja );
+    $updateDeDados = $update -> updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$dia,$opcaoSelect, $matricula,$loja );
 
 } else if($retorno === "Não existem dados.") {
 

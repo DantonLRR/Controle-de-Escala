@@ -1,6 +1,6 @@
 <?php
 include "../../base/Conexao_teste.php";
-
+include "../../base/conexao_TotvzOracle.php";
 include "php/CRUD_geral.php";
 
 
@@ -11,20 +11,24 @@ $usuarioLogado = $_POST['usuarioLogado'];
 $InformacaoDosDias = new Dias();
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $dadosFunc = new Funcionarios();
-$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja);
+$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja);
 
 ?>
-<input class="usu" id="usuarioLogado" value="<?=  $usuarioLogado ?>">
-<input class="usu" id="loja" value="<?= $loja ?>">
+<input class="" type="hidden" id="usuarioLogado" value="<?= $usuarioLogado ?>">
+<input class="" type="hidden" id="loja" value="<?= $loja ?>">
 
-<input class="dataSelecionadaNoFiltro" id="loja" type="hidden" value="<?= $dataSelecionadaNoFiltro ?>">
-<input class="dataAtual" id="mesAtual" type="hidden" value="<?= $mesAtual ?>">
+<input class="dataSelecionadaNoFiltro" type="hidden" id="dataSelecionadaNoFiltro" value="<?= $dataSelecionadaNoFiltro ?>">
+<input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
 <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
     <thead>
 
         <tr class="trr ">
             <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
-            <th class="text-center theadColor" scope="row" style="width:150px">matricula</th>
+            <th class="text-center theadColor" scope="row" style="width:150px ;display:none">matricula</th>
+            <th class="text-center theadColor" style="display:none"> HoraEntrada</th>
+            <th class="text-center theadColor" style="display:none"> HoraSaida</th>
+            <th class="text-center theadColor" style="display:none"> HoraIntervalo</th>
+            <th class="text-center theadColor" style="display:none"> cargo</th>
             <?php
             foreach ($buscandoMesAno as $row) :
             ?>
@@ -46,7 +50,11 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja)
 
         <tr class="trr" id="quantDias">
             <td></td>
-            <td></td>
+            <td style="display:none"></td>
+            <td style="display:none"></td>
+            <td style="display:none"></td>
+            <td style="display:none"></td>
+            <td style="display:none"></td>
             <?php
             foreach ($buscandoMesAno as $row) :
             ?>
@@ -65,8 +73,11 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja)
         ?>
             <tr class="trr">
                 <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
-                <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['CHAPA'] ?></td>
-
+                <td class="text-center matriculaFunc" style="display:none" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
+                <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
+                <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
+                <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
+                <td class="text-center cargo" style="display:none" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
                 <?php
                 $i = 1;
                 foreach ($buscandoMesAno as $row) :
@@ -74,7 +85,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja)
                     <td class=" text-center " scope="row" id="">
                         <?php
                         $recuperaDadosVerificacao = new verifica();
-                        $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle, $nomeFunc['CHAPA'], $mesAtual);
+                        $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle,  $nomeFunc['MATRICULA'], $dataSelecionadaNoFiltro);
                         if ($i < 10) {
                             $d = "0" . $i;
                         } else {
@@ -87,6 +98,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja)
                             <option value="F">F</option>
                             <option value="FA">FA</option>
                             <option value="V">V</option>
+                            <option value=""></option>
 
                         </select>
                     </td>
@@ -104,9 +116,9 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja)
 </table>
 
 <Script>
-    $('#dataPesquisa').on('change', function() {
+    $('#dataSelecionadaNoFiltro').on('change', function() {
 
-        var mesPesquisa = $("#dataPesquisa").val();
+        var mesPesquisa = $("#dataSelecionadaNoFiltro").val();
 
         var mesAtual = $("#mesAtual").val();
 
@@ -161,23 +173,22 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja)
         var $tr = $(this).closest('tr');
         var funcionario = $tr.find('td.funcionario').text();
         var matriculaFunc = $tr.find('td.matriculaFunc').text();
+        var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
+        var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
+        var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
+        var cargoFunc = $tr.find('td.cargo').text();
 
         var colIndex = $(this).closest('td').index();
         var numeroDiaDaSemana = $('#table1 thead tr.trr th').eq(colIndex).text();
-        var mesPesquisa = $("#dataPesquisa").val();
+        var mesPesquisa = $("#dataSelecionadaNoFiltro").val();
 
         var mesAtual = $("#mesAtual").val();
 
         if (mesPesquisa == "") {
             mesPesquisa = mesAtual
         }
-        alert("numeroDiaDaSemana " + numeroDiaDaSemana);
-        alert("opcaoSelecionada " + opcaoSelecionada);
-        alert("funcionario " + funcionario);
-        alert("mesAtual " + mesAtual);
-        alert("usuarioLogado " + usuarioLogado);
-        alert("matriculaFunc " + matriculaFunc);
-        alert("loja :" + loja);
+        // alert("mesPesquisa :  " + mesPesquisa);
+
 
         $.ajax({
             url: "config/insertEUpdate_EscalaMensal.php",
@@ -190,12 +201,22 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja)
                 funcionario +
                 "&mesAtual=" +
                 mesAtual +
+                "&mesPesquisa=" +
+                mesPesquisa +
                 "&usuarioLogado=" +
                 usuarioLogado +
                 "&matriculaFunc=" +
                 matriculaFunc +
                 "&loja=" +
-                loja,
+                loja +
+                "&horarioEntradaFunc=" +
+                horarioEntradaFunc +
+                "&horarioSaidaFunc=" +
+                horarioSaidaFunc +
+                "&horarioIntervaloFunc=" +
+                horarioIntervaloFunc +
+                "&cargoFunc=" +
+                cargoFunc,
 
             // dataType: 'json',
             success: function(retorno) {
@@ -208,32 +229,6 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja)
 </Script>
 <script>
     $('#table1').DataTable({
-        dom: 'Bfrtip',
-        scrollY: 450,
-        scrollX: true,
-
-        scrollXInner: "100%",
-        scrollCollapse: true,
-        searching: true,
-
-        "paging": true,
-        "info": false,
-        "ordering": false,
-        "lengthMenu": [
-            [50],
-            [50]
-        ],
-        fixedColumns: {
-            left: 2,
-        },
-        buttons: [{
-            text: 'Imprimir',
-            className: 'estilizaBotao btn btnverde',
-            extend: 'print',
-            exportOptions: {
-
-            }
-        }, ],
         language: {
             "sEmptyTable": "Nenhum registro encontrado",
 
@@ -269,6 +264,38 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($oracle, $loja)
 
             },
         },
+        dom: 'Bfrtip',
+        scrollY: 450,
+        scrollX: true,
+
+        scrollXInner: "100%",
+        scrollCollapse: true,
+        searching: true,
+
+        "paging": true,
+        "info": false,
+        "ordering": false,
+        "lengthMenu": [
+            [40],
+        ],
+        fixedColumns: {
+            left: 2,
+        },
+
+        buttons: [{
+                extend: 'excelHtml5',
+                exportOptions: {
+                    columns: [0, ':visible']
+                }
+            },
+            {
+                text: 'Escala Diaria',
+                className: '',
+                action: function() {
+                    window.location.href = "escalaDiaria.php";
+                }
+            },
+        ],
 
     });
 </script>
