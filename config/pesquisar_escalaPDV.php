@@ -1,12 +1,13 @@
 <?php
 include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
+include "../../base/conexao_TotvzOracle.php";
 $loja = $_POST['loja'];
 $dataPesquisada = $_POST['dataPesquisa'];
 
 $InformacaoFuncionarios = new Funcionarios();
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $dataPesquisada);
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $dataPesquisada);
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($TotvsOracle);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOracle);
 
 // session_start();
 ?>
@@ -62,7 +63,7 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                             foreach ($FuncManha as $rowManha) :
                             ?>
                                 <div>
-                                    <option style="color: black; font-weight: bold;" value="<?= $rowManha['NOME'] ?>"> <?= $rowManha['NOME'] ?> </option>
+                                    <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
                                 </div>
                             <?php
                             endforeach
@@ -79,12 +80,12 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                         <td scope="row" class="Matricula1" contenteditable="true"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
                         <td scope="row" class="NomeFunc">
                             <select class="estilezaSelect form-control" id="selectFuncionario">
-                                <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
+                                <option value="<?= $rowManha['MATRICULA'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
                                 <?php
                                 foreach ($FuncManha as $rowManha) :
                                 ?>
                                     <div>
-                                        <option style="color: black; font-weight: bold;" value="<?= $rowManha['NOME'] ?>"> <?= $rowManha['NOME'] ?> </option>
+                                        <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
                                     </div>
                                 <?php
                                 endforeach
@@ -108,7 +109,7 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                             foreach ($FuncTarde as $rowTarde) :
                             ?>
                                 <div>
-                                    <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"><?= $rowTarde['NOME'] ?> </option>
+                                    <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"><?= $rowTarde['NOME'] ?> </option>
                                 </div>
                             <?php
                             endforeach
@@ -118,20 +119,20 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                     <td scope="row" class="horaEntrada2"></td>
                     <td scope="row" class="horaSaida2"></td>
                     <td scope="row" class="horaIntervalo2"></td>
-                    <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style ="color:red"></i></td>
-                 <?php
+                    <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
+                    <?php
                 } else {
                     foreach ($horariosFuncTarde as $row3Tarde) :
                     ?>
                         <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
                         <td scope="row" class="text-center nome2">
                             <select class="estilizaSelect2 form-control">
-                                <option value="<?= $row3Tarde['NOME'] ?>"><?= $row3Tarde['NOME'] ?? '' ?></option>
+                                <option value="<?= $row3Tarde['MATRICULA'] ?>"><?= $row3Tarde['NOME'] ?? '' ?></option>
                                 <?php
                                 foreach ($FuncTarde as $rowTarde) :
                                 ?>
                                     <div>
-                                        <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"> <?= $rowTarde['NOME'] ?> </option>
+                                        <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"> <?= $rowTarde['NOME'] ?> </option>
                                     </div>
                                 <?php
                                 endforeach
@@ -141,8 +142,8 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                         <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>
                         <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?? '' ?></td>
                         <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?? '' ?></td>
-                        <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style ="color:red"></i></td>
-             <?php
+                        <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
+                <?php
                     endforeach;
                 } ?>
             </tr>
@@ -159,9 +160,9 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
 <script defer>
     var dataPesquisa = $("#dataPesquisar").val();
     var dataAtual = new Date().toISOString().slice(0, 10);
-        console.log("dataPesquisa: "+ dataPesquisa)
+    console.log("dataPesquisa: " + dataPesquisa)
 
-        console.log("dataAtual: "+ dataAtual)
+    console.log("dataAtual: " + dataAtual)
     if (dataPesquisa < dataAtual) {
         $('.estilezaSelect').prop('disabled', true);
         $('.estilizaSelect2').prop('disabled', true);
@@ -277,7 +278,8 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
             dataPesquisa = dataAtual
         }
 
-        var nomeSelecionado = $(this).val();
+        var MatriculaDaPessoaSelecionada = $(this).val();
+        var nomeSelecionado = $(this).find('option:selected').text();
         var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
         var $selects = $('#table1 .estilezaSelect');
         var matricula = $(this).parent().parent().find(".Matricula1").closest(".Matricula1");
@@ -295,19 +297,24 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                 $.ajax({
                     url: "filtro/busca_infosFuncionarios.php",
                     method: 'get',
-                    data: 'nomeSelecionado=' + nomeSelecionado,
+                    data: 'MatriculaDaPessoaSelecionada=' +
+                        MatriculaDaPessoaSelecionada +
+                        "&loja=" +
+                        +loja +
+                        "&dataAtual=" +
+                        dataAtual +
+                        "&nomeSelecionado=" +
+                        nomeSelecionado,
                     dataType: 'json',
                     success: function(retorno) {
-                        matricula.text(retorno.matricula);
-                        entrada.text(retorno.horaEntrada);
-                        saida.text(retorno.horaSaida);
-                        intervalo.text(retorno.horaIntervalo);
-
-
-                        var DadosMatricula = retorno.matricula;
-                        var DadosEntrada = retorno.horaEntrada;
-                        var DadosSaida = retorno.horaSaida;
-                        var DadosIntervalo = retorno.horaIntervalo;
+                        matricula.text(retorno.MATRICULA);
+                        entrada.text(retorno.HORAENTRADA);
+                        saida.text(retorno.HORASAIDA);
+                        intervalo.text(retorno.SAIDAPARAALMOCO);
+                        var DadosMatricula = retorno.MATRICULA;
+                        var DadosEntrada = retorno.HORAENTRADA;
+                        var DadosSaida = retorno.HORASAIDA;
+                        var DadosIntervalo = retorno.SAIDAPARAALMOCO;
                         var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada, DadosSaida, DadosIntervalo);
 
                         $.ajax({
@@ -369,19 +376,19 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                             success: function(retorno2) {
 
                                 $.ajax({
-                                url: "config/pesquisar_relatorio_pdv.php",
-                                method: 'POST',
-                                data: 'dataPesquisa=' +
-                                    dataPesquisa +
-                                    "&loja=" +
-                                    loja,
-                                success: function (relatorio_atualizado2) {
+                                    url: "config/pesquisar_relatorio_pdv.php",
+                                    method: 'POST',
+                                    data: 'dataPesquisa=' +
+                                        dataPesquisa +
+                                        "&loja=" +
+                                        loja,
+                                    success: function(relatorio_atualizado2) {
 
-                                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                                    criandoHtmlmensagemCarregamento("ocultar");
+                                        $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                                        criandoHtmlmensagemCarregamento("ocultar");
 
-                                }
-                            });
+                                    }
+                                });
 
 
                             }
@@ -412,8 +419,8 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
         if (dataPesquisa == "") {
             dataPesquisa = dataAtual
         }
-
-        var nomeSelecionado2 = $(this).val();
+        var MatriculaDaPessoaSelecionada2 = $(this).val();
+        var nomeSelecionado2 = $(this).find('option:selected').text();
         var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
         var $selects2 = $('#table1 .estilizaSelect2');
         var matricula2 = $(this).parent().parent().find(".matricula2").closest(".matricula2");
@@ -434,18 +441,26 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                 $.ajax({
                     url: "filtro/busca_infosFuncionarios.php",
                     method: 'get',
-                    data: 'nomeSelecionado=' + nomeSelecionado2,
+                    data: 'MatriculaDaPessoaSelecionada=' +
+                        MatriculaDaPessoaSelecionada2 +
+                        "&loja=" +
+                        +loja +
+                        "&dataAtual=" +
+                        dataAtual +
+                        "&nomeSelecionado=" +
+                        nomeSelecionado2,
                     dataType: 'json',
                     success: function(retorno2) {
-                        matricula2.text(retorno2.matricula);
-                        entrada2.text(retorno2.horaEntrada);
-                        saida2.text(retorno2.horaSaida);
-                        intervalo2.text(retorno2.horaIntervalo);
+                        matricula2.text(retorno2.MATRICULA);
+                        entrada2.text(retorno2.HORAENTRADA);
+                        saida2.text(retorno2.HORASAIDA);
+                        intervalo2.text(retorno2.SAIDAPARAALMOCO);
 
-                        var DadosMatricula1 = retorno2.matricula;
-                        var DadosEntrada1 = retorno2.horaEntrada;
-                        var DadosSaida1 = retorno2.horaSaida;
-                        var DadosIntervalo1 = retorno2.horaIntervalo;
+                        var DadosMatricula1 = retorno2.MATRICULA;
+                        var DadosEntrada1 = retorno2.HORAENTRADA;
+                        var DadosSaida1 = retorno2.HORASAIDA;
+                        var DadosIntervalo1 = retorno2.SAIDAPARAALMOCO;
+
                         var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada1, DadosSaida1, DadosIntervalo1);
                         $.ajax({
                             url: "config/insertTarde_escalaPDV.php",
@@ -502,19 +517,19 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
                             // dataType: 'json',
                             success: function(retorno2) {
                                 $.ajax({
-                                url: "config/pesquisar_relatorio_pdv.php",
-                                method: 'POST',
-                                data: 'dataPesquisa=' +
-                                    dataPesquisa +
-                                    "&loja=" +
-                                    loja,
-                                success: function (relatorio_atualizado2) {
+                                    url: "config/pesquisar_relatorio_pdv.php",
+                                    method: 'POST',
+                                    data: 'dataPesquisa=' +
+                                        dataPesquisa +
+                                        "&loja=" +
+                                        loja,
+                                    success: function(relatorio_atualizado2) {
 
-                                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                                    criandoHtmlmensagemCarregamento("ocultar");
+                                        $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                                        criandoHtmlmensagemCarregamento("ocultar");
 
-                                }
-                            });
+                                    }
+                                });
                             }
                         });
 
@@ -527,102 +542,100 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, 
         }
     });
 
-    
-$('#dataPesquisa').on('change', function () {
-    criandoHtmlmensagemCarregamento("exibir");
-    var dataPesquisa = $("#dataPesquisa").val();
-    var dataAtual = $("#dataAtual").val();
 
-    if (dataPesquisa == "") {
-        dataPesquisa = dataAtual
-    }
+    $('#dataPesquisa').on('change', function() {
+        criandoHtmlmensagemCarregamento("exibir");
+        var dataPesquisa = $("#dataPesquisa").val();
+        var dataAtual = $("#dataAtual").val();
 
-
-    $.ajax({
-        url: "config/pesquisar_escalaPDV.php",
-        method: 'POST',
-        data: 'dataPesquisa=' +
-            dataPesquisa +
-            "&loja=" +
-            loja,
-        success: function (data_pesquisada) {
-
-            $('.dadosEscalaPDV').empty().html(data_pesquisada);
-
-            $.ajax({
-                url: "config/pesquisar_relatorio_pdv.php",
-                method: 'POST',
-                data: 'dataPesquisa=' +
-                    dataPesquisa +
-                    "&loja=" +
-                    loja,
-                success: function (relatorio_atualizado) {
-
-                    $('#relatorioPDV').empty().html(relatorio_atualizado);
-                    criandoHtmlmensagemCarregamento("ocultar");
-
-                }
-            });
+        if (dataPesquisa == "") {
+            dataPesquisa = dataAtual
         }
+
+
+        $.ajax({
+            url: "config/pesquisar_escalaPDV.php",
+            method: 'POST',
+            data: 'dataPesquisa=' +
+                dataPesquisa +
+                "&loja=" +
+                loja,
+            success: function(data_pesquisada) {
+
+                $('.dadosEscalaPDV').empty().html(data_pesquisada);
+
+                $.ajax({
+                    url: "config/pesquisar_relatorio_pdv.php",
+                    method: 'POST',
+                    data: 'dataPesquisa=' +
+                        dataPesquisa +
+                        "&loja=" +
+                        loja,
+                    success: function(relatorio_atualizado) {
+
+                        $('#relatorioPDV').empty().html(relatorio_atualizado);
+                        criandoHtmlmensagemCarregamento("ocultar");
+
+                    }
+                });
+            }
+        });
+
     });
 
-});
+    $('.fa-trash').on('click', function() {
+        var dataPesquisa = $("#dataPesquisa").val();
+        var dataAtual = $("#dataAtual").val();
 
-$('.fa-trash').on('click', function () {
-    var dataPesquisa = $("#dataPesquisa").val();
-    var dataAtual = $("#dataAtual").val();
-
-    if (dataPesquisa == "") {
-        dataPesquisa = dataAtual
-    }
-    var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
-
-    $.ajax({
-        url: "config/remove_linha_relatorio_pdv.php",
-        method: 'get',
-        data:
-            "dataPesquisa=" +
-            dataPesquisa +
-            "&numPDV=" +
-            numPDV +
-            "&loja=" +
-            loja,
-
-        // dataType: 'json',
-        success: function (atualizaTabela) {
-
-            $.ajax({
-                url: "config/pesquisar_relatorio_pdv.php",
-                method: 'POST',
-                data: 'dataPesquisa=' +
-                    dataPesquisa +
-                    "&loja=" +
-                    loja,
-                success: function (relatorio_atualizado2) {
-
-                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                    criandoHtmlmensagemCarregamento("ocultar");
-                }
-            });
-
-            $.ajax({
-                url: "config/pesquisar_escalaPDV.php",
-                method: 'POST',
-                data: 'dataPesquisa=' +
-                    dataPesquisa +
-                    "&loja=" +
-                    loja,
-                success: function (data_pesquisada2) {
-
-                    $('.dadosEscalaPDV').empty().html(data_pesquisada2);
-
-                }
-            });
-
+        if (dataPesquisa == "") {
+            dataPesquisa = dataAtual
         }
+        var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
+
+        $.ajax({
+            url: "config/remove_linha_relatorio_pdv.php",
+            method: 'get',
+            data: "dataPesquisa=" +
+                dataPesquisa +
+                "&numPDV=" +
+                numPDV +
+                "&loja=" +
+                loja,
+
+            // dataType: 'json',
+            success: function(atualizaTabela) {
+
+                $.ajax({
+                    url: "config/pesquisar_relatorio_pdv.php",
+                    method: 'POST',
+                    data: 'dataPesquisa=' +
+                        dataPesquisa +
+                        "&loja=" +
+                        loja,
+                    success: function(relatorio_atualizado2) {
+
+                        $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                        criandoHtmlmensagemCarregamento("ocultar");
+                    }
+                });
+
+                $.ajax({
+                    url: "config/pesquisar_escalaPDV.php",
+                    method: 'POST',
+                    data: 'dataPesquisa=' +
+                        dataPesquisa +
+                        "&loja=" +
+                        loja,
+                    success: function(data_pesquisada2) {
+
+                        $('.dadosEscalaPDV').empty().html(data_pesquisada2);
+
+                    }
+                });
+
+            }
+        });
+
+
     });
-
-
-});
-
 </script>
