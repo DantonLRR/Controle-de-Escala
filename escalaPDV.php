@@ -175,7 +175,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                         foreach ($FuncManha as $rowManha) :
                                                         ?>
                                                             <div>
-                                                                <option style="color: black; font-weight: bold;" value="<?= $rowManha['NOME'] ?>"> <?= $rowManha['NOME'] ?> </option>
+                                                                <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
                                                             </div>
                                                         <?php
                                                         endforeach
@@ -199,7 +199,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                             foreach ($FuncManha as $rowManha) :
                                                             ?>
                                                                 <div>
-                                                                    <option style="color: black; font-weight: bold;" value="<?= $rowManha['NOME'] ?>"> <?= $rowManha['NOME'] ?> </option>
+                                                                    <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
                                                                 </div>
                                                             <?php
                                                             endforeach
@@ -224,7 +224,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                         foreach ($FuncTarde as $rowTarde) :
                                                         ?>
                                                             <div>
-                                                                <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"><?= $rowTarde['NOME'] ?> </option>
+                                                                <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"><?= $rowTarde['NOME'] ?> </option>
                                                             </div>
                                                         <?php
                                                         endforeach
@@ -248,7 +248,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                             foreach ($FuncTarde as $rowTarde) :
                                                             ?>
                                                                 <div>
-                                                                    <option style="color: black; font-weight: bold;" value="<?= $rowTarde['NOME'] ?>"> <?= $rowTarde['NOME'] ?> </option>
+                                                                    <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"> <?= $rowTarde['NOME'] ?> </option>
                                                                 </div>
                                                             <?php
                                                             endforeach

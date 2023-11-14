@@ -118,15 +118,15 @@ $('#table1').on('change', '.horaEntrada, .horarioSaidaFunc, .horarioIntervalo', 
     var horarioIntervaloFunc = $tr.find('td.horarioIntervalo input').val().trim();
 
 
-    var PeriodoDeTRabalhoAPartirDaHoraEntrada = adicionarHoras(horarioEntradaFunc, 8)
-    var PeriodoMaximoParaSaidaDeAlmoço = adicionarHoras(horarioEntradaFunc, 6)
-    var PeriodoMaximoHoraExtra = adicionarHoras(horarioEntradaFunc, 10)
+    var PeriodoDeTRabalhoAPartirDaHoraEntrada = adicionarHoras(horarioEntradaFunc, 6)
+    var PeriodoMaximoParaSaidaDeAlmoço = adicionarHoras(horarioEntradaFunc, 5)
+    var PeriodoMaximoHoraExtra = adicionarHoras(horarioEntradaFunc, 8)
     if (horarioEntradaFunc > horarioSaidaFunc) {
         Toasty("Atenção", "A hora de Entrada Não pode ser maior que a de Saida", "#E20914");
     } else if (horarioSaidaFunc < PeriodoDeTRabalhoAPartirDaHoraEntrada) {
-        Toasty("Atenção", "o Funcionario precisa cumprir 8 horas de trabalho por dia", "#E20914");
+        Toasty("Atenção", "o Funcionario precisa cumprir 6 horas de trabalho por dia", "#E20914");
     } else if (horarioIntervaloFunc > PeriodoMaximoParaSaidaDeAlmoço) {
-        Toasty("Atenção", "Nenhum funcionario pode cumprir carga maior de 6 horas sem Intervalo", "#E20914");
+        Toasty("Atenção", "Nenhum funcionario pode cumprir carga maior de 5 horas sem Intervalo", "#E20914");
     } else if (horarioSaidaFunc > PeriodoMaximoHoraExtra) {
         Toasty("Atenção", "o Maximo de Horas Extras Permitidas é de 2 Horas", "#E20914");
     } else {

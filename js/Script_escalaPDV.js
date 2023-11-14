@@ -1,9 +1,6 @@
 import { criandoHtmlmensagemCarregamento, Toasty } from "../../base/jsGeral.js";
 
 
-
-
-
 $('#table1').DataTable({
 
     scrollY: 400,
@@ -216,7 +213,8 @@ $('#table1').on('change', '.estilezaSelect', function () {
         dataPesquisa = dataAtual
     }
 
-    var nomeSelecionado = $(this).val();
+    var MatriculaDaPessoaSelecionada = $(this).val();
+    var nomeSelecionado = $(this).find('option:selected').text();
     var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
     var $selects = $('#table1 .estilezaSelect');
     var matricula = $(this).parent().parent().find(".Matricula1").closest(".Matricula1");
@@ -234,7 +232,14 @@ $('#table1').on('change', '.estilezaSelect', function () {
             $.ajax({
                 url: "filtro/busca_infosFuncionarios.php",
                 method: 'get',
-                data: 'nomeSelecionado=' + nomeSelecionado,
+                data: 'MatriculaDaPessoaSelecionada=' +
+                    MatriculaDaPessoaSelecionada +
+                    "&loja=" +
+                    +loja +
+                    "&dataAtual=" +
+                    dataAtual+
+                    "&nomeSelecionado="+
+                    nomeSelecionado,
                 dataType: 'json',
                 success: function (retorno) {
                     matricula.text(retorno.MATRICULA);
@@ -245,7 +250,6 @@ $('#table1').on('change', '.estilezaSelect', function () {
                     var DadosEntrada = retorno.HORAENTRADA;
                     var DadosSaida = retorno.HORASAIDA;
                     var DadosIntervalo = retorno.SAIDAPARAALMOCO;
-
 
                     var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada, DadosSaida, DadosIntervalo);
 
@@ -346,8 +350,8 @@ $('#table1').on('change', '.estilizaSelect2', function () {
     if (dataPesquisa == "") {
         dataPesquisa = dataAtual
     }
-
-    var nomeSelecionado2 = $(this).val();
+    var MatriculaDaPessoaSelecionada2 = $(this).val();
+    var nomeSelecionado2 =  $(this).find('option:selected').text();
     var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
     var $selects2 = $('#table1 .estilizaSelect2');
     var matricula2 = $(this).parent().parent().find(".matricula2").closest(".matricula2");
@@ -368,10 +372,17 @@ $('#table1').on('change', '.estilizaSelect2', function () {
             $.ajax({
                 url: "filtro/busca_infosFuncionarios.php",
                 method: 'get',
-                data: 'nomeSelecionado=' + nomeSelecionado2,
+                data:'MatriculaDaPessoaSelecionada=' +
+                MatriculaDaPessoaSelecionada2 +
+                    "&loja=" +
+                    +loja +
+                    "&dataAtual=" +
+                    dataAtual+
+                    "&nomeSelecionado="+
+                    nomeSelecionado2,
                 dataType: 'json',
                 success: function (retorno2) {
-                    matricula2.text(retorno2.matricula);
+                    matricula2.text(retorno2.MATRICULA);
                     entrada2.text(retorno2.HORAENTRADA);
                     saida2.text(retorno2.HORASAIDA);
                     intervalo2.text(retorno2.SAIDAPARAALMOCO);
