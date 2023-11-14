@@ -8,14 +8,14 @@
     box-shadow: 5px 10px 18px
 }
 .estilezaSelect,.estilizaSelect2  {
--webkit-appearance: none; /* Para navegadores baseados em WebKit, como Chrome e Safari */
--moz-appearance: none; /* Para navegadores baseados em Gecko, como Firefox */
-appearance: none; /* Para navegadores modernos */
-background-image: none; /* Remove qualquer imagem de fundo */
-padding-right: 20px; /* Adiciona um espaço para um ícone personalizado, se desejar */
-background-color: white; /* Defina a cor de fundo desejada */
-border: 1px solid #ccc; /* Adicione uma borda para indicar a área clicável */
-border-radius: 5px; /* Adicione um raio de borda para suavizar a aparência */
+-webkit-appearance: none; 
+-moz-appearance: none; 
+appearance: none; 
+background-image: none;
+padding-right: 20px;
+background-color: white;
+border: 1px solid #ccc;
+border-radius: 5px;
 }
 
 

@@ -37,6 +37,7 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
     <link rel="stylesheet" href="../base/dist/sidenav.css" type="text/css">
     <link rel="stylesheet" href="css/Style_escalaDiaria.css" type="text/css">
     <link rel="stylesheet" href="../BASE/cssGeral.css" type="text/css">
+
     <style>
         .row {
             display: flex;
@@ -86,9 +87,9 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
 
 
                                 foreach ($dadosDoFuncionarioAPartirDaEscalaMensal as $ROWconsultaNomeFunc) :
-                                    echo "dados abaixo recuperados do banco PLSQL <br><br>";
-                                    print_r($ROWconsultaNomeFunc);
-                                    echo "<br><br>";
+                                    // echo "dados abaixo recuperados do banco PLSQL <br><br>";
+                                    // print_r($ROWconsultaNomeFunc);
+                                    // echo "<br><br>";
                                 ?>
 
                                     <tr class="trr">
@@ -175,8 +176,13 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
     <script type="text/javascript" src="../base/Buttons/js/buttons.html5.js"></script>
     <script type="text/javascript" src="../base/Buttons/js/buttons.print.js"></script>
     <script src="../base/dist/sidenav.js"></script>
-    <script src="js/Script_escalaDiaria.js" defer></script>
+    <script type="module" src="js/Script_escalaDiaria.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
 
 </body>
+<script>
+
+</script>
 
 </html>

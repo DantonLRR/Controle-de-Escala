@@ -115,7 +115,7 @@ class Funcionarios
             array_push($lista, $row);
         }
         return $lista;
-        Echo $query;
+        // Echo $query;
     }
 
 
@@ -589,7 +589,7 @@ class Verifica
             echo "Erro na consulta.";
         }
 
-        echo $query;
+        // echo $query;
     }
 
 
