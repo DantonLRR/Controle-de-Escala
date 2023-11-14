@@ -100,7 +100,23 @@ class Funcionarios
     }
 
 
+    public function recuperaDadosDaEscalaIntermed($oracle, $matricula, $nome, $loja, $diaselecionado)
+    {
+        $lista = array();
+        $query = "Select * from WEB_ESCALA_DIARIA_HR_INTERMED a 
+        WHERE a.matricula = '$matricula'
+        and trim(a.nome) = '$nome'
+        and a.loja = $loja      
+        and a.diaselecionado = TO_DATE('$diaselecionado', 'YYYY-MM-DD')";
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
 
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+        Echo $query;
+    }
 
 
 
@@ -548,15 +564,14 @@ class Verifica
 
     //diaria
 
-    public function verificaAlteracaoNoHorarioDiario($oracle, $tabela, $matricula, $diaselecionado,$nome,$loja)
+    public function verificaAlteracaoNoHorarioDiario($oracle, $matricula, $diaselecionado, $nome, $loja)
     {
         global  $retorno;
-        $query = "Select * from $tabela a 
-
-    WHERE a.matricula = '$matricula'
-    and trim(a.nome) = '$nome'
-    and a.loja = $loja      
-    and a.diaselecionado = TO_DATE('$diaselecionado', 'YYYY-MM-DD')
+        $query = "Select * from WEB_ESCALA_DIARIA_HR_INTERMED a 
+        WHERE a.matricula = '$matricula'
+        and trim(a.nome) = '$nome'
+        and a.loja = $loja      
+        and a.diaselecionado = TO_DATE('$diaselecionado', 'YYYY-MM-DD')
     
     ";
         $parse = oci_parse($oracle, $query);
@@ -658,9 +673,9 @@ class Insert
 
     //diaria
 
-    public function insertNaTblIntermediariaEscalaDiaria($oracle, $tabela, $matricula, $nome, $loja, $diaSelecionado, $horaEntrada, $horaSaida, $horaIntervalo, $usuInclusao)
+    public function insertNaTblIntermediariaEscalaDiaria($oracle, $matricula, $nome, $loja, $diaSelecionado, $horaEntrada, $horaSaida, $horaIntervalo, $usuInclusao)
     {
-        $query = "INSERT INTO $tabela
+        $query = "INSERT INTO WEB_ESCALA_DIARIA_HR_INTERMED
      (matricula,
         nome,
      loja,
@@ -852,9 +867,9 @@ class Update
 
 
     //diaria
-    public function updateDeFuncionariosNaEscalaIntermediaria($oracle,$tabela, $horaEntrada,$horaSaida,$horaIntervalo,$usuInclusao,$matricula,$nome,$loja,$diaSelecionado)
+    public function updateDeFuncionariosNaEscalaIntermediaria($oracle, $horaEntrada, $horaSaida, $horaIntervalo, $usuInclusao, $matricula, $nome, $loja, $diaSelecionado)
     {
-        $query = "UPDATE $tabela
+        $query = "UPDATE WEB_ESCALA_DIARIA_HR_INTERMED
         SET 
           horaentrada = '$horaEntrada',
           horasaida = '$horaSaida',
