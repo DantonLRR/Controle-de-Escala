@@ -118,9 +118,9 @@ $('#table1').on('change', '.horaEntrada, .horarioSaidaFunc, .horarioIntervalo', 
     var horarioIntervaloFunc = $tr.find('td.horarioIntervalo input').val().trim();
 
 
-    var PeriodoDeTRabalhoAPartirDaHoraEntrada = adicionarHoras(horarioEntradaFunc, 6)
+    var PeriodoDeTRabalhoAPartirDaHoraEntrada = adicionarHoras(horarioEntradaFunc, 8)
     var PeriodoMaximoParaSaidaDeAlmoço = adicionarHoras(horarioEntradaFunc, 5)
-    var PeriodoMaximoHoraExtra = adicionarHoras(horarioEntradaFunc, 8)
+    var PeriodoMaximoHoraExtra = adicionarHoras(horarioEntradaFunc, 10)
     if (horarioEntradaFunc > horarioSaidaFunc) {
         Toasty("Atenção", "A hora de Entrada Não pode ser maior que a de Saida", "#E20914");
     } else if (horarioSaidaFunc < PeriodoDeTRabalhoAPartirDaHoraEntrada) {

@@ -271,7 +271,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
                         // dataType: 'json',
                         success: function (retornoinsertManha) {
-                            alert("insert manha ")
+                           // alert("insert manha ")
                             criandoHtmlmensagemCarregamento("ocultar");
 
 

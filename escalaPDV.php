@@ -94,10 +94,10 @@ for ($i = 7; $i <= 21; $i++) {
 ?>
 
 <body>
-    <input class="usu" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
-    <input class="usu" id="loja" value="<?= $_SESSION['LOJA'] ?>">
-    <input class="dataAtual" id="dataAtual" value="<?= $hoje ?>">
-    <input class="" id="" value="<?= $mesEAnoAtual ?>">
+    <input class="usu" id="usuarioLogado" type="hidden" value="<?= $_SESSION['nome'] ?>">
+    <input class="usu" id="loja" type="hidden" value="<?= $_SESSION['LOJA'] ?>">
+    <input class="dataAtual" id="dataAtual" type="hidden" value="<?= $hoje ?>">
+    <input class="" id="" type="hidden" value="<?= $mesEAnoAtual ?>">
     <div class="container-fluid">
 
         <div class="row" id="qntPessoasPorPDV">
@@ -110,7 +110,7 @@ for ($i = 7; $i <= 21; $i++) {
                                 <label class="form-label">
                                     Dia Vigente Da pesquisa
                                 </label>
-                                <input type="date" class="form-control dataPesquisa" id="dataPesquisa">
+                                <input type="date" class="form-control dataPesquisa" id="dataPesquisa" value="<?=$hoje?>">
                                 <label class="form-label">
                                     Quantidade de operadores :</label>
                                 <?php
@@ -274,7 +274,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <td scope="row" class="horaEntrada2"></td>
                                                 <td scope="row" class="horaSaida2"></td>
                                                 <td scope="row" class="horaIntervalo2"></td>
-                                                <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
+                                                <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl"></i></td>
                                                 <?php
                                             } else {
                                                 foreach ($horariosFuncTarde as $row3Tarde) :
@@ -298,7 +298,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>
                                                     <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?? '' ?></td>
                                                     <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?? '' ?></td>
-                                                    <td scope="row" class="btnExcluir"><i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
+                                                    <td scope="row" class="btnExcluir"><i class="fa-solid fa-trash fa-2xl"></i></td>
                                             <?php
                                                 endforeach;
                                             } ?>

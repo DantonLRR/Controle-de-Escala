@@ -83,3 +83,7 @@ th, td {
     font-weight: bold;
   
 }
+.fa-trash {
+    cursor: pointer;
+    color:red !important;
+}

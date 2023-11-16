@@ -63,14 +63,14 @@ $('#table1').on('change', '.estilezaSelect', function () {
     var colIndex = $(this).closest('td').index();
     var numeroDiaDaSemana = $('#table1 thead tr.trr th').eq(colIndex).text();
     var mesPesquisa = $("#dataPesquisa").val();
-    alert(mesPesquisa)
+   // alert(mesPesquisa)
 
     var mesAtual = $("#mesAtual").val();
     
     if (mesPesquisa == "") {
         mesPesquisa = mesAtual
     }
-    alert(mesPesquisa)
+    //alert(mesPesquisa)
     // alert(mesPesquisa);
     $.ajax({
         url: "config/insertEUpdate_EscalaMensal.php",

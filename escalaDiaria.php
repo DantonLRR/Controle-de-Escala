@@ -51,11 +51,11 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
     </style>
 </head>
 
-<input class="dataAtual" id="mesAtual" value="<?= $mesAtual ?>">
-<input class="dataAtual" id="diaAtual" value="<?= $diaAtual ?>">
-<input id="usuLogado" value="<?= $_SESSION['nome'] ?>">
-<input id="loja" value="<?= $_SESSION['LOJA'] ?>">
-<input id="diaDeHoje" value="<?= $hoje ?>">
+<input class="dataAtual" id="mesAtual" type="hidden" value="<?= $mesAtual ?>">
+<input class="dataAtual" id="diaAtual" type="hidden" value="<?= $diaAtual ?>">
+<input id="usuLogado" type="hidden" value="<?= $_SESSION['nome'] ?>">
+<input id="loja" type="hidden" value="<?= $_SESSION['LOJA'] ?>">
+<input id="diaDeHoje" type="hidden" value="<?= $hoje ?>">
 
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
