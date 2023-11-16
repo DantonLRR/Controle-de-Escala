@@ -23,9 +23,10 @@ if ($retorno == "Já existem dados.") {
                     WHERE a.matricula = '$MatriculaDaPessoaSelecionada'
                     and a.loja = $loja      
                     and a.diaselecionado = TO_DATE('$dataAtual', 'YYYY-MM-DD')";
-
+                    // echo $sql;
     $parse = ociparse($oracle, $sql);
     oci_execute($parse);
+    
 } else if ($retorno == "Não existem dados.") {
     $sql = "SELECT DISTINCT 
     
@@ -56,9 +57,9 @@ if ($retorno == "Já existem dados.") {
             SELECT DISTINCT 
 
                 AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-                --NVL(
+
                 TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-                TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00')--, '00:00') 
+                TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00')
                 AS BATIDA
             FROM ABATHOR 
                 INNER JOIN AHORARIO ON 
@@ -111,14 +112,15 @@ if ($retorno == "Já existem dados.") {
                 ) SAIDA2 ON
             SAIDA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA2.CODIGO = PFUNC.CODHORARIO
 
-            WHERE   PFUNC.CODCOLIGADA = 1 AND PFUNC.CODSITUACAO = 'A' 
+            WHERE   PFUNC.CODCOLIGADA = 1 
+            AND PFUNC.CODSITUACAO  <> 'D' 
                 AND SUBSTR(PSECAO.DESCRICAO,1,3) LIKE $loja
                 AND PFUNCAO.NOME = 'OPERADOR DE CAIXA' 
-            and  PFUNC.NOME = '$nomeFunc'
+            and  PFUNC.CHAPA = '$MatriculaDaPessoaSelecionada'
 
             ORDER BY PFUNC.NOME
         ";
-
+// echo $sql;
     $parse = ociparse($TotvsOracle, $sql);
     oci_execute($parse);
 };

@@ -24,7 +24,7 @@ $verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela, $dat
 if ($retorno == "Já existem dados.") {
     // echo "Já existem dados. 01 Update";
 
-    $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja,$status);
+    $atualizaDados = $updateDeDados->updateDeFuncionariosNoPDV($oracle,$tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV,$loja);
 } else if($retorno == "Não existem dados."){
     // echo "Não existem dados. 02 INSERT";
 

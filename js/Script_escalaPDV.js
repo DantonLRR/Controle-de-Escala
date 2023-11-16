@@ -203,7 +203,7 @@ function calcularHorasIntermediarias(horaEntrada, horaSaida, horaParaPular) {
 
 
 var usuarioLogado = $("#usuarioLogado").val();
-var opcoesSelecionadas = [];
+
 var loja = $("#loja").val();
 $('#table1').on('change', '.estilezaSelect', function () {
     var dataPesquisa = $("#dataPesquisa").val();
@@ -221,13 +221,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
     var entrada = $(this).parent().parent().find(".horaEntrada1").closest(".horaEntrada1");
     var saida = $(this).parent().parent().find(".horaSaida1").closest(".horaSaida1");
     var intervalo = $(this).parent().parent().find(".horaIntervalo1").closest(".horaIntervalo1");
-
-    if (nomeSelecionado !== "") {
-        if (opcoesSelecionadas.includes(nomeSelecionado)) {
-            alert('Opção já selecionada em outra linha.');
-            $(this).val("");
-        } else {
-            opcoesSelecionadas.push(nomeSelecionado);
+       
             $selects.not(this).find('option[value="' + nomeSelecionado + '"]').remove();
             $.ajax({
                 url: "filtro/busca_infosFuncionarios.php",
@@ -337,8 +331,8 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
 
 
-        }
-    }
+        
+    
 });
 
 
@@ -359,13 +353,6 @@ $('#table1').on('change', '.estilizaSelect2', function () {
     var saida2 = $(this).parent().parent().find(".horaSaida2").closest(".horaSaida2");
     var intervalo2 = $(this).parent().parent().find(".horaIntervalo2").closest(".horaIntervalo2");
 
-
-    if (nomeSelecionado2 !== "") {
-        if (opcoesSelecionadas.includes(nomeSelecionado2)) {
-            alert('Opção já selecionada em outra linha.');
-            $(this).val("");
-        } else {
-            opcoesSelecionadas.push(nomeSelecionado2);
 
             $selects2.not(this).find('option[value="' + nomeSelecionado2 + '"]').remove();
 
@@ -467,8 +454,8 @@ $('#table1').on('change', '.estilizaSelect2', function () {
 
                 }
             });
-        }
-    }
+        
+
 });
 
 

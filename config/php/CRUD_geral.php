@@ -222,11 +222,11 @@ class Funcionarios
             array_push($lista, $row);
         }
         return $lista;
-        echo $query;
+        // echo $query;
     }
 
     //pdv
-    public function buscaFuncEHorarioDeTrabalhoManha($TotvsOracle)
+    public function buscaFuncEHorarioDeTrabalhoManha($TotvsOracle, $lojaDaPessoaLogada)
     {
         $lista = array();
         $query = "SELECT DISTINCT 
@@ -243,82 +243,82 @@ class Funcionarios
          ENTRADA2.BATIDA as VoltaDoAlmoco,
          SAIDA2.BATIDA as HoraSaida,
         ENTRADA1.BATIDA || ' - ' || SAIDA1.BATIDA || ' - ' || ENTRADA2.BATIDA || ' - ' || SAIDA2.BATIDA AS HORARIO
+                    
+            FROM PFUNC 
             
-    FROM PFUNC 
-    
-    INNER JOIN PFUNCAO 
-        ON (PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA 
-        AND PFUNC.CODFUNCAO = PFUNCAO.CODIGO) 
-        
-    INNER JOIN PSECAO 
-        ON (PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA 
-        AND PFUNC.CODSECAO = PSECAO.CODIGO)
-        
-    LEFT JOIN (
-        SELECT DISTINCT 
-       
-            AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-            --NVL(
-            TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-            TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00')--, '00:00') 
-            AS BATIDA
-        FROM ABATHOR 
-            INNER JOIN AHORARIO ON 
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-            WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 0
-            GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-            ) ENTRADA1 ON
-       ENTRADA1.CODCOLIGADA = PFUNC.CODCOLIGADA AND ENTRADA1.CODIGO = PFUNC.CODHORARIO
-       
-    LEFT JOIN (
-        SELECT DISTINCT 
-            AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-            NVL(TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-            TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
-        FROM ABATHOR 
-            INNER JOIN AHORARIO ON 
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-            WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 1
-            GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-            ) SAIDA1 ON
-       SAIDA1.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA1.CODIGO = PFUNC.CODHORARIO
-       
-    LEFT JOIN (
-        SELECT DISTINCT 
-            AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-            NVL(TO_CHAR(TRUNC((MAX(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-            TO_CHAR(TRUNC(MOD(ABS(MAX(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
-        FROM ABATHOR 
-            INNER JOIN AHORARIO ON 
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-            WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 0
-            GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-            ) ENTRADA2 ON
-       ENTRADA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND ENTRADA2.CODIGO = PFUNC.CODHORARIO
-       
-    LEFT JOIN (
-        SELECT DISTINCT 
-            AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-            NVL(TO_CHAR(TRUNC((MAX(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-            TO_CHAR(TRUNC(MOD(ABS(MAX(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
-        FROM ABATHOR 
-            INNER JOIN AHORARIO ON 
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-            WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 1
-            GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-            ) SAIDA2 ON
-       SAIDA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA2.CODIGO = PFUNC.CODHORARIO
-        
-    WHERE   PFUNC.CODCOLIGADA = 1 AND PFUNC.CODSITUACAO <> 'D' 
-            AND SUBSTR(PSECAO.DESCRICAO,1,3) LIKE 202
-            AND PFUNCAO.NOME = 'OPERADOR DE CAIXA' 
-    
-    and  ENTRADA1.BATIDA  BETWEEN '07:00' AND '10:00' 
-    ORDER BY PFUNC.NOME";
+            INNER JOIN PFUNCAO 
+                ON (PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA 
+                AND PFUNC.CODFUNCAO = PFUNCAO.CODIGO) 
+                
+            INNER JOIN PSECAO 
+                ON (PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA 
+                AND PFUNC.CODSECAO = PSECAO.CODIGO)
+                
+            LEFT JOIN (
+                SELECT DISTINCT 
+            
+                    AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
+               
+                    TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
+                    TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00')
+                    AS BATIDA
+                FROM ABATHOR 
+                    INNER JOIN AHORARIO ON 
+                        ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
+                        AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
+                    WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 0
+                    GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
+                    ) ENTRADA1 ON
+            ENTRADA1.CODCOLIGADA = PFUNC.CODCOLIGADA AND ENTRADA1.CODIGO = PFUNC.CODHORARIO
+            
+            LEFT JOIN (
+                SELECT DISTINCT 
+                    AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
+                    NVL(TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
+                    TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
+                FROM ABATHOR 
+                    INNER JOIN AHORARIO ON 
+                        ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
+                        AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
+                    WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 1
+                    GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
+                    ) SAIDA1 ON
+            SAIDA1.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA1.CODIGO = PFUNC.CODHORARIO
+            
+            LEFT JOIN (
+                SELECT DISTINCT 
+                    AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
+                    NVL(TO_CHAR(TRUNC((MAX(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
+                    TO_CHAR(TRUNC(MOD(ABS(MAX(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
+                FROM ABATHOR 
+                    INNER JOIN AHORARIO ON 
+                        ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
+                        AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
+                    WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 0
+                    GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
+                    ) ENTRADA2 ON
+            ENTRADA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND ENTRADA2.CODIGO = PFUNC.CODHORARIO
+            
+            LEFT JOIN (
+                SELECT DISTINCT 
+                    AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
+                    NVL(TO_CHAR(TRUNC((MAX(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
+                    TO_CHAR(TRUNC(MOD(ABS(MAX(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
+                FROM ABATHOR 
+                    INNER JOIN AHORARIO ON 
+                        ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
+                        AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
+                    WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 1
+                    GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
+                    ) SAIDA2 ON
+            SAIDA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA2.CODIGO = PFUNC.CODHORARIO
+                
+            WHERE   PFUNC.CODCOLIGADA = 1 AND PFUNC.CODSITUACAO <> 'D' 
+            AND SUBSTR(PSECAO.DESCRICAO,1,3) =  '$lojaDaPessoaLogada'
+                    AND PFUNCAO.NOME = 'OPERADOR DE CAIXA' 
+            
+            and  ENTRADA1.BATIDA  BETWEEN '07:00' AND '10:00' 
+            ORDER BY PFUNC.NOME";
         // echo $query;
         $resultado = oci_parse($TotvsOracle, $query);
         oci_execute($resultado);
@@ -328,7 +328,7 @@ class Funcionarios
         return $lista;
         // echo  $lista;
     }
-    public function buscaFuncEHorarioDeTrabalhoTarde($TotvsOracle)
+    public function buscaFuncEHorarioDeTrabalhoTarde($TotvsOracle,$lojaDaPessoaLogada)
     {
         $lista = array();
         $query = "SELECT DISTINCT 
@@ -346,81 +346,81 @@ class Funcionarios
          SAIDA2.BATIDA as HoraSaida,
         ENTRADA1.BATIDA || ' - ' || SAIDA1.BATIDA || ' - ' || ENTRADA2.BATIDA || ' - ' || SAIDA2.BATIDA AS HORARIO
             
-    FROM PFUNC 
-    
-    INNER JOIN PFUNCAO 
-        ON (PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA 
-        AND PFUNC.CODFUNCAO = PFUNCAO.CODIGO) 
-        
-    INNER JOIN PSECAO 
-        ON (PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA 
-        AND PFUNC.CODSECAO = PSECAO.CODIGO)
-        
-    LEFT JOIN (
-        SELECT DISTINCT 
-       
-            AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-            --NVL(
-            TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-            TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00')--, '00:00') 
-            AS BATIDA
-        FROM ABATHOR 
-            INNER JOIN AHORARIO ON 
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-            WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 0
-            GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-            ) ENTRADA1 ON
-       ENTRADA1.CODCOLIGADA = PFUNC.CODCOLIGADA AND ENTRADA1.CODIGO = PFUNC.CODHORARIO
-       
-    LEFT JOIN (
-        SELECT DISTINCT 
-            AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-            NVL(TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-            TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
-        FROM ABATHOR 
-            INNER JOIN AHORARIO ON 
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-            WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 1
-            GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-            ) SAIDA1 ON
-       SAIDA1.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA1.CODIGO = PFUNC.CODHORARIO
-       
-    LEFT JOIN (
-        SELECT DISTINCT 
-            AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-            NVL(TO_CHAR(TRUNC((MAX(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-            TO_CHAR(TRUNC(MOD(ABS(MAX(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
-        FROM ABATHOR 
-            INNER JOIN AHORARIO ON 
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-            WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 0
-            GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-            ) ENTRADA2 ON
-       ENTRADA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND ENTRADA2.CODIGO = PFUNC.CODHORARIO
-       
-    LEFT JOIN (
-        SELECT DISTINCT 
-            AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-            NVL(TO_CHAR(TRUNC((MAX(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-            TO_CHAR(TRUNC(MOD(ABS(MAX(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
-        FROM ABATHOR 
-            INNER JOIN AHORARIO ON 
-                ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-            WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 1
-            GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-            ) SAIDA2 ON
-       SAIDA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA2.CODIGO = PFUNC.CODHORARIO
-        
-    WHERE   PFUNC.CODCOLIGADA = 1 AND PFUNC.CODSITUACAO <> 'D' 
-            AND SUBSTR(PSECAO.DESCRICAO,1,3) LIKE 202
-            AND PFUNCAO.NOME = 'OPERADOR DE CAIXA' 
-    
-    and  ENTRADA1.BATIDA  BETWEEN '12:00' AND '14:00'  
-    ORDER BY PFUNC.NOME";
+            FROM PFUNC 
+            
+            INNER JOIN PFUNCAO 
+                ON (PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA 
+                AND PFUNC.CODFUNCAO = PFUNCAO.CODIGO) 
+                
+            INNER JOIN PSECAO 
+                ON (PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA 
+                AND PFUNC.CODSECAO = PSECAO.CODIGO)
+                
+            LEFT JOIN (
+                SELECT DISTINCT 
+            
+                    AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
+                    --NVL(
+                    TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
+                    TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00')--, '00:00') 
+                    AS BATIDA
+                FROM ABATHOR 
+                    INNER JOIN AHORARIO ON 
+                        ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
+                        AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
+                    WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 0
+                    GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
+                    ) ENTRADA1 ON
+            ENTRADA1.CODCOLIGADA = PFUNC.CODCOLIGADA AND ENTRADA1.CODIGO = PFUNC.CODHORARIO
+            
+            LEFT JOIN (
+                SELECT DISTINCT 
+                    AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
+                    NVL(TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
+                    TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
+                FROM ABATHOR 
+                    INNER JOIN AHORARIO ON 
+                        ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
+                        AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
+                    WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 1
+                    GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
+                    ) SAIDA1 ON
+            SAIDA1.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA1.CODIGO = PFUNC.CODHORARIO
+            
+            LEFT JOIN (
+                SELECT DISTINCT 
+                    AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
+                    NVL(TO_CHAR(TRUNC((MAX(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
+                    TO_CHAR(TRUNC(MOD(ABS(MAX(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
+                FROM ABATHOR 
+                    INNER JOIN AHORARIO ON 
+                        ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
+                        AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
+                    WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 0
+                    GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
+                    ) ENTRADA2 ON
+            ENTRADA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND ENTRADA2.CODIGO = PFUNC.CODHORARIO
+            
+            LEFT JOIN (
+                SELECT DISTINCT 
+                    AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
+                    NVL(TO_CHAR(TRUNC((MAX(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
+                    TO_CHAR(TRUNC(MOD(ABS(MAX(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
+                FROM ABATHOR 
+                    INNER JOIN AHORARIO ON 
+                        ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
+                        AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
+                    WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 1
+                    GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
+                    ) SAIDA2 ON
+            SAIDA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA2.CODIGO = PFUNC.CODHORARIO
+                
+            WHERE   PFUNC.CODCOLIGADA = 1 AND PFUNC.CODSITUACAO <> 'D' 
+            AND SUBSTR(PSECAO.DESCRICAO,1,3) =  '$lojaDaPessoaLogada'
+                    AND PFUNCAO.NOME = 'OPERADOR DE CAIXA' 
+            
+            and  ENTRADA1.BATIDA  BETWEEN '12:00' AND '14:00'  
+            ORDER BY PFUNC.NOME";
 
         // echo "<br><br>" . $query;
         $resultado = oci_parse($TotvsOracle, $query);
@@ -492,6 +492,65 @@ class Funcionarios
         $lista = array();
         $query =  "SELECT *FROM WEB_ESCALA_MENSAL WHERE $dia is null  AND to_char(MESSELECIONADO , 'YYYY-MM') = '$mesSelecionado'";
         // echo $query."<br>";
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+        // print_r( $lista);
+    }
+
+    public function FuncsJaEscaladosMANHA($oracle, $diaSelecionado)
+    {
+        $lista = array();
+        $query =   "SELECT a.matricula,
+                    a.nome,
+                    a.horaentrada,
+                    a.horasaida,
+                    a.horaintervalo,
+                    a.datainclusao,
+                    a.usuinclusao,
+                    a.diaselecionado,
+                    a.numpdv,
+                    a.status
+                    FROM ESCALA_PDV_Manha a
+                    where  to_char(a.diaselecionado, 'YYYY-MM-DD') = '$diaSelecionado'
+                    and status = 'A'
+                  
+        ";
+        //  echo $query."<br>";
+
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+        // print_r( $lista);
+    }
+    public function FuncsJaEscaladosTARDE($oracle, $diaSelecionado)
+    {
+        $lista = array();
+        $query =   "SELECT a.matricula,
+                    a.nome,
+                    a.horaentrada,
+                    a.horasaida,
+                    a.horaintervalo,
+                    a.datainclusao,
+                    a.usuinclusao,
+                    a.diaselecionado,
+                    a.numpdv,
+                    a.status
+                    FROM ESCALA_PDV_TARDE a
+                    where  to_char(a.diaselecionado, 'YYYY-MM-DD') = '$diaSelecionado'
+                    and status = 'A'
+                  
+        ";
+        //  echo $query."<br>";
+
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
 
@@ -617,7 +676,7 @@ class Verifica
 
             echo "Erro na consulta.";
         }
-        echo $query;
+        // echo $query;
     }
 }
 
@@ -899,7 +958,7 @@ class Update
 
 
     //pdv
-    public function updateDeFuncionariosNoPDV($oracle, $tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja, $status)
+    public function updateDeFuncionariosNoPDV($oracle, $tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja,)
     {
         $query = "UPDATE $tabela SET
         MATRICULA = '$matricula',
@@ -911,11 +970,11 @@ class Update
         DATAINCLUSAO = sysdate,
         DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD'),
         NUMPDV = '$numPDV',
-        LOJA = '$loja',
-        STATUS = '$status'
+        LOJA = '$loja'
       WHERE NUMPDV = '$numPDV'
       AND loja = $loja
       and DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')
+      and STATUS = 'A'
       ";
         $parse = oci_parse($oracle, $query);
 
@@ -986,7 +1045,7 @@ class Update
             //  echo "<br>" . $query;
             return false;
         }
-        echo $retorno;
-        echo $query;
+        // echo $retorno;
+        // echo $query;
     }
 }

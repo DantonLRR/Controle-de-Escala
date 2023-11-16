@@ -38,9 +38,50 @@ $InformacaoFuncionarios = new Funcionarios();
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
 
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($TotvsOracle, $hoje);
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOracle, $hoje);
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($TotvsOracle,  $_SESSION['LOJA']);
+// var_dump($FuncManha);
+// echo "<br><br><br>";
+$FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $hoje);
+// var_dump($FuncEscaladosMANHA);
 
+// echo "<br><br><br>";
+$naoRepetidosMANHA = array();
+
+foreach ($FuncManha as $funcManha1) {
+    $repetido = false;
+    foreach ($FuncEscaladosMANHA as $funcEscalado) {
+        if ($funcManha1['MATRICULA'] === $funcEscalado['MATRICULA']) {
+            $repetido = true;
+            break;
+        }
+    }
+    if (!$repetido) {
+        $naoRepetidosMANHA[] = $funcManha1;
+    }
+}
+
+// var_dump($naoRepetidosMANHA);
+
+
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOracle, $_SESSION['LOJA']);
+$FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $hoje);
+// var_dump($FuncEscaladosTARDE);
+// echo"<br><br><br>";
+$naoRepetidosTARDE = array();
+
+foreach ($FuncTarde as $funcTarde2) {
+    $repetidoTARDE = false;
+    foreach ($FuncEscaladosTARDE as $funcEscalado) {
+        if ($funcTarde2['MATRICULA'] === $funcEscalado['MATRICULA']) {
+            $repetidoTARDE = true;
+            break;
+        }
+    }
+    if (!$repetidoTARDE) {
+        $naoRepetidosTARDE[] = $funcTarde2;
+    }
+}
+// var_dump($naoRepetidosTARDE);
 
 
 
@@ -66,7 +107,7 @@ for ($i = 7; $i <= 21; $i++) {
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-2 informacoesEsquerda1Card">
-                            <label class="form-label">
+                                <label class="form-label">
                                     Dia Vigente Da pesquisa
                                 </label>
                                 <input type="date" class="form-control dataPesquisa" id="dataPesquisa">
@@ -74,14 +115,13 @@ for ($i = 7; $i <= 21; $i++) {
                                     Quantidade de operadores :</label>
                                 <?php
                                 $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual);
-                                
-                                if (empty($quantidadePorDiaDeFuncionarios)){
-                                    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para hoje"
-                                    ;}
-                                    else {
-                                        $quantidadePorDiaDeFuncionariosImpressao = count($quantidadePorDiaDeFuncionarios);
-                                    }
-                                    
+
+                                if (empty($quantidadePorDiaDeFuncionarios)) {
+                                    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para hoje";
+                                } else {
+                                    $quantidadePorDiaDeFuncionariosImpressao = count($quantidadePorDiaDeFuncionarios);
+                                }
+
                                 ?>
                                 <p><?= $quantidadePorDiaDeFuncionariosImpressao ?></p>
 
@@ -172,7 +212,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <select class="estilezaSelect form-control" id="selectFuncionario">
                                                         <option value=""></option>
                                                         <?php
-                                                        foreach ($FuncManha as $rowManha) :
+                                                        foreach ($naoRepetidosMANHA as $rowManha) :
                                                         ?>
                                                             <div>
                                                                 <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
@@ -185,7 +225,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <td scope="row" class="text-center horaEntrada1"></td>
                                                 <td scope="row" class="horaSaida1"></td>
                                                 <td scope="row" class="horaIntervalo1"></td>
-                                              
+
                                                 <?php
                                             } else {
                                                 foreach ($horariosFuncManha as $row2Manha) :
@@ -196,7 +236,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                         <select class="estilezaSelect form-control" id="selectFuncionario">
                                                             <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
                                                             <?php
-                                                            foreach ($FuncManha as $rowManha) :
+                                                            foreach ($naoRepetidosMANHA as $rowManha) :
                                                             ?>
                                                                 <div>
                                                                     <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
@@ -209,7 +249,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?? '' ?></td>
                                                     <td scope="row" class="horaSaida1"><?= $row2Manha['HORASAIDA'] ?? '' ?></td>
                                                     <td scope="row" class="horaIntervalo1"><?= $row2Manha['HORAINTERVALO'] ?? '' ?></td>
-                                                   
+
                                             <?php
                                                 endforeach;
                                             } ?>
@@ -221,7 +261,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <select class="estilizaSelect2 form-control">
                                                         <option value=""></option>
                                                         <?php
-                                                        foreach ($FuncTarde as $rowTarde) :
+                                                        foreach ($naoRepetidosTARDE as $rowTarde) :
                                                         ?>
                                                             <div>
                                                                 <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"><?= $rowTarde['NOME'] ?> </option>
@@ -234,7 +274,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <td scope="row" class="horaEntrada2"></td>
                                                 <td scope="row" class="horaSaida2"></td>
                                                 <td scope="row" class="horaIntervalo2"></td>
-                                                <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style ="color:red"></i></td>
+                                                <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
                                                 <?php
                                             } else {
                                                 foreach ($horariosFuncTarde as $row3Tarde) :
@@ -245,7 +285,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                         <select class="estilizaSelect2 form-control">
                                                             <option value="<?= $row3Tarde['NOME'] ?>"><?= $row3Tarde['NOME'] ?? '' ?></option>
                                                             <?php
-                                                            foreach ($FuncTarde as $rowTarde) :
+                                                            foreach ($naoRepetidosTARDE as $rowTarde) :
                                                             ?>
                                                                 <div>
                                                                     <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"> <?= $rowTarde['NOME'] ?> </option>
@@ -258,7 +298,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>
                                                     <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?? '' ?></td>
                                                     <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?? '' ?></td>
-                                                    <td scope="row" class="btnExcluir"><i class="fa-solid fa-trash fa-2xl" style ="color:red"></i></td>
+                                                    <td scope="row" class="btnExcluir"><i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
                                             <?php
                                                 endforeach;
                                             } ?>
@@ -266,7 +306,7 @@ for ($i = 7; $i <= 21; $i++) {
                                     <?php
                                     }
                                     ?>
-                                    
+
                                 </tbody>
                             </table>
                         </div>
@@ -319,7 +359,7 @@ for ($i = 7; $i <= 21; $i++) {
                                 $qntPDV = array();
                                 for ($i = 1; $i <= 30; $i++) {
                                     $i;
-                                    $dadosEscalaDiariaDePDV = $InformacaoDosDias->escalaDiariaDePDV($oracle, $i, $hoje,$_SESSION['LOJA']);
+                                    $dadosEscalaDiariaDePDV = $InformacaoDosDias->escalaDiariaDePDV($oracle, $i, $hoje, $_SESSION['LOJA']);
                                     // print_r($dadosEscalaDiariaDePDV) ;
                                 ?>
                                     <tr class="trr">

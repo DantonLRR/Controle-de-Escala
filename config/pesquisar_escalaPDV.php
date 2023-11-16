@@ -6,8 +6,52 @@ $loja = $_POST['loja'];
 $dataPesquisada = $_POST['dataPesquisa'];
 
 $InformacaoFuncionarios = new Funcionarios();
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($TotvsOracle);
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOracle);
+
+
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($TotvsOracle,  $loja);
+// var_dump($FuncManha);
+// echo "<br><br><br>";
+$FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $dataPesquisada);
+// var_dump($FuncEscaladosMANHA);
+
+// echo "<br><br><br>";
+$naoRepetidosMANHA = array();
+
+foreach ($FuncManha as $funcManha1) {
+    $repetido = false;
+    foreach ($FuncEscaladosMANHA as $funcEscalado) {
+        if ($funcManha1['MATRICULA'] === $funcEscalado['MATRICULA']) {
+            $repetido = true;
+            break;
+        }
+    }
+    if (!$repetido) {
+        $naoRepetidosMANHA[] = $funcManha1;
+    }
+}
+
+// var_dump($naoRepetidosMANHA);
+
+
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOracle, $loja);
+$FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $dataPesquisada);
+// var_dump($FuncEscaladosTARDE);
+// echo"<br><br><br>";
+$naoRepetidosTARDE = array();
+
+foreach ($FuncTarde as $funcTarde2) {
+    $repetidoTARDE = false;
+    foreach ($FuncEscaladosTARDE as $funcEscalado) {
+        if ($funcTarde2['MATRICULA'] === $funcEscalado['MATRICULA']) {
+            $repetidoTARDE = true;
+            break;
+        }
+    }
+    if (!$repetidoTARDE) {
+        $naoRepetidosTARDE[] = $funcTarde2;
+    }
+}
+// var_dump($naoRepetidosTARDE);
 
 // session_start();
 ?>
@@ -60,7 +104,7 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOra
                         <select class="estilezaSelect form-control" id="selectFuncionario">
                             <option value=""></option>
                             <?php
-                            foreach ($FuncManha as $rowManha) :
+                            foreach ($naoRepetidosMANHA as $rowManha) :
                             ?>
                                 <div>
                                     <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
@@ -82,7 +126,7 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOra
                             <select class="estilezaSelect form-control" id="selectFuncionario">
                                 <option value="<?= $rowManha['MATRICULA'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
                                 <?php
-                                foreach ($FuncManha as $rowManha) :
+                                foreach ($naoRepetidosMANHA as $rowManha) :
                                 ?>
                                     <div>
                                         <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
@@ -106,7 +150,7 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOra
                         <select class="estilizaSelect2 form-control">
                             <option value=""></option>
                             <?php
-                            foreach ($FuncTarde as $rowTarde) :
+                            foreach ($naoRepetidosTARDE as $rowTarde) :
                             ?>
                                 <div>
                                     <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"><?= $rowTarde['NOME'] ?> </option>
@@ -129,7 +173,7 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOra
                             <select class="estilizaSelect2 form-control">
                                 <option value="<?= $row3Tarde['MATRICULA'] ?>"><?= $row3Tarde['NOME'] ?? '' ?></option>
                                 <?php
-                                foreach ($FuncTarde as $rowTarde) :
+                                foreach ($naoRepetidosTARDE as $rowTarde) :
                                 ?>
                                     <div>
                                         <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"> <?= $rowTarde['NOME'] ?> </option>
@@ -286,12 +330,6 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOra
         var entrada = $(this).parent().parent().find(".horaEntrada1").closest(".horaEntrada1");
         var saida = $(this).parent().parent().find(".horaSaida1").closest(".horaSaida1");
         var intervalo = $(this).parent().parent().find(".horaIntervalo1").closest(".horaIntervalo1");
-
-        if (nomeSelecionado !== "") {
-            if (opcoesSelecionadas.includes(nomeSelecionado)) {
-                alert('Opção já selecionada em outra linha.');
-                $(this).val("");
-            } else {
                 opcoesSelecionadas.push(nomeSelecionado);
                 $selects.not(this).find('option[value="' + nomeSelecionado + '"]').remove();
                 $.ajax({
@@ -406,8 +444,8 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOra
 
 
 
-            }
-        }
+            
+     
     });
 
 
@@ -428,12 +466,6 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOra
         var saida2 = $(this).parent().parent().find(".horaSaida2").closest(".horaSaida2");
         var intervalo2 = $(this).parent().parent().find(".horaIntervalo2").closest(".horaIntervalo2");
 
-
-        if (nomeSelecionado2 !== "") {
-            if (opcoesSelecionadas.includes(nomeSelecionado2)) {
-                alert('Opção já selecionada em outra linha.');
-                $(this).val("");
-            } else {
                 opcoesSelecionadas.push(nomeSelecionado2);
 
                 $selects2.not(this).find('option[value="' + nomeSelecionado2 + '"]').remove();
@@ -538,8 +570,8 @@ $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOra
 
                     }
                 });
-            }
-        }
+        
+
     });
 
 
