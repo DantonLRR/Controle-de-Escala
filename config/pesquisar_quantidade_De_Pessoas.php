@@ -14,7 +14,7 @@ $mesEAnoDaPesquisa = $partesData[0] . '-' . $partesData[1]; // Ano e Mês
 $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dataPesquisa, $loja);
 
 if (empty($quantidadePorDiaDeFuncionarios)) {
-    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para hoje";
+    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para este dia";
 } else {
     $quantidadePorDiaDeFuncionariosImpressao = count($quantidadePorDiaDeFuncionarios);
 }
