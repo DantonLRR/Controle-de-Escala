@@ -38,7 +38,7 @@ $InformacaoFuncionarios = new Funcionarios();
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
 
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($TotvsOracle,  $_SESSION['LOJA']);
+$FuncManha = $InformacaoFuncionarios-> buscaFuncEHorarioDeTrabalhoManha($oracle,$_SESSION['LOJA'], $diaDeHojeComAspas,$mesEAnoAtual,$hoje  );
 // var_dump($FuncManha);
 // echo "<br><br><br>";
 $FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $hoje);
@@ -63,7 +63,7 @@ foreach ($FuncManha as $funcManha1) {
 // var_dump($naoRepetidosMANHA);
 
 
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOracle, $_SESSION['LOJA']);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$_SESSION['LOJA'], $diaDeHojeComAspas,$mesEAnoAtual,$hoje  );
 $FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $hoje);
 // var_dump($FuncEscaladosTARDE);
 // echo"<br><br><br>";
@@ -111,10 +111,12 @@ for ($i = 7; $i <= 21; $i++) {
                                     Dia Vigente Da pesquisa
                                 </label>
                                 <input type="date" class="form-control dataPesquisa" id="dataPesquisa" value="<?=$hoje?>">
-                                <label class="form-label">
-                                    Quantidade de operadores :</label>
+                                <label class="form-label ">
+                                    Quantidade de operadores :
+                                </label>
+                                <div class="atualizaOpPorDia">
                                 <?php
-                                $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual);
+                                $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual,$hoje,$_SESSION['LOJA']);
 
                                 if (empty($quantidadePorDiaDeFuncionarios)) {
                                     $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para hoje";
@@ -124,7 +126,7 @@ for ($i = 7; $i <= 21; $i++) {
 
                                 ?>
                                 <p><?= $quantidadePorDiaDeFuncionariosImpressao ?></p>
-
+                                </div>
                             </div>
                             <div class="col-lg-10">
                                 <label class="form-label">

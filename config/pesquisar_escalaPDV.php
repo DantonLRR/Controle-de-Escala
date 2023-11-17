@@ -2,13 +2,26 @@
 include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
 include "../../base/conexao_TotvzOracle.php";
+session_start();
+
 $loja = $_POST['loja'];
 $dataPesquisada = $_POST['dataPesquisa'];
+
+// Separando o dia e o mês/ano
+$partesData = explode('-', $dataPesquisada);
+$diaDaPesquisaComAspas = ' "' . $partesData[2] . '"'; // Dia
+$mesEAnoDaPesquisa = $partesData[0] . '-' . $partesData[1]; // Ano e Mês
+
+
+
+
+
+
 
 $InformacaoFuncionarios = new Funcionarios();
 
 
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($TotvsOracle,  $loja);
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $loja, $diaDaPesquisaComAspas , $mesEAnoDaPesquisa , $dataPesquisada);
 // var_dump($FuncManha);
 // echo "<br><br><br>";
 $FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $dataPesquisada);
@@ -33,7 +46,7 @@ foreach ($FuncManha as $funcManha1) {
 // var_dump($naoRepetidosMANHA);
 
 
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($TotvsOracle, $loja);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDaPesquisaComAspas , $mesEAnoDaPesquisa , $dataPesquisada);
 $FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $dataPesquisada);
 // var_dump($FuncEscaladosTARDE);
 // echo"<br><br><br>";
@@ -57,10 +70,11 @@ foreach ($FuncTarde as $funcTarde2) {
 ?>
 
 <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
+
     <input id="dataPesquisar" type="hidden" value="<?= $dataPesquisada ?>">
 
-    <input class="usu" type="hidden" id="loja" value="<?= $loja ?>">
-    <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
+    <input class="usu" id="loja" type="hidden" value="<?= $loja ?>">
+    <input class="usu" type="hidden" value="<?= $_SESSION['nome'] ?>">
     <thead style="background-color: #00a550; color: white;">
         <tr class="trr">
             <th class="text-center" colspan="6">Manhã</th>
@@ -330,112 +344,114 @@ foreach ($FuncTarde as $funcTarde2) {
         var entrada = $(this).parent().parent().find(".horaEntrada1").closest(".horaEntrada1");
         var saida = $(this).parent().parent().find(".horaSaida1").closest(".horaSaida1");
         var intervalo = $(this).parent().parent().find(".horaIntervalo1").closest(".horaIntervalo1");
-                opcoesSelecionadas.push(nomeSelecionado);
-                $selects.not(this).find('option[value="' + nomeSelecionado + '"]').remove();
+        opcoesSelecionadas.push(nomeSelecionado);
+        $selects.not(this).find('option[value="' + nomeSelecionado + '"]').remove();
+        $.ajax({
+            url: "filtro/busca_infosFuncionarios.php",
+            method: 'get',
+            data: 'MatriculaDaPessoaSelecionada=' +
+                MatriculaDaPessoaSelecionada +
+                "&loja=" +
+                +loja +
+                "&dataAtual=" +
+                dataAtual +
+                "&nomeSelecionado=" +
+                nomeSelecionado,
+            dataType: 'json',
+            success: function(retorno) {
+                matricula.text(retorno.MATRICULA);
+                entrada.text(retorno.HORAENTRADA);
+                saida.text(retorno.HORASAIDA);
+                intervalo.text(retorno.SAIDAPARAALMOCO);
+                var DadosMatricula = retorno.MATRICULA;
+                var DadosEntrada = retorno.HORAENTRADA;
+                var DadosSaida = retorno.HORASAIDA;
+                var DadosIntervalo = retorno.SAIDAPARAALMOCO;
+                var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada, DadosSaida, DadosIntervalo);
+
                 $.ajax({
-                    url: "filtro/busca_infosFuncionarios.php",
+                    url: "config/insertManha_escalaPDV.php",
                     method: 'get',
-                    data: 'MatriculaDaPessoaSelecionada=' +
-                        MatriculaDaPessoaSelecionada +
-                        "&loja=" +
-                        +loja +
-                        "&dataAtual=" +
-                        dataAtual +
+                    data: 'DadosMatricula=' +
+                        DadosMatricula +
                         "&nomeSelecionado=" +
-                        nomeSelecionado,
-                    dataType: 'json',
-                    success: function(retorno) {
-                        matricula.text(retorno.MATRICULA);
-                        entrada.text(retorno.HORAENTRADA);
-                        saida.text(retorno.HORASAIDA);
-                        intervalo.text(retorno.SAIDAPARAALMOCO);
-                        var DadosMatricula = retorno.MATRICULA;
-                        var DadosEntrada = retorno.HORAENTRADA;
-                        var DadosSaida = retorno.HORASAIDA;
-                        var DadosIntervalo = retorno.SAIDAPARAALMOCO;
-                        var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada, DadosSaida, DadosIntervalo);
+                        nomeSelecionado +
+                        "&DadosEntrada=" +
+                        DadosEntrada +
+                        "&DadosSaida=" +
+                        DadosSaida +
+                        "&DadosIntervalo=" +
+                        DadosIntervalo +
+                        "&usuarioLogado=" +
+                        usuarioLogado +
+                        "&dataPesquisa=" +
+                        dataPesquisa +
+                        "&numPDV=" +
+                        numPDV +
+                        "&loja=" +
+                        loja,
+
+                    // dataType: 'json',
+                    success: function(retorno2) {
 
                         $.ajax({
-                            url: "config/insertManha_escalaPDV.php",
-                            method: 'get',
-                            data: 'DadosMatricula=' +
-                                DadosMatricula +
-                                "&nomeSelecionado=" +
-                                nomeSelecionado +
-                                "&DadosEntrada=" +
-                                DadosEntrada +
-                                "&DadosSaida=" +
-                                DadosSaida +
-                                "&DadosIntervalo=" +
-                                DadosIntervalo +
-                                "&usuarioLogado=" +
-                                usuarioLogado +
-                                "&dataPesquisa=" +
+                            url: "config/pesquisar_escalaPDV.php",
+                            method: 'POST',
+                            data: 'dataPesquisa=' +
                                 dataPesquisa +
-                                "&numPDV=" +
-                                numPDV +
                                 "&loja=" +
                                 loja,
+                            success: function(data_pesquisada2) {
 
-                            // dataType: 'json',
-                            success: function(retorno2) {
+                                $('.dadosEscalaPDV').empty().html(data_pesquisada2);
 
+                            }
+                        });
+
+                    }
+                });
+
+                $.ajax({
+                    url: "config/exibicao_escala_diaria_pdv.php",
+                    method: 'get',
+                    data: 'DadosMatricula=' +
+                        DadosMatricula +
+                        "&nomeSelecionado=" +
+                        nomeSelecionado +
+                        "&DadosEntrada=" +
+                        DadosEntrada +
+                        "&DadosSaida=" +
+                        DadosSaida +
+                        "&DadosIntervalo=" +
+                        DadosIntervalo +
+                        "&usuarioLogado=" +
+                        usuarioLogado +
+                        "&dataPesquisa=" +
+                        dataPesquisa +
+                        "&numPDV=" +
+                        numPDV +
+                        "&horasIntermediarias=" +
+                        horasIntermediarias +
+                        "&loja=" +
+                        loja,
+
+                    // dataType: 'json',
+                    success: function(retorno2) {
+
+                        $.ajax({
+                            url: "config/pesquisar_relatorio_pdv.php",
+                            method: 'POST',
+                            data: 'dataPesquisa=' +
+                                dataPesquisa +
+                                "&loja=" +
+                                loja,
+                            success: function(relatorio_atualizado2) {
+
+                                $('#relatorioPDV').empty().html(relatorio_atualizado2);
                                 criandoHtmlmensagemCarregamento("ocultar");
 
-
                             }
                         });
-
-                        $.ajax({
-                            url: "config/exibicao_escala_diaria_pdv.php",
-                            method: 'get',
-                            data: 'DadosMatricula=' +
-                                DadosMatricula +
-                                "&nomeSelecionado=" +
-                                nomeSelecionado +
-                                "&DadosEntrada=" +
-                                DadosEntrada +
-                                "&DadosSaida=" +
-                                DadosSaida +
-                                "&DadosIntervalo=" +
-                                DadosIntervalo +
-                                "&usuarioLogado=" +
-                                usuarioLogado +
-                                "&dataPesquisa=" +
-                                dataPesquisa +
-                                "&numPDV=" +
-                                numPDV +
-                                "&horasIntermediarias=" +
-                                horasIntermediarias +
-                                "&loja=" +
-                                loja,
-
-                            // dataType: 'json',
-                            success: function(retorno2) {
-
-                                $.ajax({
-                                    url: "config/pesquisar_relatorio_pdv.php",
-                                    method: 'POST',
-                                    data: 'dataPesquisa=' +
-                                        dataPesquisa +
-                                        "&loja=" +
-                                        loja,
-                                    success: function(relatorio_atualizado2) {
-
-                                        $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                                        criandoHtmlmensagemCarregamento("ocultar");
-
-                                    }
-                                });
-
-
-                            }
-                        });
-
-
-
-
-
 
 
                     }
@@ -444,8 +460,17 @@ foreach ($FuncTarde as $funcTarde2) {
 
 
 
-            
-     
+
+
+
+            }
+        });
+
+
+
+
+
+
     });
 
 
@@ -466,154 +491,128 @@ foreach ($FuncTarde as $funcTarde2) {
         var saida2 = $(this).parent().parent().find(".horaSaida2").closest(".horaSaida2");
         var intervalo2 = $(this).parent().parent().find(".horaIntervalo2").closest(".horaIntervalo2");
 
-                opcoesSelecionadas.push(nomeSelecionado2);
+        opcoesSelecionadas.push(nomeSelecionado2);
 
-                $selects2.not(this).find('option[value="' + nomeSelecionado2 + '"]').remove();
-
-                $.ajax({
-                    url: "filtro/busca_infosFuncionarios.php",
-                    method: 'get',
-                    data: 'MatriculaDaPessoaSelecionada=' +
-                        MatriculaDaPessoaSelecionada2 +
-                        "&loja=" +
-                        +loja +
-                        "&dataAtual=" +
-                        dataAtual +
-                        "&nomeSelecionado=" +
-                        nomeSelecionado2,
-                    dataType: 'json',
-                    success: function(retorno2) {
-                        matricula2.text(retorno2.MATRICULA);
-                        entrada2.text(retorno2.HORAENTRADA);
-                        saida2.text(retorno2.HORASAIDA);
-                        intervalo2.text(retorno2.SAIDAPARAALMOCO);
-
-                        var DadosMatricula1 = retorno2.MATRICULA;
-                        var DadosEntrada1 = retorno2.HORAENTRADA;
-                        var DadosSaida1 = retorno2.HORASAIDA;
-                        var DadosIntervalo1 = retorno2.SAIDAPARAALMOCO;
-
-                        var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada1, DadosSaida1, DadosIntervalo1);
-                        $.ajax({
-                            url: "config/insertTarde_escalaPDV.php",
-                            method: 'get',
-                            data: 'DadosMatricula1=' +
-                                DadosMatricula1 +
-                                "&nomeSelecionado2=" +
-                                nomeSelecionado2 +
-                                "&DadosEntrada1=" +
-                                DadosEntrada1 +
-                                "&DadosSaida1=" +
-                                DadosSaida1 +
-                                "&DadosIntervalo1=" +
-                                DadosIntervalo1 +
-                                "&usuarioLogado=" +
-                                usuarioLogado +
-                                "&dataPesquisa=" +
-                                dataPesquisa +
-                                "&numPDV=" +
-                                numPDV +
-                                "&numPDV=" +
-                                numPDV +
-                                "&loja=" +
-                                loja,
-                            // dataType: 'json',
-                            success: function(retorno2) {
-                                criandoHtmlmensagemCarregamento("ocultar");
-                            }
-                        });
-
-                        $.ajax({
-                            url: "config/exibicao_escala_diaria_pdv.php",
-                            method: 'get',
-                            data: 'DadosMatricula=' +
-                                DadosMatricula1 +
-                                "&nomeSelecionado=" +
-                                nomeSelecionado2 +
-                                "&DadosEntrada=" +
-                                DadosEntrada1 +
-                                "&DadosSaida=" +
-                                DadosSaida1 +
-                                "&DadosIntervalo=" +
-                                DadosIntervalo1 +
-                                "&usuarioLogado=" +
-                                usuarioLogado +
-                                "&dataPesquisa=" +
-                                dataPesquisa +
-                                "&numPDV=" +
-                                numPDV +
-                                "&horasIntermediarias=" +
-                                horasIntermediarias +
-                                "&loja=" +
-                                loja,
-                            // dataType: 'json',
-                            success: function(retorno2) {
-                                $.ajax({
-                                    url: "config/pesquisar_relatorio_pdv.php",
-                                    method: 'POST',
-                                    data: 'dataPesquisa=' +
-                                        dataPesquisa +
-                                        "&loja=" +
-                                        loja,
-                                    success: function(relatorio_atualizado2) {
-
-                                        $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                                        criandoHtmlmensagemCarregamento("ocultar");
-
-                                    }
-                                });
-                            }
-                        });
-
-
-
-
-                    }
-                });
-        
-
-    });
-
-
-    $('#dataPesquisa').on('change', function() {
-        criandoHtmlmensagemCarregamento("exibir");
-        var dataPesquisa = $("#dataPesquisa").val();
-        var dataAtual = $("#dataAtual").val();
-
-        if (dataPesquisa == "") {
-            dataPesquisa = dataAtual
-        }
-
+        $selects2.not(this).find('option[value="' + nomeSelecionado2 + '"]').remove();
 
         $.ajax({
-            url: "config/pesquisar_escalaPDV.php",
-            method: 'POST',
-            data: 'dataPesquisa=' +
-                dataPesquisa +
+            url: "filtro/busca_infosFuncionarios.php",
+            method: 'get',
+            data: 'MatriculaDaPessoaSelecionada=' +
+                MatriculaDaPessoaSelecionada2 +
                 "&loja=" +
-                loja,
-            success: function(data_pesquisada) {
+                +loja +
+                "&dataAtual=" +
+                dataAtual +
+                "&nomeSelecionado=" +
+                nomeSelecionado2,
+            dataType: 'json',
+            success: function(retorno2) {
+                matricula2.text(retorno2.MATRICULA);
+                entrada2.text(retorno2.HORAENTRADA);
+                saida2.text(retorno2.HORASAIDA);
+                intervalo2.text(retorno2.SAIDAPARAALMOCO);
 
-                $('.dadosEscalaPDV').empty().html(data_pesquisada);
+                var DadosMatricula1 = retorno2.MATRICULA;
+                var DadosEntrada1 = retorno2.HORAENTRADA;
+                var DadosSaida1 = retorno2.HORASAIDA;
+                var DadosIntervalo1 = retorno2.SAIDAPARAALMOCO;
 
+                var horasIntermediarias = calcularHorasIntermediarias(DadosEntrada1, DadosSaida1, DadosIntervalo1);
                 $.ajax({
-                    url: "config/pesquisar_relatorio_pdv.php",
-                    method: 'POST',
-                    data: 'dataPesquisa=' +
+                    url: "config/insertTarde_escalaPDV.php",
+                    method: 'get',
+                    data: 'DadosMatricula1=' +
+                        DadosMatricula1 +
+                        "&nomeSelecionado2=" +
+                        nomeSelecionado2 +
+                        "&DadosEntrada1=" +
+                        DadosEntrada1 +
+                        "&DadosSaida1=" +
+                        DadosSaida1 +
+                        "&DadosIntervalo1=" +
+                        DadosIntervalo1 +
+                        "&usuarioLogado=" +
+                        usuarioLogado +
+                        "&dataPesquisa=" +
                         dataPesquisa +
+                        "&numPDV=" +
+                        numPDV +
+                        "&numPDV=" +
+                        numPDV +
                         "&loja=" +
                         loja,
-                    success: function(relatorio_atualizado) {
+                    // dataType: 'json',
+                    success: function(retorno2) {
+                        $.ajax({
+                            url: "config/pesquisar_escalaPDV.php",
+                            method: 'POST',
+                            data: 'dataPesquisa=' +
+                                dataPesquisa +
+                                "&loja=" +
+                                loja,
+                            success: function(data_pesquisada2) {
 
-                        $('#relatorioPDV').empty().html(relatorio_atualizado);
-                        criandoHtmlmensagemCarregamento("ocultar");
+                                $('.dadosEscalaPDV').empty().html(data_pesquisada2);
 
+                            }
+                        });
                     }
                 });
+
+                $.ajax({
+                    url: "config/exibicao_escala_diaria_pdv.php",
+                    method: 'get',
+                    data: 'DadosMatricula=' +
+                        DadosMatricula1 +
+                        "&nomeSelecionado=" +
+                        nomeSelecionado2 +
+                        "&DadosEntrada=" +
+                        DadosEntrada1 +
+                        "&DadosSaida=" +
+                        DadosSaida1 +
+                        "&DadosIntervalo=" +
+                        DadosIntervalo1 +
+                        "&usuarioLogado=" +
+                        usuarioLogado +
+                        "&dataPesquisa=" +
+                        dataPesquisa +
+                        "&numPDV=" +
+                        numPDV +
+                        "&horasIntermediarias=" +
+                        horasIntermediarias +
+                        "&loja=" +
+                        loja,
+                    // dataType: 'json',
+                    success: function(retorno2) {
+                        $.ajax({
+                            url: "config/pesquisar_relatorio_pdv.php",
+                            method: 'POST',
+                            data: 'dataPesquisa=' +
+                                dataPesquisa +
+                                "&loja=" +
+                                loja,
+                            success: function(relatorio_atualizado2) {
+
+                                $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                                criandoHtmlmensagemCarregamento("ocultar");
+
+                            }
+                        });
+                    }
+                });
+
+
+
+
             }
         });
 
+
     });
+
+
+
 
     $('.fa-trash').on('click', function() {
         var dataPesquisa = $("#dataPesquisa").val();
