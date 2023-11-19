@@ -538,18 +538,47 @@ class Verifica
         return $lista;
     }
 
+    public function verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $mesPesquisado,$loja)
+    {
+        $lista = array();
+        global  $retorno1;
+        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
+        WHERE a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
+        and a.loja = '$loja'";
+        // echo $query;
+
+        $parse = oci_parse($oracle, $query);
+
+        $retorno1 = oci_execute($parse);
+
+        if ($retorno1) {
+            if (oci_fetch($parse)) {
+                $retorno1 = "JÁ EXISTE CADASTO.";
+            } else {
+                $retorno1 = "NÃO EXISTE CADASTRO.";
+            }
+        } else {
+            // Erro na consulta
+            echo "Erro na consulta.";
+        }
+        while ($row = oci_fetch_assoc($parse)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+        echo "</br>" + $retorno1;
+    }
     //verificacao bloqueio da escala mensal
 
-    public function verificaSeAEscalaMensalEstaFinalizada($oracle,$tabela,$mesPesquisado, $loja, )
+    public function verificaSeAEscalaMensalEstaFinalizada($oracle, $mesPesquisado, $loja,)
     {
 
         $lista = array();
         global  $retorno;
-        $query = "SELECT * from $tabela a
+        $query = "SELECT * from WEB_ESCALA_MENSAL a
         where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
         and status IS NULL OR TRIM(status) = '' 
         and a.loja = $loja";
-        //VERIFICA SE TEM LINHAS COM STATUS VAZIO NA TABELA E SE TIVER RETORNA NÃO FINALIZADA 
+         //VERIFICA SE TEM LINHAS COM STATUS VAZIO NA TABELA E SE TIVER RETORNA NÃO FINALIZADA 
         $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);
@@ -877,18 +906,18 @@ class Update
     }
 
     // bloqueio da escala mensal
-    public function bloqueiaEscalaMensal($oracle, $tabela, $status,  $usuarioQueFinalizou,$mesPesquisado,$loja)
+    public function bloqueiaEscalaMensal($oracle,  $status,  $usuarioQueFinalizou, $mesPesquisado, $loja)
     {
 
-        $query = "UPDATE $tabela a
+        $query = "UPDATE WEB_ESCALA_MENSAL a
         SET 
         status = '$status', 
         usufinalizacaoescala = ' $usuarioQueFinalizou'
         where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
         and status IS NULL OR TRIM(status) = '' 
         and a.loja = $loja";
-        
-       
+
+
 
         $parse = oci_parse($oracle, $query);
 
@@ -907,20 +936,18 @@ class Update
         echo $query;
     }
 
-    public function liberaEscalaMensal($oracle, $tabela, $status,  $usuarioQueliberouNovamenteAEscala,$mesPesquisado,$loja)
+    public function liberaEscalaMensal($oracle, $status, $usuarioQueliberouNovamenteAEscala, $mesPesquisado, $loja)
     {
 
-        $query = "UPDATE $tabela a
+        $query = "UPDATE WEB_ESCALA_MENSAL a
         SET 
         status = '$status', 
         usuNovaLiberacaoEscala = '$usuarioQueliberouNovamenteAEscala'
         where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
-        and status IS NULL
-         OR TRIM(status) = 'F'
-        and a.loja = $loja
-        ";
+         and TRIM(status) = 'F'
+        and a.loja = $loja ";
 
-       
+        echo $query;
 
         $parse = oci_parse($oracle, $query);
 
@@ -935,8 +962,6 @@ class Update
             //  echo "<br>" . $query;
             return false;
         }
-
-     
     }
 
     //diaria

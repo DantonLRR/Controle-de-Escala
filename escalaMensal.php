@@ -39,14 +39,25 @@ $mesAtual = date("Y-m");
 $usuarioLogado = $_SESSION['nome'];
 $dadosFunc = new Funcionarios();
 $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA']);
+
+$verifica = new verifica();
+
+$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA']);
+
+if ($retorno === "NÃO FINALIZADA.") {
+    $statusDaTabela = "NÃO FINALIZADA.";
+} else if ($retorno === "JÁ FINALIZADA.") {
+    $statusDaTabela = "JÁ FINALIZADA.";
+}
 ?>
 
 
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
         <input class="usu" type="hidden" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
-        <input class="usu" type="hidden" id="loja" value="<?= $_SESSION['LOJA'] ?>">
+        <input class="loja" type="hidden" id="loja" value="<?= $_SESSION['LOJA'] ?>">
         <input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
+        <input class="statusDaTabela" type="hidden" id="statusDaTabela" value="<?= $statusDaTabela ?>">
         <div class="row">
             <div class="col-lg-12  ">
                 <div class="card " style="border-color:#00a550;  ">
@@ -184,145 +195,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
         <script type="text/javascript" src="../../base/DataTables//FixedColumns 4.3.0//FixedColumns-4.3.0/js/dataTables.fixedColumns.min.js"></script>
         <script src="../base/dist/sidenav.js"></script>
         <script type="module" src="js/Script_escalaMensal.js" defer></script>
-        <script>
-            $('#table1').DataTable({
-                language: {
-                    "sEmptyTable": "Nenhum registro encontrado",
 
-                    "sInfo": " _START_ até _END_ de _TOTAL_ registros...  ",
-
-                    "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
-
-                    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
-
-                    "sInfoPostFix": "",
-
-                    "sInfoThousands": ".",
-
-                    "sLengthMenu": "_MENU_ resultados por página",
-
-                    "sLoadingRecords": "Carregando...",
-
-                    "sProcessing": "Processando...",
-
-                    "sZeroRecords": "Nenhum registro encontrado",
-
-                    "sSearch": "Pesquisar",
-
-                    "oPaginate": {
-
-                        "sNext": "Próximo",
-
-                        "sPrevious": "Anterior",
-
-                        "sFirst": "Primeiro",
-
-                        "sLast": "Último"
-
-                    },
-                },
-                dom: 'Bfrtip',
-                scrollY: 450,
-                scrollX: true,
-
-                scrollXInner: "100%",
-                scrollCollapse: true,
-                searching: true,
-
-                "paging": true,
-                "info": false,
-                "ordering": false,
-                "lengthMenu": [
-                    [40],
-                ],
-                fixedColumns: {
-                    left: 4,
-                },
-
-                buttons: [
-                    // {
-                    //     extend: 'excelHtml5',
-                    //     exportOptions: {
-                    //         columns: [0, ':visible']
-                    //     }
-                    // },
-                    {
-                        text: 'Escala Diaria',
-                        className: 'btnverde',
-                        action: function() {
-                            window.location.href = "escalaDiaria.php";
-                        }
-                    },
-                    {
-                        text: 'Finalizar Escala',
-                        className: 'btnVermelho',
-                        action: function() {
-                            var alteraStatusEscala = "F";
-                            var usuarioLogado = $("#usuarioLogado").val();
-                            var loja = $("#loja").val();
-
-                                var mesPesquisa = $("#dataPesquisa").val();
-
-                                var mesAtual = $("#mesAtual").val();
-
-                                if (mesPesquisa == "") {
-                                    mesPesquisa = mesAtual
-                                }
-
-                                $.ajax({
-                                    url: "config/desabilita_ou_habilita_mensal.php",
-                                    method: 'POST',
-                                    data: "mesPesquisa=" +
-                                        mesPesquisa +
-                                        "&mesAtual=" +
-                                        mesAtual +
-                                        "&alteraStatusEscala=" +
-                                        alteraStatusEscala +
-                                        "&loja=" +
-                                        loja +
-                                        "&usuarioLogado=" +
-                                        usuarioLogado,
-                                    success: function(atualizaTabela) {
-                                    }        });
-                              }
-                    },
-                    {
-                        text: 'Liberar Escala',
-                        className: 'btnVermelho',
-                        action: function() {
-                            var alteraStatusEscala = '';
-                            var usuarioLogado = $("#usuarioLogado").val();
-                            var loja = $("#loja").val();
-
-                                var mesPesquisa = $("#dataPesquisa").val();
-
-                                var mesAtual = $("#mesAtual").val();
-
-                                if (mesPesquisa == "") {
-                                    mesPesquisa = mesAtual
-                                }
-
-                                $.ajax({
-                                    url: "config/desabilita_ou_habilita_mensal.php",
-                                    method: 'POST',
-                                    data: "mesPesquisa=" +
-                                        mesPesquisa +
-                                        "&mesAtual=" +
-                                        mesAtual +
-                                        "&alteraStatusEscala=" +
-                                        alteraStatusEscala +
-                                        "&loja=" +
-                                        loja +
-                                        "&usuarioLogado=" +
-                                        usuarioLogado,
-                                    success: function(atualizaTabela) {
-                                    }        });
-                              }
-                    },
-                ],
-
-            });
-        </script>
     </div>
 </body>
 

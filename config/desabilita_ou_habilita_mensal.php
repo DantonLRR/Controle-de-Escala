@@ -2,7 +2,6 @@
 include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
 
-$tabela = "WEB_ESCALA_MENSAL";
 
 
 
@@ -20,12 +19,12 @@ $verifica = new Verifica();
 $update = new Update();
 
 
-$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle,$tabela,$mesPesquisado, $loja, );
+$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle,$mesPesquisado, $loja, );
 
 if ($retorno === "NÃO FINALIZADA.") {
-        $updateDadosNaTabela = $update->bloqueiaEscalaMensal($oracle, $tabela, $status,  $usuarioLogado ,$mesPesquisado,$loja);
+        $updateDadosNaTabela = $update->bloqueiaEscalaMensal($oracle,  $status,  $usuarioLogado ,$mesPesquisado,$loja);
     }else if ($retorno === "JÁ FINALIZADA."){
-        $updateDadosNaTabela2 = $update->liberaEscalaMensal($oracle, $tabela, $status,  $usuarioLogado,$mesPesquisado,$loja);
+        $updateDadosNaTabela2 = $update->liberaEscalaMensal($oracle, $status,  $usuarioLogado,$mesPesquisado,$loja);
 
 
     }

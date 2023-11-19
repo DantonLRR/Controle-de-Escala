@@ -13,6 +13,25 @@ $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSele
 $dadosFunc = new Funcionarios();
 $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja);
 
+$verifica = new verifica();
+// echo $dataSelecionadaNoFiltro;
+// echo"<br>".$loja;
+$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $loja);
+echo $retorno;
+if ($retorno === "NÃO FINALIZADA.") {
+    $statusDaTabelaPosPesquisa = "NÃO FINALIZADA.";
+} else if ($retorno === "JÁ FINALIZADA.") {
+    $statusDaTabelaPosPesquisa = "JÁ FINALIZADA.";
+}
+
+
+$recuperacaoDedados2 = $verifica-> verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro,$loja);
+ECHO $retorno1;
+if ($retorno1 == "NÃO EXISTE CADASTRO.") {
+    $statusDaTabelaPosPesquisa = "NÃO FINALIZADA.";
+}
+
+
 ?>
 <input class="" type="hidden" id="usuarioLogado" value="<?= $usuarioLogado ?>">
 <input class="" type="hidden" id="loja" value="<?= $loja ?>">
@@ -24,11 +43,13 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
 
         <tr class="trr ">
             <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
-            <th class="text-center theadColor" scope="row" style="width:150px ;display:none">matricula</th>
-            <th class="text-center theadColor" style="display:none"> HoraEntrada</th>
-            <th class="text-center theadColor" style="display:none"> HoraSaida</th>
-            <th class="text-center theadColor" style="display:none"> HoraIntervalo</th>
+            <th class="text-center theadColor">Entrada</th>
+            <th class="text-center theadColor">Saida</th>
+            <th class="text-center theadColor">Intervalo</th>
+
             <th class="text-center theadColor" style="display:none"> cargo</th>
+            <th class="text-center theadColor" scope="row" style="width:150px ;display:none">matricula</th>
+
             <?php
             foreach ($buscandoMesAno as $row) :
             ?>
@@ -50,9 +71,9 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
 
         <tr class="trr" id="quantDias">
             <td></td>
-            <td style="display:none"></td>
-            <td style="display:none"></td>
-            <td style="display:none"></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td style="display:none"></td>
             <td style="display:none"></td>
             <?php
@@ -73,12 +94,13 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
         ?>
             <tr class="trr">
                 <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
-                <td class="text-center matriculaFunc" style="display:none" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
-                <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
-                <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
-                <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
+                <td class="text-center horarioEntradaFunc"  scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
+                <td class="text-center horarioSaidaFunc"  scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
+                <td class="text-center horarioIntervaloFunc"  scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
                 <td class="text-center cargo" style="display:none" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
-                <?php
+                <td class="text-center matriculaFunc" style="display:none" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
+
+               <?php
                 $i = 1;
                 foreach ($buscandoMesAno as $row) :
                 ?>
@@ -108,40 +130,25 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                 ?>
             </tr>
         <?php
-        endforeach
+        endforeach;
+
         ?>
     </tbody>
-
+    
+    <input class="statusDaTabela"  id="statusDaTabelaPosPesquisa" value="<?= $statusDaTabelaPosPesquisa ?>">
 
 </table>
+<script>
+    $(document).ready(function() {
+        var statusDaTabelaPosPesquisa = $("#statusDaTabelaPosPesquisa").val();
+
+        if (statusDaTabelaPosPesquisa === "JÁ FINALIZADA.") {
+            $('#table1').find('input, select, textarea, button').prop('disabled', true);
+        }
+    });
+</script>
 
 <Script>
-    $('#dataSelecionadaNoFiltro').on('change', function() {
-
-        var mesPesquisa = $("#dataSelecionadaNoFiltro").val();
-
-        var mesAtual = $("#mesAtual").val();
-
-        if (mesPesquisa == "") {
-            mesPesquisa = mesAtual
-        }
-        criandoHtmlmensagemCarregamento("exibir");
-
-        $.ajax({
-            url: "config/pesquisar_escalaMensal.php",
-            method: 'POST',
-            data: 'mesPesquisa=' + mesPesquisa +
-                "&loja=" +
-                loja,
-            success: function(mes_Pesquisado) {
-
-                $('.atualizaTabela').empty().html(mes_Pesquisado);
-                criandoHtmlmensagemCarregamento("ocultar");
-            }
-        });
-    });
-
-
     $('select').on('change', function() {
         $('tr').removeClass('selecionado').css('background-color', '').css('color', '');
 
@@ -283,18 +290,115 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
         },
 
         buttons: [{
-                extend: 'excelHtml5',
-                exportOptions: {
-                    columns: [0, ':visible']
-                }
-            },
-            {
                 text: 'Escala Diaria',
-                className: '',
+                className: 'btnverde',
                 action: function() {
                     window.location.href = "escalaDiaria.php";
                 }
             },
+            {
+                text: 'Finalizar Escala',
+                className: 'btnVermelho',
+                action: function() {
+                    var alteraStatusEscala = "F";
+                    var usuarioLogado = $("#usuarioLogado").val();
+                    var loja = $("#loja").val();
+
+                    var mesPesquisa = $("#dataPesquisa").val();
+
+                    var mesAtual = $("#mesAtual").val();
+
+                    if (mesPesquisa == "") {
+                        mesPesquisa = mesAtual
+                    };
+
+
+
+                    $.ajax({
+                        url: "config/desabilita_ou_habilita_mensal.php",
+                        method: 'POST',
+                        data: "mesPesquisa=" +
+                            mesPesquisa +
+                            "&mesAtual=" +
+                            mesAtual +
+                            "&alteraStatusEscala=" +
+                            alteraStatusEscala +
+                            "&loja=" +
+                            loja +
+                            "&usuarioLogado=" +
+                            usuarioLogado,
+                        success: function(atualizaTabela) {
+                            $.ajax({
+                                url: "config/pesquisar_escalaMensal.php",
+                                method: 'POST',
+                                data: 'mesPesquisa=' +
+                                    mesPesquisa +
+                                    "&loja=" +
+                                    loja +
+                                    "&usuarioLogado=" +
+                                    usuarioLogado,
+                                success: function(mes_Pesquisado) {
+
+                                    $('.atualizaTabela').empty().html(mes_Pesquisado);
+
+                                }
+                            });
+
+
+
+                        }
+                    });
+                }
+            },
+            {
+                text: 'Liberar Escala',
+                className: 'btnVermelho',
+                action: function() {
+                    var alteraStatusEscala = '';
+                    var usuarioLogado = $("#usuarioLogado").val();
+                    var loja = $("#loja").val();
+
+                    var mesPesquisa = $("#dataPesquisa").val();
+
+                    var mesAtual = $("#mesAtual").val();
+
+                    if (mesPesquisa == "") {
+                        mesPesquisa = mesAtual
+                    }
+                    $.ajax({
+                        url: "config/desabilita_ou_habilita_mensal.php",
+                        method: 'POST',
+                        data: "mesPesquisa=" +
+                            mesPesquisa +
+                            "&mesAtual=" +
+                            mesAtual +
+                            "&alteraStatusEscala=" +
+                            alteraStatusEscala +
+                            "&loja=" +
+                            loja +
+                            "&usuarioLogado=" +
+                            usuarioLogado,
+                        success: function(atualizaTabela3) {
+                            $.ajax({
+                                url: "config/pesquisar_escalaMensal.php",
+                                method: 'POST',
+                                data: 'mesPesquisa=' +
+                                    mesPesquisa +
+                                    "&loja=" +
+                                    loja +
+                                    "&usuarioLogado=" +
+                                    usuarioLogado,
+                                success: function(mes_Pesquisado) {
+
+                                    $('.atualizaTabela').empty().html(mes_Pesquisado);
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
         ],
 
     });
