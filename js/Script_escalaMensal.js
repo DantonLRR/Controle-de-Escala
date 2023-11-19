@@ -241,6 +241,326 @@ $('select').on('change', function () {
 
 
 $('#table1').on('change', '.estilezaSelect', function () {
+
+
+    if ($(this).val() === 'FA') {
+        var colIndex = $(this).closest('td').index();
+        var mesPesquisa = $("#dataPesquisa").val();
+        // alert(mesPesquisa)
+
+        var mesAtual = $("#mesAtual").val();
+
+        if (mesPesquisa == "") {
+            mesPesquisa = mesAtual
+        }
+
+        var opcaoSelecionada = 'FA';
+        var $tr = $(this).closest('tr');
+        var funcionario = $tr.find('td.funcionario').text();
+        var matriculaFunc = $tr.find('td.matriculaFunc').text();
+        var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
+        var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
+        var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
+        var cargoFunc = $tr.find('td.cargo').text();
+
+        var colIndex = $(this).closest('td').index();
+        var mesPesquisa = $("#dataPesquisa").val();
+
+
+        var $selects = $(this).closest('tr').find('.estilezaSelect'); // Todos os selects da linha
+
+        var indexAtual = $('#table1 thead tr.trr th').eq(colIndex).text();
+
+        // alert(indexAtual)
+
+        var indexUltimoDia = $selects.length;
+        // alert(indexAtual);
+        // alert(indexUltimoDia);
+
+
+
+        var indexAtualNumero = parseInt(indexAtual, 10);
+
+        for (var i = indexAtualNumero; i <= indexUltimoDia; i++) {
+            var aux = i < 10 ? "0" + i : i.toString();
+
+            var numeroDiaDaSemana = aux;
+
+            // console.log(numeroDiaDaSemana);
+
+            $.ajax({
+                url: "config/insertEUpdate_EscalaMensal.php",
+                method: 'get',
+                data: 'numeroDiaDaSemana=' +
+                    numeroDiaDaSemana +
+                    "&opcaoSelecionada=" +
+                    opcaoSelecionada +
+                    "&funcionario=" +
+                    funcionario +
+                    "&mesAtual=" +
+                    mesAtual +
+                    "&mesPesquisa=" +
+                    mesPesquisa +
+                    "&usuarioLogado=" +
+                    usuarioLogado +
+                    "&matriculaFunc=" +
+                    matriculaFunc +
+                    "&loja=" +
+                    loja +
+                    "&horarioEntradaFunc=" +
+                    horarioEntradaFunc +
+                    "&horarioSaidaFunc=" +
+                    horarioSaidaFunc +
+                    "&horarioIntervaloFunc=" +
+                    horarioIntervaloFunc +
+                    "&cargoFunc=" +
+                    cargoFunc,
+
+                // dataType: 'json',
+                success: function (retorno) {
+                    // console.log(retorno)
+
+                }
+            });
+            $selects.eq(i).val('FA');
+        }
+
+
+        // Calcular quantos dias faltam até o final do mês
+        var diasRestantes = indexUltimoDia - indexAtual;
+        var diasParaProximoMes = Math.min(30 - diasRestantes, diasRestantes);
+        alert("faltaram  para o proximo mes: " + diasParaProximoMes);
+
+
+        // Obtém o ano e o mês a partir da string mesPesquisa
+        var ano = parseInt(mesPesquisa.split('-')[0]);
+        var mes = parseInt(mesPesquisa.split('-')[1]);
+
+
+
+        // Converte 'mesPesquisa' para um objeto Date
+        var data = new Date(ano, mes - 1); // O mês em JavaScript começa em zero (janeiro é 0)
+
+        // Verifica se a quantidade de dias é maior que 1 para avançar para o próximo mês
+        if (diasParaProximoMes > 1) {
+            // Adiciona a quantidade de dias à data atual
+            data.setMonth(data.getMonth() + 1);
+            ano = data.getFullYear();
+            mes = data.getMonth() + 1;
+
+            // Formata o novo mês para o formato 'AAAA-MM'
+            mesPesquisa = ano + '-' + (mes < 10 ? '0' + mes : mes);
+        }
+
+        console.log(mesPesquisa); // Aqui você terá o valor do mês atualizado, seja o mesmo ou o próximo mês
+
+        // Loop para contar até a quantidade de dias desejada
+        for (var i = 1; i <= diasParaProximoMes; i++) {
+            var numeroDiaDaSemana = i < 10 ? "0" + i : i.toString();
+            console.log(numeroDiaDaSemana);
+            if (diasParaProximoMes > 1) {
+                $.ajax({
+                    url: "config/insertEUpdate_EscalaMensal.php",
+                    method: 'get',
+                    data: 'numeroDiaDaSemana=' +
+                        numeroDiaDaSemana +
+                        "&opcaoSelecionada=" +
+                        opcaoSelecionada +
+                        "&funcionario=" +
+                        funcionario +
+                        "&mesAtual=" +
+                        mesAtual +
+                        "&mesPesquisa=" +
+                        mesPesquisa +
+                        "&usuarioLogado=" +
+                        usuarioLogado +
+                        "&matriculaFunc=" +
+                        matriculaFunc +
+                        "&loja=" +
+                        loja +
+                        "&horarioEntradaFunc=" +
+                        horarioEntradaFunc +
+                        "&horarioSaidaFunc=" +
+                        horarioSaidaFunc +
+                        "&horarioIntervaloFunc=" +
+                        horarioIntervaloFunc +
+                        "&cargoFunc=" +
+                        cargoFunc,
+
+                    // dataType: 'json',
+                    success: function (retorno) {
+                        console.log(retorno)
+
+                    }
+                });
+            }
+        }
+
+    }
+    else if ($(this).val() !== 'FA'){
+
+            var colIndex = $(this).closest('td').index();
+            var mesPesquisa = $("#dataPesquisa").val();
+            // alert(mesPesquisa)
+    
+            var mesAtual = $("#mesAtual").val();
+    
+            if (mesPesquisa == "") {
+                mesPesquisa = mesAtual
+            }
+    
+            var opcaoSelecionada = '';
+            var $tr = $(this).closest('tr');
+            var funcionario = $tr.find('td.funcionario').text();
+            var matriculaFunc = $tr.find('td.matriculaFunc').text();
+            var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
+            var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
+            var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
+            var cargoFunc = $tr.find('td.cargo').text();
+    
+            var colIndex = $(this).closest('td').index();
+            var mesPesquisa = $("#dataPesquisa").val();
+    
+    
+            var $selects = $(this).closest('tr').find('.estilezaSelect'); // Todos os selects da linha
+    
+            var indexAtual = $('#table1 thead tr.trr th').eq(colIndex).text();
+    
+            // alert(indexAtual)
+    
+            var indexUltimoDia = $selects.length;
+            // alert(indexAtual);
+            // alert(indexUltimoDia);
+    
+    
+    
+            var indexAtualNumero = parseInt(indexAtual, 10);
+    
+            for (var i = indexAtualNumero; i <= indexUltimoDia; i++) {
+                var aux = i < 10 ? "0" + i : i.toString();
+    
+                var numeroDiaDaSemana = aux;
+    
+                // console.log(numeroDiaDaSemana);
+    
+                $.ajax({
+                    url: "config/insertEUpdate_EscalaMensal.php",
+                    method: 'get',
+                    data: 'numeroDiaDaSemana=' +
+                        numeroDiaDaSemana +
+                        "&opcaoSelecionada=" +
+                        opcaoSelecionada +
+                        "&funcionario=" +
+                        funcionario +
+                        "&mesAtual=" +
+                        mesAtual +
+                        "&mesPesquisa=" +
+                        mesPesquisa +
+                        "&usuarioLogado=" +
+                        usuarioLogado +
+                        "&matriculaFunc=" +
+                        matriculaFunc +
+                        "&loja=" +
+                        loja +
+                        "&horarioEntradaFunc=" +
+                        horarioEntradaFunc +
+                        "&horarioSaidaFunc=" +
+                        horarioSaidaFunc +
+                        "&horarioIntervaloFunc=" +
+                        horarioIntervaloFunc +
+                        "&cargoFunc=" +
+                        cargoFunc,
+    
+                    // dataType: 'json',
+                    success: function (retorno) {
+                        // console.log(retorno)
+    
+                    }
+                });
+                $selects.eq(i).val(' ');
+            }
+    
+    
+            // Calcular quantos dias faltam até o final do mês
+            var diasRestantes = indexUltimoDia - indexAtual;
+            var diasParaProximoMes = Math.min(30 - diasRestantes, diasRestantes);
+            alert("faltaram  para o proximo mes: " + diasParaProximoMes);
+    
+    
+            // Obtém o ano e o mês a partir da string mesPesquisa
+            var ano = parseInt(mesPesquisa.split('-')[0]);
+            var mes = parseInt(mesPesquisa.split('-')[1]);
+    
+    
+    
+            // Converte 'mesPesquisa' para um objeto Date
+            var data = new Date(ano, mes - 1); // O mês em JavaScript começa em zero (janeiro é 0)
+    
+            // Verifica se a quantidade de dias é maior que 1 para avançar para o próximo mês
+            if (diasParaProximoMes > 1) {
+                // Adiciona a quantidade de dias à data atual
+                data.setMonth(data.getMonth() + 1);
+                ano = data.getFullYear();
+                mes = data.getMonth() + 1;
+    
+                // Formata o novo mês para o formato 'AAAA-MM'
+                mesPesquisa = ano + '-' + (mes < 10 ? '0' + mes : mes);
+            }
+    
+            console.log(mesPesquisa); // Aqui você terá o valor do mês atualizado, seja o mesmo ou o próximo mês
+    
+            // Loop para contar até a quantidade de dias desejada
+            for (var i = 1; i <= diasParaProximoMes; i++) {
+                var numeroDiaDaSemana = i < 10 ? "0" + i : i.toString();
+                console.log(numeroDiaDaSemana);
+                if (diasParaProximoMes > 1) {
+                    $.ajax({
+                        url: "config/insertEUpdate_EscalaMensal.php",
+                        method: 'get',
+                        data: 'numeroDiaDaSemana=' +
+                            numeroDiaDaSemana +
+                            "&opcaoSelecionada=" +
+                            opcaoSelecionada +
+                            "&funcionario=" +
+                            funcionario +
+                            "&mesAtual=" +
+                            mesAtual +
+                            "&mesPesquisa=" +
+                            mesPesquisa +
+                            "&usuarioLogado=" +
+                            usuarioLogado +
+                            "&matriculaFunc=" +
+                            matriculaFunc +
+                            "&loja=" +
+                            loja +
+                            "&horarioEntradaFunc=" +
+                            horarioEntradaFunc +
+                            "&horarioSaidaFunc=" +
+                            horarioSaidaFunc +
+                            "&horarioIntervaloFunc=" +
+                            horarioIntervaloFunc +
+                            "&cargoFunc=" +
+                            cargoFunc,
+    
+                        // dataType: 'json',
+                        success: function (retorno) {
+                            console.log(retorno)
+    
+                        }
+                    });
+                }
+            }
+    
+        
+    }
+});
+
+
+
+
+
+
+$('#table1').on('change', '.estilezaSelect', function () {
     var opcaoSelecionada = $(this).val();
     var $tr = $(this).closest('tr');
     var funcionario = $tr.find('td.funcionario').text();
@@ -260,8 +580,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
     if (mesPesquisa == "") {
         mesPesquisa = mesAtual
     }
-    //alert(mesPesquisa)
-    // alert(mesPesquisa);
+
     $.ajax({
         url: "config/insertEUpdate_EscalaMensal.php",
         method: 'get',
@@ -292,13 +611,11 @@ $('#table1').on('change', '.estilezaSelect', function () {
 
         // dataType: 'json',
         success: function (retorno) {
-            console.log(retorno)
+            // console.log(retorno)
 
 
         }
     });
 });
-
-
 
 
