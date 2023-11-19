@@ -56,20 +56,21 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                             <label for="validationCustom02" class="form-label">Mês/Ano: </label>
 
                             <div class="col-lg-2">
-                                <input type="month" class="form-control dataPesquisa margin-bottom" id="dataPesquisa">
+                                <input type="month" class="form-control dataPesquisa margin-bottom" value="<?=$mesAtual ?>" id="dataPesquisa">
                             </div>
                         </div>
 
-                        <div class="atualizaTabela " >
+                        <div class="atualizaTabela">
                             <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
                                 <thead>
 
                                     <tr class="trr ">
                                         <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
+                                        <th class="text-center theadColor">Entrada</th>
+                                        <th class="text-center theadColor">Saida</th>
+                                        <th class="text-center theadColor">Intervalo</th>
                                         <th class="text-center theadColor" scope="row" style="width:150px ;display:none">matricula</th>
-                                        <th class="text-center theadColor" style="display:none"> HoraEntrada</th>
-                                        <th class="text-center theadColor" style="display:none"> HoraSaida</th>
-                                        <th class="text-center theadColor" style="display:none"> HoraIntervalo</th>
+
                                         <th class="text-center theadColor" style="display:none"> cargo</th>
                                         <?php
                                         foreach ($buscandoMesAno as $row) :
@@ -92,9 +93,9 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
 
                                     <tr class="trr" id="quantDias">
                                         <td></td>
-                                        <td style="display:none"></td>
-                                        <td style="display:none"></td>
-                                        <td style="display:none"></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                         <td style="display:none"></td>
                                         <td style="display:none"></td>
                                         <?php
@@ -115,10 +116,11 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                                     ?>
                                         <tr class="trr">
                                             <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
+                                            <td class="text-center horarioEntradaFunc" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
+                                            <td class="text-center horarioSaidaFunc" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
+                                            <td class="text-center horarioIntervaloFunc" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
                                             <td class="text-center matriculaFunc" style="display:none" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
-                                            <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
-                                            <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
-                                            <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
+
                                             <td class="text-center cargo" style="display:none" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
                                             <?php
                                             $i = 1;
@@ -234,7 +236,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                     [40],
                 ],
                 fixedColumns: {
-                    left: 2,
+                    left: 4,
                 },
 
                 buttons: [{

@@ -33,15 +33,15 @@ $diaDeHojeComAspas = '"' . $diaDeHoje . '"';
 
 $InformacaoDosDias = new Dias();
 $InformacaoFuncionarios = new Funcionarios();
-
+$calculoDeFuncionariosNecessariosPorHora = new Porcentagem();
 
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
 
-$FuncManha = $InformacaoFuncionarios-> buscaFuncEHorarioDeTrabalhoManha($oracle,$_SESSION['LOJA'], $diaDeHojeComAspas,$mesEAnoAtual,$hoje  );
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $_SESSION['LOJA'], $diaDeHojeComAspas, $mesEAnoAtual, $hoje);
 // var_dump($FuncManha);
 // echo "<br><br><br>";
-$FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $hoje);
+$FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $hoje, $_SESSION['LOJA']);
 // var_dump($FuncEscaladosMANHA);
 
 // echo "<br><br><br>";
@@ -63,8 +63,8 @@ foreach ($FuncManha as $funcManha1) {
 // var_dump($naoRepetidosMANHA);
 
 
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle,$_SESSION['LOJA'], $diaDeHojeComAspas,$mesEAnoAtual,$hoje  );
-$FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $hoje);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDeHojeComAspas, $mesEAnoAtual, $hoje);
+$FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $hoje, $_SESSION['LOJA']);
 // var_dump($FuncEscaladosTARDE);
 // echo"<br><br><br>";
 $naoRepetidosTARDE = array();
@@ -110,45 +110,63 @@ for ($i = 7; $i <= 21; $i++) {
                                 <label class="form-label">
                                     Dia Vigente Da pesquisa
                                 </label>
-                                <input type="date" class="form-control dataPesquisa" id="dataPesquisa" value="<?=$hoje?>">
+                                <input type="date" class="form-control dataPesquisa" id="dataPesquisa" value="<?= $hoje ?>">
                                 <label class="form-label ">
                                     Quantidade de operadores :
                                 </label>
                                 <div class="atualizaOpPorDia">
-                                <?php
-                                $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual,$hoje,$_SESSION['LOJA']);
+                                    <?php
+                                    $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual, $hoje, $_SESSION['LOJA']);
+                                    $quantidadeDePessoasEscaladas = 0;
+                                    if (empty($quantidadePorDiaDeFuncionarios)) {
+                                        $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para hoje";
+                                    } else {
+                                        $quantidadePorDiaDeFuncionariosImpressao = count($quantidadePorDiaDeFuncionarios);
+                                        $quantidadeDePessoasEscaladas = $quantidadePorDiaDeFuncionariosImpressao;
+                                    }
 
-                                if (empty($quantidadePorDiaDeFuncionarios)) {
-                                    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para hoje";
-                                } else {
-                                    $quantidadePorDiaDeFuncionariosImpressao = count($quantidadePorDiaDeFuncionarios);
-                                }
-
-                                ?>
-                                <p><?= $quantidadePorDiaDeFuncionariosImpressao ?></p>
+                                    ?>
+                                    <p><?= $quantidadePorDiaDeFuncionariosImpressao ?></p>
                                 </div>
                             </div>
-                            <div class="col-lg-10">
+                            <div class="col-lg-10 ">
                                 <label class="form-label">
-                                    Bips Total:
+                                    Operadores por horário :
                                 </label>
+                                <div class="CalculoDosOperadoresPorHorario">
+                                    <table id="tableHeader" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
-                                <table id="tableHeader" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
+                                        <thead style="background-color: #00a550; color: white;">
+                                            <tr class="trr">
+                                                <?php
+                                                $pessoasPorHora = $calculoDeFuncionariosNecessariosPorHora->quantidadesDePessoasPorHoraCalculo($oracle, $quantidadeDePessoasEscaladas, $_SESSION['LOJA'], $hoje);
+                                                foreach ($pessoasPorHora as $ROWpessoasPorHora) :
+                                                ?>
 
-                                    <thead style="background-color: #00a550; color: white;">
-                                        <tr class="trr">
+                                                    <th class="text-center" colspan=""><?= $ROWpessoasPorHora['HORA'] ?></th>
 
+                                                <?php
+                                                endforeach;
+                                                ?>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="background-color: #DCDCDC;">
+                                            <tr class="trr">
+                                                <?php
+                                                $pessoasPorHora = $calculoDeFuncionariosNecessariosPorHora->quantidadesDePessoasPorHoraCalculo($oracle, $quantidadeDePessoasEscaladas, $_SESSION['LOJA'], $hoje);
+                                                foreach ($pessoasPorHora as $ROWporcentagemDePessoasPorHora) :
+                                                ?>
 
-                                            <th class="text-center" colspan=""></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody style="background-color: #DCDCDC;">
-                                        <tr class="trr">
-                                            <td class="text-center" scope="row" id=""></td>
+                                                    <td class="text-center" colspan=""><?= $ROWporcentagemDePessoasPorHora['QTD_FUNCIONARIOS'] ?></td>
 
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                <?php
+                                                endforeach;
+                                                ?>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -197,8 +215,8 @@ for ($i = 7; $i <= 21; $i++) {
                                     $qntPDV = array();
                                     for ($i = 1; $i <= 30; $i++) {
                                         $i;
-                                        $horariosFuncManha = $InformacaoFuncionarios->filtroFuncionariosCadastradosManha($oracle, $hoje, $i);
-                                        $horariosFuncTarde = $InformacaoFuncionarios->filtroFuncionariosCadastradoTarde($oracle, $hoje, $i);
+                                        $horariosFuncManha = $InformacaoFuncionarios->filtroFuncionariosCadastradosManha($oracle, $hoje, $i, $_SESSION['LOJA']);
+                                        $horariosFuncTarde = $InformacaoFuncionarios->filtroFuncionariosCadastradoTarde($oracle, $hoje, $i, $_SESSION['LOJA']);
                                         $totalManha = count($horariosFuncManha);
                                         $totalTarde = count($horariosFuncTarde);
                                     ?>

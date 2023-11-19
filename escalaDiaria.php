@@ -62,9 +62,9 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
         <div class="row">
             <div class="col-md-12">
                 <div class="card" style="border-color:#00a550;  ">
-                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">Todos os Cargos</h6>
+                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">Escala Diaria</h6>
                     <div class="card-body">
-                        <table id="table1" class="table table-bordered table-striped text-center ">
+                        <table id="table1" class="table table-bordered table-striped text-center " style="width:100%">
                             <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
                             <thead style="background-color: #00a550;">
                                 <tr>
@@ -108,38 +108,34 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
 
                                         <?php
                                         $verifica = $verificacaoDeDados->verificaAlteracaoNoHorarioDiario($oracle, $ROWconsultaNomeFunc['MATRICULA'], $hoje,  $ROWconsultaNomeFunc['NOME'], $_SESSION['LOJA']);
-                                        // echo "<br><br>";
-                                        // print_r($retorno);
                                         if ($retorno == "Já existem dados.") {
                                             $dadosAPartirDaEscalaIntermed = $dadosFunc->recuperaDadosDaEscalaIntermed($oracle, $ROWconsultaNomeFunc['MATRICULA'],   $ROWconsultaNomeFunc['NOME'], $_SESSION['LOJA'], $hoje,);
-                                            // print_r($dadosAPartirDaEscalaIntermed);
                                             foreach ($dadosAPartirDaEscalaIntermed as $RowDadosIntermed) :
                                         ?>
                                                 <td class="text-center td horaEntrada " scope="row">
-                                                    <input class=" " id="" type="time" value="<?= $RowDadosIntermed['HORAENTRADA'] ?>">
-
+                                                <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORAENTRADA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>                                               
                                                 </td>
                                                 <td class="text-center td horaSaida horarioSaidaFunc" scope="row">
-                                                    <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORASAIDA'] ?>">
+                                                    <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORASAIDA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
 
                                                 </td>
                                                 <td class="text-center td horaSaida horarioIntervalo" scope="row">
-                                                    <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORAINTERVALO'] ?>">
+                                                    <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORAINTERVALO'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
                                                 </td>
                                             <?php
                                             endforeach;
                                         } else if ($retorno == "Não existem dados.") {
                                             ?>
                                             <td class="text-center td horaEntrada " scope="row">
-                                                <input class=" " id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAENTRADA'] ?>">
+                                                <input class=" " id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAENTRADA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
 
                                             </td>
                                             <td class="text-center td horaSaida horarioSaidaFunc" scope="row">
-                                                <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORASAIDA'] ?>">
+                                                <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORASAIDA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
 
                                             </td>
                                             <td class="text-center td horaSaida horarioIntervalo" scope="row">
-                                                <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAINTERVALO'] ?>">
+                                                <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAINTERVALO'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
                                             </td>
                                         <?php
 

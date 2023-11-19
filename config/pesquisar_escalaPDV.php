@@ -24,7 +24,7 @@ $InformacaoFuncionarios = new Funcionarios();
 $FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $loja, $diaDaPesquisaComAspas , $mesEAnoDaPesquisa , $dataPesquisada);
 // var_dump($FuncManha);
 // echo "<br><br><br>";
-$FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $dataPesquisada);
+$FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $dataPesquisada,$loja);
 // var_dump($FuncEscaladosMANHA);
 
 // echo "<br><br><br>";
@@ -47,7 +47,7 @@ foreach ($FuncManha as $funcManha1) {
 
 
 $FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDaPesquisaComAspas , $mesEAnoDaPesquisa , $dataPesquisada);
-$FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $dataPesquisada);
+$FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $dataPesquisada,$loja);
 // var_dump($FuncEscaladosTARDE);
 // echo"<br><br><br>";
 $naoRepetidosTARDE = array();
@@ -101,8 +101,8 @@ foreach ($FuncTarde as $funcTarde2) {
         $qntPDV = array();
         for ($i = 1; $i <= 30; $i++) {
             $i;
-            $horariosFuncManha = $InformacaoFuncionarios->filtroFuncionariosCadastradosManha($oracle, $dataPesquisada, $i);
-            $horariosFuncTarde = $InformacaoFuncionarios->filtroFuncionariosCadastradoTarde($oracle, $dataPesquisada, $i);
+            $horariosFuncManha = $InformacaoFuncionarios->filtroFuncionariosCadastradosManha($oracle, $dataPesquisada, $i,$_SESSION['LOJA']);
+            $horariosFuncTarde = $InformacaoFuncionarios->filtroFuncionariosCadastradoTarde($oracle, $dataPesquisada, $i,$_SESSION['LOJA']);
             $totalManha = count($horariosFuncManha);
             $totalTarde = count($horariosFuncTarde);
         ?>

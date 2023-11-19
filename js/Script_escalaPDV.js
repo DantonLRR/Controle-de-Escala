@@ -528,6 +528,22 @@ $('#dataPesquisa').on('change', function () {
 
                         }
                     });
+
+                    $.ajax({
+                        url: "config/pesquisar_Operadores_por_horario.php",
+                        method: 'POST',
+                        data: 'dataPesquisa=' +
+                            dataPesquisa +
+                            "&loja=" +
+                            loja,
+                        success: function (porcentagemDePessoasConformePesquisa) {
+
+                            $('.CalculoDosOperadoresPorHorario').empty().html(porcentagemDePessoasConformePesquisa);
+
+
+                        }
+                    });
+
                     criandoHtmlmensagemCarregamento("ocultar");
 
                 }
