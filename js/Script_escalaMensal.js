@@ -329,7 +329,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
         // Calcular quantos dias faltam até o final do mês
         var diasRestantes = indexUltimoDia - indexAtual;
         var diasParaProximoMes = Math.min(30 - diasRestantes, diasRestantes);
-        alert("faltaram  para o proximo mes: " + diasParaProximoMes);
+        // alert("faltaram  para o proximo mes: " + diasParaProximoMes);
 
 
         // Obtém o ano e o mês a partir da string mesPesquisa
@@ -484,7 +484,7 @@ $('#table1').on('change', '.estilezaSelect', function () {
             // Calcular quantos dias faltam até o final do mês
             var diasRestantes = indexUltimoDia - indexAtual;
             var diasParaProximoMes = Math.min(30 - diasRestantes, diasRestantes);
-            alert("faltaram  para o proximo mes: " + diasParaProximoMes);
+            // alert("faltaram  para o proximo mes: " + diasParaProximoMes);
     
     
             // Obtém o ano e o mês a partir da string mesPesquisa
