@@ -56,7 +56,7 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                             <label for="validationCustom02" class="form-label">Mês/Ano: </label>
 
                             <div class="col-lg-2">
-                                <input type="month" class="form-control dataPesquisa margin-bottom" value="<?=$mesAtual ?>" id="dataPesquisa">
+                                <input type="month" class="form-control dataPesquisa margin-bottom" value="<?= $mesAtual ?>" id="dataPesquisa">
                             </div>
                         </div>
 
@@ -239,18 +239,85 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
                     left: 4,
                 },
 
-                buttons: [{
-                        extend: 'excelHtml5',
-                        exportOptions: {
-                            columns: [0, ':visible']
-                        }
-                    },
+                buttons: [
+                    // {
+                    //     extend: 'excelHtml5',
+                    //     exportOptions: {
+                    //         columns: [0, ':visible']
+                    //     }
+                    // },
                     {
                         text: 'Escala Diaria',
-                        className: '',
+                        className: 'btnverde',
                         action: function() {
                             window.location.href = "escalaDiaria.php";
                         }
+                    },
+                    {
+                        text: 'Finalizar Escala',
+                        className: 'btnVermelho',
+                        action: function() {
+                            var alteraStatusEscala = "F";
+                            var usuarioLogado = $("#usuarioLogado").val();
+                            var loja = $("#loja").val();
+
+                                var mesPesquisa = $("#dataPesquisa").val();
+
+                                var mesAtual = $("#mesAtual").val();
+
+                                if (mesPesquisa == "") {
+                                    mesPesquisa = mesAtual
+                                }
+
+                                $.ajax({
+                                    url: "config/desabilita_ou_habilita_mensal.php",
+                                    method: 'POST',
+                                    data: "mesPesquisa=" +
+                                        mesPesquisa +
+                                        "&mesAtual=" +
+                                        mesAtual +
+                                        "&alteraStatusEscala=" +
+                                        alteraStatusEscala +
+                                        "&loja=" +
+                                        loja +
+                                        "&usuarioLogado=" +
+                                        usuarioLogado,
+                                    success: function(atualizaTabela) {
+                                    }        });
+                              }
+                    },
+                    {
+                        text: 'Liberar Escala',
+                        className: 'btnVermelho',
+                        action: function() {
+                            var alteraStatusEscala = '';
+                            var usuarioLogado = $("#usuarioLogado").val();
+                            var loja = $("#loja").val();
+
+                                var mesPesquisa = $("#dataPesquisa").val();
+
+                                var mesAtual = $("#mesAtual").val();
+
+                                if (mesPesquisa == "") {
+                                    mesPesquisa = mesAtual
+                                }
+
+                                $.ajax({
+                                    url: "config/desabilita_ou_habilita_mensal.php",
+                                    method: 'POST',
+                                    data: "mesPesquisa=" +
+                                        mesPesquisa +
+                                        "&mesAtual=" +
+                                        mesAtual +
+                                        "&alteraStatusEscala=" +
+                                        alteraStatusEscala +
+                                        "&loja=" +
+                                        loja +
+                                        "&usuarioLogado=" +
+                                        usuarioLogado,
+                                    success: function(atualizaTabela) {
+                                    }        });
+                              }
                     },
                 ],
 

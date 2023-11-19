@@ -538,7 +538,39 @@ class Verifica
         return $lista;
     }
 
+    //verificacao bloqueio da escala mensal
 
+    public function verificaSeAEscalaMensalEstaFinalizada($oracle,$tabela,$mesPesquisado, $loja, )
+    {
+
+        $lista = array();
+        global  $retorno;
+        $query = "SELECT * from $tabela a
+        where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
+        and status IS NULL OR TRIM(status) = '' 
+        and a.loja = $loja";
+        //VERIFICA SE TEM LINHAS COM STATUS VAZIO NA TABELA E SE TIVER RETORNA NÃO FINALIZADA 
+        $parse = oci_parse($oracle, $query);
+
+        $retorno = oci_execute($parse);
+
+        if ($retorno) {
+            if (oci_fetch($parse)) {
+                $retorno = "NÃO FINALIZADA.";
+            } else {
+                $retorno = "JÁ FINALIZADA.";
+            }
+        } else {
+            // Erro na consulta
+            echo "Erro na consulta.";
+        }
+        while ($row = oci_fetch_assoc($parse)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+        echo  $query;
+        echo "</br>" + $retorno;
+    }
 
     //diaria
 
@@ -827,7 +859,8 @@ class Update
     //mensal
     public function updateDeFuncionariosNaEscalaMensal($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $matricula, $loja)
     {
-        $query = "UPDATE WEB_ESCALA_MENSAL a SET
+        $query = "UPDATE WEB_ESCALA_MENSAL a
+         SET
             datainclusao = SYSDATE,
             usuinclusao = '$usuarioLogado',
             mesSelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM'),
@@ -843,6 +876,68 @@ class Update
         oci_execute($parse);
     }
 
+    // bloqueio da escala mensal
+    public function bloqueiaEscalaMensal($oracle, $tabela, $status,  $usuarioQueFinalizou,$mesPesquisado,$loja)
+    {
+
+        $query = "UPDATE $tabela a
+        SET 
+        status = '$status', 
+        usufinalizacaoescala = ' $usuarioQueFinalizou'
+        where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
+        and status IS NULL OR TRIM(status) = '' 
+        and a.loja = $loja";
+        
+       
+
+        $parse = oci_parse($oracle, $query);
+
+        $retorno = oci_execute($parse);
+        if ($retorno) {
+            global $sucess;
+            $sucess = 1;
+
+            return true;
+        } else {
+            $sucess = 0;
+            //  echo "<br>" . $query;
+            return false;
+        }
+
+        echo $query;
+    }
+
+    public function liberaEscalaMensal($oracle, $tabela, $status,  $usuarioQueliberouNovamenteAEscala,$mesPesquisado,$loja)
+    {
+
+        $query = "UPDATE $tabela a
+        SET 
+        status = '$status', 
+        usuNovaLiberacaoEscala = '$usuarioQueliberouNovamenteAEscala'
+        where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
+        and status IS NULL
+         OR TRIM(status) = 'F'
+        and a.loja = $loja
+        ";
+
+       
+
+        $parse = oci_parse($oracle, $query);
+
+        $retorno = oci_execute($parse);
+        if ($retorno) {
+            global $sucess;
+            $sucess = 1;
+
+            return true;
+        } else {
+            $sucess = 0;
+            //  echo "<br>" . $query;
+            return false;
+        }
+
+     
+    }
 
     //diaria
     public function updateDeFuncionariosNaEscalaIntermediaria($oracle, $horaEntrada, $horaSaida, $horaIntervalo, $usuInclusao, $matricula, $nome, $loja, $diaSelecionado)
@@ -971,7 +1066,7 @@ class Update
 
 class Porcentagem
 {
-    public function quantidadesDePessoasPorHoraCalculo($oracle, $quantidadePorDiaDeFuncionarios,$lojaDaPessoaLogada, $dataAtual)
+    public function quantidadesDePessoasPorHoraCalculo($oracle, $quantidadePorDiaDeFuncionarios, $lojaDaPessoaLogada, $dataAtual)
     {
         $lista = array();
         $query = "SELECT T.NROEMPRESA,
@@ -987,7 +1082,7 @@ class Porcentagem
     AND T.DTA_PROGRAMAR =  TO_DATE('$dataAtual', 'YYYY-MM-DD')
     ";
         // echo $query;
-        
+
         $resultado = oci_parse($oracle, $query);
 
         oci_execute($resultado);
@@ -996,6 +1091,5 @@ class Porcentagem
             array_push($lista, $row);
         }
         return $lista;
-    
     }
 }
