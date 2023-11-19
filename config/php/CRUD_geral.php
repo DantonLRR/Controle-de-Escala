@@ -313,7 +313,7 @@ class Funcionarios
     }
 
 
-    public function filtroFuncionariosCadastradosManha($oracle, $dia, $i)
+    public function filtroFuncionariosCadastradosManha($oracle, $dia, $i, $lojaDaPessoaLogada)
     {
         $lista = array();
         $query = "SELECT a.matricula,
@@ -329,7 +329,9 @@ class Funcionarios
             where a.numpdv = $i
             and to_char(a.diaselecionado,'YYYY-MM-DD') = '$dia'
             and  status = 'A'
+            and a.loja = $lojaDaPessoaLogada
             ORDER BY a.numpdv ASC
+            
         ";
         //   echo "<br>". $query;
         $resultado = oci_parse($oracle, $query);
@@ -341,7 +343,7 @@ class Funcionarios
         return $lista;
     }
 
-    public function  filtroFuncionariosCadastradoTarde($oracle, $dia, $i)
+    public function  filtroFuncionariosCadastradoTarde($oracle, $dia, $i, $lojaDaPessoaLogada)
     {
         $lista = array();
         $query = "SELECT a.matricula,
@@ -351,11 +353,16 @@ class Funcionarios
         a.horaintervalo,
         a.datainclusao,
         a.usuinclusao,
-       TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') as DIASELECIONADO
-        FROM ESCALA_PDV_TARDE a
-         WHERE  TO_CHAR(a.DIASELECIONADO, 'YYYY-MM-DD') = '$dia'
-         and  status = 'A'
-         and a.numpdv = $i";
+        a.diaselecionado,
+        a.numpdv
+            FROM ESCALA_PDV_TARDE a
+            where a.numpdv = $i
+            and to_char(a.diaselecionado,'YYYY-MM-DD') = '$dia'
+            and  status = 'A'
+            and a.loja = $lojaDaPessoaLogada
+            ORDER BY a.numpdv ASC
+            
+         ";
 
         // echo $query;
         $resultado = oci_parse($oracle, $query);
@@ -367,7 +374,7 @@ class Funcionarios
         return $lista;
     }
 
-    public function funcionariosDisponiveisNoDia($oracle, $diaComAspas, $mesSelecionado,$dataPesquisada,$loja )
+    public function funcionariosDisponiveisNoDia($oracle, $diaComAspas, $mesSelecionado, $dataPesquisada, $loja)
     {
         $lista = array();
         $query =  "SELECT DISTINCT a.matricula,
@@ -412,7 +419,7 @@ class Funcionarios
         // print_r($lista);
     }
 
-    public function FuncsJaEscaladosMANHA($oracle, $diaSelecionado)
+    public function FuncsJaEscaladosMANHA($oracle, $diaSelecionado, $lojaDaPessoaLogada)
     {
         $lista = array();
         $query =   "SELECT a.matricula,
@@ -428,6 +435,7 @@ class Funcionarios
                     FROM ESCALA_PDV_Manha a
                     where  to_char(a.diaselecionado, 'YYYY-MM-DD') = '$diaSelecionado'
                     and status = 'A'
+                    and loja ='$lojaDaPessoaLogada'
                   
         ";
         //  echo $query."<br>";
@@ -441,7 +449,7 @@ class Funcionarios
         return $lista;
         // print_r( $lista);
     }
-    public function FuncsJaEscaladosTARDE($oracle, $diaSelecionado)
+    public function FuncsJaEscaladosTARDE($oracle, $diaSelecionado, $lojaDaPessoaLogada)
     {
         $lista = array();
         $query =   "SELECT a.matricula,
@@ -457,6 +465,7 @@ class Funcionarios
                     FROM ESCALA_PDV_TARDE a
                     where  to_char(a.diaselecionado, 'YYYY-MM-DD') = '$diaSelecionado'
                     and status = 'A'
+                    and loja ='$lojaDaPessoaLogada'
                   
         ";
         //  echo $query."<br>";
@@ -957,5 +966,36 @@ class Update
         }
         // echo $retorno;
         // echo $query;
+    }
+}
+
+class Porcentagem
+{
+    public function quantidadesDePessoasPorHoraCalculo($oracle, $quantidadePorDiaDeFuncionarios,$lojaDaPessoaLogada, $dataAtual)
+    {
+        $lista = array();
+        $query = "SELECT T.NROEMPRESA,
+        T.DTA_PROGRAMAR,
+        T.DTA_REFERENCIA,
+        T.HORA,
+        T.QTD_BIPS,
+        T.QTD_CUPONS,
+        T.PART_BIPS,
+        ROUND($quantidadePorDiaDeFuncionarios * 6 * (PART_BIPS / 100)) AS QTD_FUNCIONARIOS
+   FROM (DW_DMT.AGG_FATO_VENDAREF_LOJA@PDB_DW) T
+ WHERE T.NROEMPRESA = $lojaDaPessoaLogada
+    AND T.DTA_PROGRAMAR =  TO_DATE('$dataAtual', 'YYYY-MM-DD')
+    ";
+        // echo $query;
+        
+        $resultado = oci_parse($oracle, $query);
+
+        oci_execute($resultado);
+
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+    
     }
 }
