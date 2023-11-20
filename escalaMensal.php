@@ -148,7 +148,7 @@ if ($retorno === "NÃO FINALIZADA.") {
                                                     }  ?>
 
                                                     <select class="estilezaSelect" name="" id="">
-                                                        <option value=""><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
+                                                        <option value="<?=$recuperacaoDedados[0]["$d"] ?? ''?>"><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
 
                                                         <option value="F">F</option>
                                                         <option value="FA">FA</option>
