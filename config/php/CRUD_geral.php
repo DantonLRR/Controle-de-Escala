@@ -33,7 +33,7 @@ class Dias
 
 
 
-        //  echo  $query;
+        //  echo  "buscandoMesEDiaDaSemana <br>".$query;
 
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
@@ -494,6 +494,7 @@ class Verifica
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
         AND a.loja = $loja ";
 
+        echo "select para verificaCadastroNaEscalaMensal  <br><br> " . $query;
 
 
         $parse = oci_parse($oracle, $query);
@@ -514,8 +515,36 @@ class Verifica
             array_push($lista, $row);
         }
         return $lista;
-        echo "select para verificaCadastroNaEscalaMensal :" . $query;
         echo "</br>" + $retorno;
+    }
+
+    public function verificaCadastroNaEscalaMensal2($oracle, $matricula, $mesPesquisado, $loja)
+    {
+        $lista = array();
+        global  $retorno;
+        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
+        WHERE a.matricula = '$matricula'
+        AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
+        AND a.loja = $loja ";
+
+        echo "select para verificaCadastroNaEscalaMensal  <br><br> " . $query;
+
+
+        $parse = oci_parse($oracle, $query);
+
+          oci_execute($parse);
+        oci_fetch_assoc($parse);
+
+        if (oci_num_rows($parse)>=1){
+ 
+            $retorno= 1;
+         
+        }if (oci_num_rows($parse)<1){
+         
+            $retorno = 0;
+        }   
+      
+       // echo "</br>".$retorno;
     }
 
 
@@ -538,14 +567,14 @@ class Verifica
         return $lista;
     }
 
-    public function verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $mesPesquisado,$loja)
+    public function verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $mesPesquisado, $loja)
     {
         $lista = array();
         global  $retorno1;
         $query = "SELECT * FROM WEB_ESCALA_MENSAL a
         WHERE a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
         and a.loja = '$loja'";
-        // echo $query;
+        // echo "<br> verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado".$query;
 
         $parse = oci_parse($oracle, $query);
 
@@ -578,7 +607,8 @@ class Verifica
         where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
         and status IS NULL OR TRIM(status) = '' 
         and a.loja = $loja";
-         //VERIFICA SE TEM LINHAS COM STATUS VAZIO NA TABELA E SE TIVER RETORNA NÃO FINALIZADA 
+            //    echo "<br> verificaSeAEscalaMensalEstaFinalizada :". $query;
+        //VERIFICA SE TEM LINHAS COM STATUS VAZIO NA TABELA E SE TIVER RETORNA NÃO FINALIZADA 
         $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);
@@ -597,7 +627,7 @@ class Verifica
             array_push($lista, $row);
         }
         return $lista;
-        echo  $query;
+ 
         echo "</br>" + $retorno;
     }
 
@@ -692,7 +722,7 @@ class Insert
            SYSDATE,
            '$usuarioLogado'
         )";
-
+        echo $query;
         $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);
@@ -706,8 +736,6 @@ class Insert
             //  echo "<br>" . $query;
             return false;
         }
-
-        echo $query;
     }
 
     //diaria

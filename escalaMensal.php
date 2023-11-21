@@ -49,6 +49,14 @@ if ($retorno === "NÃO FINALIZADA.") {
 } else if ($retorno === "JÁ FINALIZADA.") {
     $statusDaTabela = "JÁ FINALIZADA.";
 }
+
+
+$recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA']);
+// ECHO $retorno1;
+if ($retorno1 == "NÃO EXISTE CADASTRO.") {
+    $statusDaTabela = "NÃO FINALIZADA.";
+}
+
 ?>
 
 

@@ -139,15 +139,6 @@ foreach ($FuncTarde as $funcTarde2) {
                         <td scope="row" class="NomeFunc">
                             <select class="estilezaSelect form-control" id="selectFuncionario">
                                 <option value="<?= $rowManha['MATRICULA'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
-                                <?php
-                                foreach ($naoRepetidosMANHA as $rowManha) :
-                                ?>
-                                    <div>
-                                        <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
-                                    </div>
-                                <?php
-                                endforeach
-                                ?>
                             </select>
                         </td>
                         <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?? '' ?></td>
@@ -186,15 +177,6 @@ foreach ($FuncTarde as $funcTarde2) {
                         <td scope="row" class="text-center nome2">
                             <select class="estilizaSelect2 form-control">
                                 <option value="<?= $row3Tarde['MATRICULA'] ?>"><?= $row3Tarde['NOME'] ?? '' ?></option>
-                                <?php
-                                foreach ($naoRepetidosTARDE as $rowTarde) :
-                                ?>
-                                    <div>
-                                        <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"> <?= $rowTarde['NOME'] ?> </option>
-                                    </div>
-                                <?php
-                                endforeach
-                                ?>
                             </select>
                         </td>
                         <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>

@@ -255,15 +255,6 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <td scope="row" class="NomeFunc">
                                                         <select class="estilezaSelect form-control" id="selectFuncionario">
                                                             <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
-                                                            <?php
-                                                            foreach ($naoRepetidosMANHA as $rowManha) :
-                                                            ?>
-                                                                <div>
-                                                                    <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
-                                                                </div>
-                                                            <?php
-                                                            endforeach
-                                                            ?>
                                                         </select>
                                                     </td>
                                                     <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?? '' ?></td>
@@ -304,15 +295,6 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <td scope="row" class="text-center nome2">
                                                         <select class="estilizaSelect2 form-control">
                                                             <option value="<?= $row3Tarde['NOME'] ?>"><?= $row3Tarde['NOME'] ?? '' ?></option>
-                                                            <?php
-                                                            foreach ($naoRepetidosTARDE as $rowTarde) :
-                                                            ?>
-                                                                <div>
-                                                                    <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"> <?= $rowTarde['NOME'] ?> </option>
-                                                                </div>
-                                                            <?php
-                                                            endforeach
-                                                            ?>
                                                         </select>
                                                     </td>
                                                     <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>

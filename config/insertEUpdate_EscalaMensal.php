@@ -5,7 +5,10 @@ include "php/CRUD_geral.php";
 $tabela = "WEB_ESCALA_MENSAL";
 
 
-$dia= '"'.$_GET['numeroDiaDaSemana'].'"';
+$dia= $_GET['numeroDiaDaSemana'];
+
+$arrayDia = explode(',', $dia);
+print_r($arrayDia);
 $opcaoSelect = $_GET['opcaoSelecionada'];
 $nome = $_GET['funcionario'];
 $mesAtual = $_GET['mesAtual'];
@@ -25,18 +28,22 @@ $verifica = new Verifica();
 
 $update = new Update();
 
+foreach ($arrayDia as $diaSelecionado) :
 
-$verificaSeJaExistemDados = $verifica ->verificaCadastroNaEscalaMensal($oracle,$matricula,$mesPesquisado,$loja );
+$verificaSeJaExistemDados = $verifica ->verificaCadastroNaEscalaMensaL2($oracle,$matricula,$mesPesquisado,$loja );
 
-if ($retorno === "Já existem dados.") {
+if ($retorno == '1'){
+echo $retorno." update <br>";
 
+    $updateDeDados = $update -> updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$diaSelecionado,$opcaoSelect, $matricula,$loja );
 
-    $updateDeDados = $update -> updateDeFuncionariosNaEscalaMensal($oracle,$usuarioLogado, $mesPesquisado, $nome,$dia,$opcaoSelect, $matricula,$loja );
+} else if($retorno == '0') {
+    echo $retorno." insert <br>";
 
-} else if($retorno === "Não existem dados.") {
-
-
-    $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle, $tabela,$dia,  $matricula,$nome,$loja,  $cargoFunc,$mesPesquisado, $horarioEntradaFunc,$horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado);
+    $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle, $tabela,$diaSelecionado,  $matricula,$nome,$loja,  $cargoFunc,$mesPesquisado, $horarioEntradaFunc,$horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado);
 
 
 }
+
+endforeach;
+
