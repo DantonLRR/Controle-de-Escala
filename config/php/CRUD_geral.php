@@ -532,19 +532,19 @@ class Verifica
 
         $parse = oci_parse($oracle, $query);
 
-          oci_execute($parse);
+        oci_execute($parse);
         oci_fetch_assoc($parse);
 
-        if (oci_num_rows($parse)>=1){
- 
-            $retorno= 1;
-         
-        }if (oci_num_rows($parse)<1){
-         
+        if (oci_num_rows($parse) >= 1) {
+
+            $retorno = 1;
+        }
+        if (oci_num_rows($parse) < 1) {
+
             $retorno = 0;
-        }   
-      
-       // echo "</br>".$retorno;
+        }
+
+        // echo "</br>".$retorno;
     }
 
 
@@ -596,6 +596,71 @@ class Verifica
         return $lista;
         echo "</br>" + $retorno1;
     }
+    public function verificaSeALinhaDoBancoTemFAESETiverRetornaAPrimeiraColunaComFA($oracle, $mesPesquisado, $loja,$matricula)
+    {
+        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
+        WHERE a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
+        and a.loja = $loja
+        and a.matricula = $matricula";
+        $parse = oci_parse($oracle, $query);
+        $resultado = array();
+    
+        if (oci_execute($parse)) {
+            while ($row = oci_fetch_assoc($parse)) {
+                foreach ($row as $coluna => $valor) {
+                    if ($valor === 'FA') {
+
+                        $resultado['MATRICULA'] = $row['MATRICULA'];
+                        $resultado['NOME'] = $row['NOME'];
+                        $resultado['LOJA'] = $row['LOJA'];
+                        $resultado['nome_coluna'] = $coluna; // Exemplo: Pode adicionar outros valores que queira retornar
+                        return $resultado;
+                    }
+                }
+            }
+        } else {
+            // Erro na consulta
+            echo "Erro na consulta.";
+        }
+    
+        return null; // Retorna null se não encontrar 'FA' em nenhuma coluna
+    }
+    
+    public function verificaSeALinhaFAFoiInseridaNoMesAnterior($oracle, $mesPesquisado, $loja,$matricula)
+    {
+        $lista = array();
+        global  $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior;
+        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
+        WHERE a.matricula = '$matricula'
+        AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
+        AND a.loja = $loja 
+        and a.inclusaodomesanterior = 'SIM'";
+
+
+
+
+        $parse = oci_parse($oracle, $query);
+
+        oci_execute($parse);
+        oci_fetch_assoc($parse);
+
+        if (oci_num_rows($parse) >= 1) {
+
+            $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior = 1;
+        }
+        if (oci_num_rows($parse) < 1) {
+
+            $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior = 0;
+        }
+        // echo $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior."<br><br>";
+        // echo "verificaSeALinhaFAFoiInseridaNoMesAnterior   " . $query;
+    }
+
+   
+    
+    
+
+
     //verificacao bloqueio da escala mensal
 
     public function verificaSeAEscalaMensalEstaFinalizada($oracle, $mesPesquisado, $loja,)
@@ -607,7 +672,7 @@ class Verifica
         where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
         and status IS NULL OR TRIM(status) = '' 
         and a.loja = $loja";
-            //    echo "<br> verificaSeAEscalaMensalEstaFinalizada :". $query;
+        //    echo "<br> verificaSeAEscalaMensalEstaFinalizada :". $query;
         //VERIFICA SE TEM LINHAS COM STATUS VAZIO NA TABELA E SE TIVER RETORNA NÃO FINALIZADA 
         $parse = oci_parse($oracle, $query);
 
@@ -627,7 +692,7 @@ class Verifica
             array_push($lista, $row);
         }
         return $lista;
- 
+
         echo "</br>" + $retorno;
     }
 
@@ -642,7 +707,7 @@ class Verifica
         and a.loja = $loja      
         and a.diaselecionado = TO_DATE('$diaselecionado', 'YYYY-MM-DD')
     
-    ";
+        ";
         $parse = oci_parse($oracle, $query);
 
         $retorno2 = oci_execute($parse);
@@ -738,6 +803,51 @@ class Insert
         }
     }
 
+    public function insertEscalaMensalProximoMes($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado,$inclusaodomesanterior)
+    {
+
+        $query = "INSERT INTO $tabela (
+             matricula,
+             nome,
+             LOJA,
+             CARGO,
+             mesSelecionado,
+            horaEntrada,
+            horaSaida,
+            horaintervalo,
+             $dia,
+          datainclusao, 
+           usuinclusao,
+           inclusaodomesanterior
+         ) VALUES (
+         '$matricula',
+          '$nome',
+          $loja ,
+          '$cargoFunc',
+         TO_DATE('$mesPesquisado', 'YYYY-MM'),  
+          '$horarioEntradaFunc',
+         '$horarioSaidaFunc', 
+          '$horarioIntervaloFunc ',
+          '$opcaoSelect',
+           SYSDATE,
+           '$usuarioLogado',
+           '$inclusaodomesanterior'
+        )";
+        echo $query;
+        $parse = oci_parse($oracle, $query);
+
+        $retorno = oci_execute($parse);
+        if ($retorno) {
+            global $sucess;
+            $sucess = 1;
+
+            return true;
+        } else {
+            $sucess = 0;
+            //  echo "<br>" . $query;
+            return false;
+        }
+    }
     //diaria
 
     public function insertNaTblIntermediariaEscalaDiaria($oracle, $matricula, $nome, $loja, $diaSelecionado, $horaEntrada, $horaSaida, $horaIntervalo, $usuInclusao)
@@ -933,6 +1043,25 @@ class Update
         oci_execute($parse);
     }
 
+    public function updateDeFuncionariosNaEscalaMensalProximoMes($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect,$inclusaodomesanterior, $matricula, $loja,)
+    {
+        $query = "UPDATE WEB_ESCALA_MENSAL a
+         SET
+            datainclusao = SYSDATE,
+            usuinclusao = '$usuarioLogado',
+            mesSelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM'),
+            nome = '$nome',
+            $dia = '$opcaoSelect',
+            LOJA = '$loja', 
+            inclusaodomesanterior = '$inclusaodomesanterior'
+         WHERE a.matricula = '$matricula'
+          and messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
+          and loja = $loja";
+        echo $query;
+        $parse = oci_parse($oracle, $query);
+
+        oci_execute($parse);
+    }
     // bloqueio da escala mensal
     public function bloqueiaEscalaMensal($oracle,  $status,  $usuarioQueFinalizou, $mesPesquisado, $loja)
     {

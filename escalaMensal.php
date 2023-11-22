@@ -153,11 +153,42 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                                         $d = "0" . $i;
                                                     } else {
                                                         $d = $i;
-                                                    }  ?>
+                                                    }
+                                                    $recuperaAPrimeiraColunaComFA = $verifica->verificaSeALinhaDoBancoTemFAESETiverRetornaAPrimeiraColunaComFA($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
+                                                    $verficaSeAInserçãoDeFAFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFAFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
+                                                //    echo $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior;
+                                                  
+                                                  
+                                                  
+                                                  
+                                                    $primeiroDiaNaoFA = $recuperaAPrimeiraColunaComFA['nome_coluna'] ?? $d;
+                                                    $primeiroDiaEncontrado = false;
+                                                    
+                                                        $isFA = ($recuperacaoDedados[0]["$d"] ?? '') === 'FA';
+                                                    
+                                                        // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
+                                                        if ($retornoVerificacaoSeOFAFoiInseridoNoMesAnterior == 1) {
+                                                            // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
+                                                            if ($isFA) {
+                                                                $disabled = ' disabled  name="desabilitarEsteSelect"';
+                                                            } else {
+                                                                $disabled = '';
+                                                            }
+                                                        } else {
+                                                        if ($isFA && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoFA) {
+                                                            $disabled = ' disabled  name="desabilitarEsteSelect"';
+                                                        } else {
+                                                            $disabled = '';
+                                                            if ($d === $primeiroDiaNaoFA) {
+                                                                $primeiroDiaEncontrado = true;
+                                                            }
+                                                        }                                                                                                      
+                                                    }
+                                                    // echo $disabled;
+                                                    ?>
 
-                                                    <select class="estilezaSelect" name="" id="">
-                                                        <option value="<?=$recuperacaoDedados[0]["$d"] ?? ''?>"><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
-
+                                                    <select <?= $disabled ?> class="estilezaSelect" name="" id="">
+                                                        <option value="<?= $recuperacaoDedados[0]["$d"] ?? '' ?>"> <?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
                                                         <option value="F">F</option>
                                                         <option value="FA">FA</option>
                                                         <option value="V">V</option>

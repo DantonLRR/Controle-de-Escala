@@ -276,7 +276,7 @@ $(document).ready(function () {
 
                 var indexAtual = $('#table1 thead tr.trr th').eq(colIndex).text();
 
-                alert("dia selecionado :" + indexAtual)
+                // alert("dia selecionado :" + indexAtual)
 
                 var indexUltimoDia = $selects.length;
                 //console.log(indexAtual);
@@ -292,7 +292,7 @@ $(document).ready(function () {
 
                     console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes);
 
-                    $selects.eq(i).val('FA');
+                    $selects.eq(i).prop('disabled', true).val('FA');                  
                 }
 
 
@@ -300,7 +300,7 @@ $(document).ready(function () {
                     url: "config/insertEUpdate_EscalaMensal.php",
                     method: 'get',
                     data: 'numeroDiaDaSemana=' +
-                    numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes +
+                        numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes +
                         "&opcaoSelecionada=" +
                         opcaoSelecionada +
                         "&funcionario=" +
@@ -363,12 +363,12 @@ $(document).ready(function () {
                         console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes);
                         numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes.push('"' + aux + '"');
                     }
-
+                   var inclusaoDoMesAnterior = "SIM";
                     $.ajax({
-                        url: "config/insertEUpdate_EscalaMensal.php",
+                        url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
                         method: 'get',
                         data: 'numeroDiaDaSemana=' +
-                        numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes +
+                            numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes +
                             "&opcaoSelecionada=" +
                             opcaoSelecionada +
                             "&funcionario=" +
@@ -390,7 +390,9 @@ $(document).ready(function () {
                             "&horarioIntervaloFunc=" +
                             horarioIntervaloFunc +
                             "&cargoFunc=" +
-                            cargoFunc,
+                            cargoFunc+
+                            "&inclusaoDoMesAnterior="+
+                            inclusaoDoMesAnterior,
 
                         // dataType: 'json',
                         success: function (retorno) {
@@ -498,7 +500,7 @@ $(document).ready(function () {
 
                 var indexAtual = $('#table1 thead tr.trr th').eq(colIndex).text();
 
-                alert("dia selecionado :" + indexAtual);
+                // alert("dia selecionado :" + indexAtual);
 
                 var indexUltimoDia = $selects.length;
                 //console.log(indexAtual);
@@ -507,7 +509,7 @@ $(document).ready(function () {
 
 
                 var indexAtualNumero = parseInt(indexAtual, 10);
-                alert("Dia Selecionado " + indexAtualNumero);
+                // alert("Dia Selecionado " + indexAtualNumero);
                 var numeroDiaDaSemanaArrayLimpaFA = [];
 
                 for (var i = indexAtualNumero; i <= indexUltimoDia; i++) {
@@ -517,7 +519,7 @@ $(document).ready(function () {
 
                     console.log("dia inserido : " + numeroDiaDaSemanaArrayLimpaFA);
 
-                    $selects.eq(i).val(' ');
+                    $selects.eq(i).prop('disabled', false).val(' ');
                 }
 
 
@@ -525,7 +527,7 @@ $(document).ready(function () {
                     url: "config/insertEUpdate_EscalaMensal.php",
                     method: 'get',
                     data: 'numeroDiaDaSemana=' +
-                    numeroDiaDaSemanaArrayLimpaFA +
+                        numeroDiaDaSemanaArrayLimpaFA +
                         "&opcaoSelecionada=" +
                         opcaoSelecionada +
                         "&funcionario=" +
@@ -593,12 +595,12 @@ $(document).ready(function () {
                         console.log(numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes);
 
                     }
-
+                    var inclusaoDoMesAnterior = " ";
                     $.ajax({
-                        url: "config/insertEUpdate_EscalaMensal.php",
+                        url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
                         method: 'get',
                         data: 'numeroDiaDaSemana=' +
-                        numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes +
+                            numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes +
                             "&opcaoSelecionada=" +
                             opcaoSelecionada +
                             "&funcionario=" +
@@ -620,7 +622,7 @@ $(document).ready(function () {
                             "&horarioIntervaloFunc=" +
                             horarioIntervaloFunc +
                             "&cargoFunc=" +
-                            cargoFunc,
+                            cargoFunc+"&inclusaoDoMesAnterior="+inclusaoDoMesAnterior,
 
                         // dataType: 'json',
                         success: function (retorno) {
@@ -659,7 +661,7 @@ $(document).ready(function () {
                     url: "config/insertEUpdate_EscalaMensal.php",
                     method: 'get',
                     data: 'numeroDiaDaSemana=' +
-                    numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOFA +
+                        numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOFA +
                         "&opcaoSelecionada=" +
                         opcaoSelecionada +
                         "&funcionario=" +

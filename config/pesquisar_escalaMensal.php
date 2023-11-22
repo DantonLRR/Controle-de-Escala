@@ -5,6 +5,7 @@ include "php/CRUD_geral.php";
 
 
 $dataSelecionadaNoFiltro = $_POST['mesPesquisa'];
+// var_dump($dataSelecionadaNoFiltro);
 $mesAtual = date("Y-m");
 $loja = $_POST['loja'];
 $usuarioLogado = $_POST['usuarioLogado'];
@@ -30,15 +31,14 @@ $recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEs
 if ($retorno1 == "NÃO EXISTE CADASTRO.") {
     $statusDaTabelaPosPesquisa = "NÃO FINALIZADA.";
 }
-
-
 ?>
-<input class="" type="hidden" id="usuarioLogado" value="<?= $usuarioLogado ?>">
 <input class="" type="hidden" id="loja" value="<?= $loja ?>">
+<input class="" type="hidden" id="usuarioLogado12" value="<?= $usuarioLogado ?>">
 
 <input class="dataSelecionadaNoFiltro" type="hidden" id="dataSelecionadaNoFiltro" value="<?= $dataSelecionadaNoFiltro ?>">
 <input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
 <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
+
     <thead>
 
         <tr class="trr ">
@@ -69,8 +69,9 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
 
 
+
         <tr class="trr" id="quantDias">
-            <td></td>
+            <td> </td>
             <td></td>
             <td></td>
             <td></td>
@@ -112,9 +113,40 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                             $d = "0" . $i;
                         } else {
                             $d = $i;
-                        }  ?>
+                        }
+                        $recuperaAPrimeiraColunaComFA = $verifica->verificaSeALinhaDoBancoTemFAESETiverRetornaAPrimeiraColunaComFA($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
+                        $verficaSeAInserçãoDeFAFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFAFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
+                        // echo ($retornoVerificacaoSeOFAFoiInseridoNoMesAnterior);
 
-                        <select class="estilezaSelect" name="" id="">
+                        $primeiroDiaNaoFA = $recuperaAPrimeiraColunaComFA['nome_coluna'] ?? $d;
+                        // echo "<br>" . $primeiroDiaNaoFA;
+                        $primeiroDiaEncontrado = false;
+
+                        $isFA = ($recuperacaoDedados[0]["$d"] ?? '') === 'FA';
+
+
+                        if ($retornoVerificacaoSeOFAFoiInseridoNoMesAnterior == 1) {
+                            // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
+                            if ($isFA) {
+                                $disabled = ' disabled  name="desabilitarEsteSelect"';
+                                // echo $disabled;
+                            } else {
+                                $disabled = '';
+                            }
+                        } else {
+                            // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
+                            if ($isFA && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoFA) {
+                                $disabled = ' disabled name="desabilitarEsteSelect"';
+                            } else {
+                                $disabled = '';
+                                if ($d === $primeiroDiaNaoFA) {
+                                    $primeiroDiaEncontrado = true;
+                                }
+                            }
+                        }
+                        // echo $disabled;
+                        ?>
+                        <select class="estilezaSelect" id="" <?= $disabled ?>>
                             <option value="<?= $recuperacaoDedados[0]["$d"] ?? '' ?>"><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
 
                             <option value="F">F</option>
@@ -196,7 +228,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                     var indexAtual = $('#table1 thead tr.trr th').eq(colIndex).text();
 
-                    alert("dia selecionado :" + indexAtual)
+                    // alert("dia selecionado :" + indexAtual)
 
                     var indexUltimoDia = $selects.length;
                     //console.log(indexAtual);
@@ -212,7 +244,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                         console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes);
 
-                        $selects.eq(i).val('FA');
+                        $selects.eq(i).prop('disabled', true).val('FA');
                     }
 
 
@@ -283,9 +315,9 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                             console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes);
                             numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes.push('"' + aux + '"');
                         }
-
+                        var inclusaoDoMesAnterior = "SIM";
                         $.ajax({
-                            url: "config/insertEUpdate_EscalaMensal.php",
+                            url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
                             method: 'get',
                             data: 'numeroDiaDaSemana=' +
                                 numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes +
@@ -310,7 +342,9 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                 "&horarioIntervaloFunc=" +
                                 horarioIntervaloFunc +
                                 "&cargoFunc=" +
-                                cargoFunc,
+                                cargoFunc +
+                                "&inclusaoDoMesAnterior=" +
+                                inclusaoDoMesAnterior,
 
                             // dataType: 'json',
                             success: function(retorno) {
@@ -416,7 +450,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                     var indexAtual = $('#table1 thead tr.trr th').eq(colIndex).text();
 
-                    alert("dia selecionado :" + indexAtual);
+                    // alert("dia selecionado :" + indexAtual);
 
                     var indexUltimoDia = $selects.length;
                     //console.log(indexAtual);
@@ -435,7 +469,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                         console.log("dia inserido : " + numeroDiaDaSemanaArrayLimpaFA);
 
-                        $selects.eq(i).val(' ');
+                        $selects.eq(i).prop('disabled', false).val(' ');
                     }
 
 
@@ -511,9 +545,9 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                             console.log(numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes);
 
                         }
-
+                        var inclusaoDoMesAnterior = " ";
                         $.ajax({
-                            url: "config/insertEUpdate_EscalaMensal.php",
+                            url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
                             method: 'get',
                             data: 'numeroDiaDaSemana=' +
                                 numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes +
@@ -538,7 +572,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                 "&horarioIntervaloFunc=" +
                                 horarioIntervaloFunc +
                                 "&cargoFunc=" +
-                                cargoFunc,
+                                cargoFunc + "&inclusaoDoMesAnterior=" + inclusaoDoMesAnterior,
 
                             // dataType: 'json',
                             success: function(retorno) {
@@ -621,7 +655,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
 
 
-
+    $('select[name="desabilitarEsteSelect"]').prop('disabled', true);
 
 
     $('#table1').DataTable({
@@ -834,6 +868,3 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
     var usuarioLogado = $("#usuarioLogado").val();
     var loja = $("#loja").val();
 </Script>
-<script>
-
-</script>
