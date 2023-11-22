@@ -84,10 +84,12 @@ class Funcionarios
           a.horasaida,
          trim(a.horaintervalo) as horaintervalo,
          a.$dia,
-         TO_CHAR(a.mesSelecionado, 'Month- yyyy', 'NLS_DATE_LANGUAGE=PORTUGUESE') as mesSelecionadoFormatado
+         TO_CHAR(a.mesSelecionado, 'Month- yyyy', 'NLS_DATE_LANGUAGE=PORTUGUESE') as mesSelecionadoFormatado,
+         a.status
          FROM WEB_ESCALA_MENSAL a
          where loja = '$lojaDaPessoaLogada'
           and a.mesSelecionado = TO_DATE('$mesSelecionado','YYYY-MM')
+          and a.status = 'F'
           order by a.nome asc
           ";
         $resultado = oci_parse($oracle, $query);
