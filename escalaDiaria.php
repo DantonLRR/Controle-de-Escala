@@ -73,8 +73,9 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
                                     <th class="text-center">Cargo</th>
                                     <th class="text-center"><a style="color:white" href="escalaMensal.php">Escala Mensal</a></th>
                                     <th class="text-center">Hora Entrada</th>
-                                    <th class="text-center">Hora Saida</th>
                                     <th class="text-center">Hora Intervalo</th>
+                                    <th class="text-center">Hora Saida</th>
+                                  
 
                                     <th class="text-center">Periodo de validade</th>
                                 </tr>
@@ -115,12 +116,13 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
                                                 <td class="text-center td horaEntrada " scope="row">
                                                 <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORAENTRADA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>                                               
                                                 </td>
+
+                                                <td class="text-center td horaSaida horarioIntervalo" scope="row">
+                                                    <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORAINTERVALO'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
+                                                </td>
                                                 <td class="text-center td horaSaida horarioSaidaFunc" scope="row">
                                                     <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORASAIDA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
 
-                                                </td>
-                                                <td class="text-center td horaSaida horarioIntervalo" scope="row">
-                                                    <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORAINTERVALO'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
                                                 </td>
                                             <?php
                                             endforeach;
@@ -130,12 +132,13 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
                                                 <input class=" " id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAENTRADA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
 
                                             </td>
+
+                                            <td class="text-center td horaSaida horarioIntervalo" scope="row">
+                                                <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAINTERVALO'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
+                                            </td>
                                             <td class="text-center td horaSaida horarioSaidaFunc" scope="row">
                                                 <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORASAIDA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
 
-                                            </td>
-                                            <td class="text-center td horaSaida horarioIntervalo" scope="row">
-                                                <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAINTERVALO'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
                                             </td>
                                         <?php
 
