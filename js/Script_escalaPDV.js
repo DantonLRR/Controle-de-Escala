@@ -153,23 +153,37 @@ $('#tableHeader').DataTable({
 
 
 
-var iconeAddTables = document.getElementById("BTNAdicionarDescritivo");
-var iconeRemoveTable = document.getElementById("BTNremoverDescritivo");
+var iconeAddTables1 = document.getElementById("BTNAdicionarDescritivo");
+var iconeRemoveTable1 = document.getElementById("BTNremoverDescritivo");
 var table1 = document.getElementById("cardTable1");
 
-iconeAddTables.addEventListener("click", function () {
+var iconeAddTables2 = document.getElementById("BTNAdicionarDescritivo2"); // Adicione um ID diferente para o segundo ícone
+var iconeRemoveTable2 = document.getElementById("BTNremoverDescritivo2"); // Adicione um ID diferente para o segundo ícone
+var table2 = document.getElementById("relatorioPDV");
+
+iconeAddTables1.addEventListener("click", function () {
     table1.classList.remove("ocultar");
-    iconeAddTables.classList.add("ocultar");
-    iconeRemoveTable.classList.remove("ocultar");
+    iconeAddTables1.classList.add("ocultar");
+    iconeRemoveTable1.classList.remove("ocultar");
 });
 
-iconeRemoveTable.addEventListener("click", function () {
+iconeRemoveTable1.addEventListener("click", function () {
     table1.classList.add("ocultar");
-    iconeAddTables.classList.remove("ocultar");
-    iconeRemoveTable.classList.add("ocultar");
+    iconeAddTables1.classList.remove("ocultar");
+    iconeRemoveTable1.classList.add("ocultar");
 });
 
+iconeAddTables2.addEventListener("click", function () {
+    table2.classList.remove("ocultar");
+    iconeAddTables2.classList.add("ocultar");
+    iconeRemoveTable2.classList.remove("ocultar");
+});
 
+iconeRemoveTable2.addEventListener("click", function () {
+    table2.classList.add("ocultar");
+    iconeAddTables2.classList.remove("ocultar");
+    iconeRemoveTable2.classList.add("ocultar");
+});
 
 
 function calcularHorasIntermediarias(horaEntrada, horaSaida, horaParaPular) {

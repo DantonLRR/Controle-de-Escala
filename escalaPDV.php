@@ -321,9 +321,10 @@ for ($i = 7; $i <= 21; $i++) {
 
         <div class="row DesabilitaClasseCasoEscalaNaoFinalizada">
             <div class="col-lg-12">
-                <div class="card" style="border-color:#00a550;  ">
+                <div class="card" style="border-color:#00a550;">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">
-                        <i id="BTNAdicionarDescritivo2" class="far fa-plus-square  ocultar"> </i>
+
+                        <i id="BTNAdicionarDescritivo2" class="far fa-plus-square ocultar "> </i>
                         <i id="BTNremoverDescritivo2" class="far fa-minus-square "> </i>
 
                         ESCALA DE OPERADORES POR HORÁRIO
