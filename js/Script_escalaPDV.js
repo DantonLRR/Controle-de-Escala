@@ -247,8 +247,8 @@ $('#table1').on('change', '.estilezaSelect', function () {
             MatriculaDaPessoaSelecionada +
             "&loja=" +
             +loja +
-            "&dataAtual=" +
-            dataAtual +
+            "&dataPesquisa=" +
+            dataPesquisa +
             "&nomeSelecionado=" +
             nomeSelecionado,
         dataType: 'json',
@@ -390,8 +390,8 @@ $('#table1').on('change', '.estilizaSelect2', function () {
             MatriculaDaPessoaSelecionada2 +
             "&loja=" +
             +loja +
-            "&dataAtual=" +
-            dataAtual +
+            "&dataPesquisa=" +
+            dataPesquisa +
             "&nomeSelecionado=" +
             nomeSelecionado2,
         dataType: 'json',

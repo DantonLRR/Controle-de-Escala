@@ -348,8 +348,8 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                 MatriculaDaPessoaSelecionada +
                 "&loja=" +
                 +loja +
-                "&dataAtual=" +
-                dataAtual +
+                "&dataPesquisa=" +
+                dataPesquisa +
                 "&nomeSelecionado=" +
                 nomeSelecionado,
             dataType: 'json',
@@ -497,8 +497,8 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                 MatriculaDaPessoaSelecionada2 +
                 "&loja=" +
                 +loja +
-                "&dataAtual=" +
-                dataAtual +
+                "&dataPesquisa=" +
+                dataPesquisa +
                 "&nomeSelecionado=" +
                 nomeSelecionado2,
             dataType: 'json',

@@ -520,34 +520,6 @@ class Verifica
         echo "</br>" + $retorno;
     }
 
-    public function verificaCadastroNaEscalaMensal2($oracle, $matricula, $mesPesquisado, $loja)
-    {
-        $lista = array();
-        global  $retorno;
-        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
-        WHERE a.matricula = '$matricula'
-        AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
-        AND a.loja = $loja ";
-
-        echo "select para verificaCadastroNaEscalaMensal  <br><br> " . $query;
-
-
-        $parse = oci_parse($oracle, $query);
-
-        oci_execute($parse);
-        oci_fetch_assoc($parse);
-
-        if (oci_num_rows($parse) >= 1) {
-
-            $retorno = 1;
-        }
-        if (oci_num_rows($parse) < 1) {
-
-            $retorno = 0;
-        }
-
-        // echo "</br>".$retorno;
-    }
 
 
     public function verificaCadastroNaEscalaMensa1($oracle, $matricula, $mesPesquisado,)
