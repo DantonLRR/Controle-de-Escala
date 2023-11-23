@@ -3,13 +3,28 @@ include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
 $InformacaoDosDias = new Dias();
 $dataPesquisada = $_POST['dataPesquisa'];
-
+$partesData = explode('-', $dataPesquisada);
+$diaDaPesquisaComAspas = ' "' . $partesData[2] . '"'; // Dia
+$mesEAnoDaPesquisa = $partesData[0] . '-' . $partesData[1]; // Ano e Mês
 $loja = $_POST['loja'];
 
 $horarios = array();
 for ($i = 7; $i <= 21; $i++) {
     $horarios[] = sprintf("%02d:00", $i);
 }
+
+$InformacaoFuncionarios = new Funcionarios();
+$quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dataPesquisada, $loja);
+
+if (empty($quantidadePorDiaDeFuncionarios)) {
+    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para este dia,";
+} else {
+    $quantidadePorDiaDeFuncionariosImpressao = count($quantidadePorDiaDeFuncionarios);
+    $quantidadeDePessoasEscaladas = $quantidadePorDiaDeFuncionariosImpressao;
+}
+if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado para este dia,") {
+} else {
+
 
 ?>
 
@@ -78,7 +93,10 @@ for ($i = 7; $i <= 21; $i++) {
     </tbody>
 </table>
 
+<?php 
+}
 
+?>
 
 <script>
     $('#table2').DataTable({

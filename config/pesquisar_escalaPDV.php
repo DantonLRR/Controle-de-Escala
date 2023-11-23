@@ -66,7 +66,18 @@ foreach ($FuncTarde as $funcTarde2) {
 }
 // var_dump($naoRepetidosTARDE);
 
-// session_start();
+
+$quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dataPesquisada, $loja);
+
+if (empty($quantidadePorDiaDeFuncionarios)) {
+    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para este dia,";
+} else {
+    $quantidadePorDiaDeFuncionariosImpressao = count($quantidadePorDiaDeFuncionarios);
+    $quantidadeDePessoasEscaladas = $quantidadePorDiaDeFuncionariosImpressao;
+}
+if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado para este dia,") {
+} else {
+
 ?>
 
 <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
@@ -192,7 +203,9 @@ foreach ($FuncTarde as $funcTarde2) {
         ?>
     </tbody>
 </table>
-
+<?php
+}
+?>
 
 
 

@@ -10,11 +10,12 @@ $loja = $_POST['loja'];
 $partesData = explode('-', $dataPesquisa);
 $diaDaPesquisaComAspas = ' "' . $partesData[2] . '"'; // Dia
 $mesEAnoDaPesquisa = $partesData[0] . '-' . $partesData[1]; // Ano e Mês
+$mesEAnoDaPesquisaFORMATADO = $partesData[1] . ' de ' . $partesData[0]; // Mês e Ano no formato MM-YYYY
 
 $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dataPesquisa, $loja);
 
 if (empty($quantidadePorDiaDeFuncionarios)) {
-    $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para este dia";
+    $quantidadePorDiaDeFuncionariosImpressao = "Escala do mes " . $mesEAnoDaPesquisaFORMATADO ." não finalizada";
 } else {
     $quantidadePorDiaDeFuncionariosImpressao = count($quantidadePorDiaDeFuncionarios);
 }

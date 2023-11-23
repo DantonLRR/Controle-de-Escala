@@ -126,14 +126,15 @@ for ($i = 7; $i <= 21; $i++) {
                                     }
 
                                     ?>
-                                    <p><?= $quantidadePorDiaDeFuncionariosImpressao ?></p>
+                                    <input type="hidden" id="quantidadePorDiaDeFuncionariosImpressao" value ="<?=$quantidadePorDiaDeFuncionariosImpressao?>">
+                                    <p id="quantidadePorDiaDeFuncionariosVisivel"><?= $quantidadePorDiaDeFuncionariosImpressao ?></p>
                                 </div>
                             </div>
-                            <div class="col-lg-10 ">
+                            <div class="col-lg-10 DesabilitaClasseCasoEscalaNaoFinalizada CalculoDosOperadoresPorHorario">
                                 <label class="form-label">
                                     Operadores por horário :
                                 </label>
-                                <div class="CalculoDosOperadoresPorHorario">
+                                <div class="">
                                     <table id="tableHeader" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
                                         <thead style="background-color: #00a550; color: white;">
@@ -174,7 +175,7 @@ for ($i = 7; $i <= 21; $i++) {
             </div>
         </div>
 
-        <div class="row">
+        <div class="row DesabilitaClasseCasoEscalaNaoFinalizada">
             <div class="col-lg-12">
                 <div class="card" style="border-color:#00a550;">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">
@@ -318,7 +319,7 @@ for ($i = 7; $i <= 21; $i++) {
         </div>
 
 
-        <div class="row">
+        <div class="row DesabilitaClasseCasoEscalaNaoFinalizada">
             <div class="col-lg-12">
                 <div class="card" style="border-color:#00a550;  ">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">

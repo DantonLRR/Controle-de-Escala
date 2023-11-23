@@ -390,7 +390,7 @@ class Funcionarios
         WHERE a.loja = $loja
         AND a.$diaComAspas IS NULL
         AND a.messelecionado = TO_DATE('$mesSelecionado', 'YYYY-MM')
-
+        and a.status = 'F'
         and a.matricula not in
         (SELECT b.matricula
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b
