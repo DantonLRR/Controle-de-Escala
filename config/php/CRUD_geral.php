@@ -65,7 +65,26 @@ class Dias
         return $lista;
     }
 }
+class lojas
+{
 
+    public function recuperacaoDasLojas($oracle)
+    {
+        $lista = array();
+        $query = "SELECT NROEMPRESA
+        FROM max_empresa
+        WHERE STATUS = 'A'
+            AND NROEMPRESA not in (8,9,7,203)
+        ORDER BY NROEMPRESA ASC";
+        echo $query;
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+    }
+}
 
 class Funcionarios
 {
@@ -520,7 +539,34 @@ class Verifica
         echo "</br>" + $retorno;
     }
 
+    public function verificaCadastroNaEscalaMensal2($oracle, $matricula, $mesPesquisado, $loja)
+    {
+        $lista = array();
+        global  $retorno;
+        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
+        WHERE a.matricula = '$matricula'
+        AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
+        AND a.loja = $loja ";
 
+
+
+
+        $parse = oci_parse($oracle, $query);
+
+        oci_execute($parse);
+        oci_fetch_assoc($parse);
+
+        if (oci_num_rows($parse) >= 1) {
+
+            $retorno = 1;
+        }
+        if (oci_num_rows($parse) < 1) {
+
+            $retorno = 0;
+        }
+
+        // echo "</br>".$retorno;
+    }
 
     public function verificaCadastroNaEscalaMensa1($oracle, $matricula, $mesPesquisado,)
     {
@@ -570,7 +616,7 @@ class Verifica
         return $lista;
         echo "</br>" + $retorno1;
     }
-    public function verificaSeALinhaDoBancoTemFAESETiverRetornaAPrimeiraColunaComFA($oracle, $mesPesquisado, $loja,$matricula)
+    public function verificaSeALinhaDoBancoTemFAESETiverRetornaAPrimeiraColunaComFA($oracle, $mesPesquisado, $loja, $matricula)
     {
         $query = "SELECT * FROM WEB_ESCALA_MENSAL a
         WHERE a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
@@ -578,7 +624,7 @@ class Verifica
         and a.matricula = $matricula";
         $parse = oci_parse($oracle, $query);
         $resultado = array();
-    
+
         if (oci_execute($parse)) {
             while ($row = oci_fetch_assoc($parse)) {
                 foreach ($row as $coluna => $valor) {
@@ -596,11 +642,11 @@ class Verifica
             // Erro na consulta
             echo "Erro na consulta.";
         }
-    
+
         return null; // Retorna null se não encontrar 'FA' em nenhuma coluna
     }
-    
-    public function verificaSeALinhaFAFoiInseridaNoMesAnterior($oracle, $mesPesquisado, $loja,$matricula)
+
+    public function verificaSeALinhaFAFoiInseridaNoMesAnterior($oracle, $mesPesquisado, $loja, $matricula)
     {
         $lista = array();
         global  $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior;
@@ -630,9 +676,9 @@ class Verifica
         // echo "verificaSeALinhaFAFoiInseridaNoMesAnterior   " . $query;
     }
 
-   
-    
-    
+
+
+
 
 
     //verificacao bloqueio da escala mensal
@@ -777,7 +823,7 @@ class Insert
         }
     }
 
-    public function insertEscalaMensalProximoMes($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado,$inclusaodomesanterior)
+    public function insertEscalaMensalProximoMes($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado, $inclusaodomesanterior)
     {
 
         $query = "INSERT INTO $tabela (
@@ -1017,7 +1063,7 @@ class Update
         oci_execute($parse);
     }
 
-    public function updateDeFuncionariosNaEscalaMensalProximoMes($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect,$inclusaodomesanterior, $matricula, $loja,)
+    public function updateDeFuncionariosNaEscalaMensalProximoMes($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $inclusaodomesanterior, $matricula, $loja,)
     {
         $query = "UPDATE WEB_ESCALA_MENSAL a
          SET
