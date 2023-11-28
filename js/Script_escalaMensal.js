@@ -135,61 +135,6 @@ $('#table1').DataTable({
                 });
             }
         },
-        {
-            text: 'Liberar Escala',
-            className: 'btnVermelho',
-            action: function () {
-                criandoHtmlmensagemCarregamento("exibir");
-                var alteraStatusEscala = '';
-                var usuarioLogado = $("#usuarioLogado").val();
-                var loja = $("#loja").val();
-
-                var mesPesquisa = $("#dataPesquisa").val();
-
-                var mesAtual = $("#mesAtual").val();
-
-                if (mesPesquisa == "") {
-                    mesPesquisa = mesAtual
-                }
-
-                $.ajax({
-                    url: "config/desabilita_ou_habilita_mensal.php",
-                    method: 'POST',
-                    data: "mesPesquisa=" +
-                        mesPesquisa +
-                        "&mesAtual=" +
-                        mesAtual +
-                        "&alteraStatusEscala=" +
-                        alteraStatusEscala +
-                        "&loja=" +
-                        loja +
-                        "&usuarioLogado=" +
-                        usuarioLogado,
-                    success: function (atualizaTabela) {
-
-
-                        $.ajax({
-                            url: "config/pesquisar_escalaMensal.php",
-                            method: 'POST',
-                            data: 'mesPesquisa=' +
-                                mesPesquisa +
-                                "&loja=" +
-                                loja +
-                                "&usuarioLogado=" +
-                                usuarioLogado,
-                            success: function (mes_Pesquisado) {
-
-                                $('.atualizaTabela').empty().html(mes_Pesquisado);
-                                criandoHtmlmensagemCarregamento("ocultar");
-                            }
-                        });
-
-
-
-                    }
-                });
-            }
-        },
     ],
 
 });

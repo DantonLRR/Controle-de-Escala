@@ -25,10 +25,28 @@ $('#PesquisarEscalaMensal').on('click', function () {
                 "&usuarioLogado=" +
                 usuarioLogado,
             success: function (mes_Pesquisado) {
-
                 $('#PesquisaEscalaMensal').empty().html(mes_Pesquisado);
-                criandoHtmlmensagemCarregamento("ocultar");
                 $('.blocoVerificaELiberaEscala').css('visibility', 'visible');
+                $('.estilezaSelect').prop('disabled', true);
+                $('.estilezaSelect').css('font-weight', 'bold');
+                $('.statusDaTabela').prop('type', 'text');
+                $('.statusDaTabela').css('border', 'none');
+                $('.statusDaTabela').attr('disabled', 'disabled');
+
+                if ($('.statusDaTabela').val() === "JÁ FINALIZADA.") {
+                    $('#LiberarEscala').attr('disabled', false);
+                    $('.statusDaTabela').after("<p class='retornoDoStatusDaTabela'>A Escala do mês está finalizada</p>");
+                    $('.statusDaTabela').remove();
+                }else{
+                    $('#LiberarEscala').attr('disabled', 'disabled');
+                    $('.statusDaTabela').after("<p class='retornoDoStatusDaTabela'>A Escala do mês não está finalizada</p>");
+                    $('.statusDaTabela').remove();
+                  
+                }
+
+
+                criandoHtmlmensagemCarregamento("ocultar");
+
             }
         });
 
@@ -97,55 +115,72 @@ $('#table1').DataTable({
 });
 $('#LiberarEscala').on('click', function () {
 
-            criandoHtmlmensagemCarregamento("exibir");
-            var alteraStatusEscala = '';
-            var loja = $("#loja").val();
-            var mesPesquisa = $("#dataPesquisa").val();
+    criandoHtmlmensagemCarregamento("exibir");
+    var alteraStatusEscala = '';
+    var loja = $("#loja").val();
+    var mesPesquisa = $("#dataPesquisa").val();
 
-            var mesAtual = $("#mesAtual").val();
+    var mesAtual = $("#mesAtual").val();
 
-            if (mesPesquisa == "") {
-                mesPesquisa = mesAtual
-            }
+    if (mesPesquisa == "") {
+        mesPesquisa = mesAtual
+    }
+
+    $.ajax({
+        url: "config/desabilita_ou_habilita_mensal.php",
+        method: 'POST',
+        data: "mesPesquisa=" +
+            mesPesquisa +
+            "&mesAtual=" +
+            mesAtual +
+            "&alteraStatusEscala=" +
+            alteraStatusEscala +
+            "&loja=" +
+            loja +
+            "&usuarioLogado=" +
+            usuarioLogado,
+        success: function (atualizaTabela) {
+
 
             $.ajax({
-                url: "config/desabilita_ou_habilita_mensal.php",
+                url: "config/pesquisar_escalaMensal.php",
                 method: 'POST',
-                data: "mesPesquisa=" +
+                data: 'mesPesquisa=' +
                     mesPesquisa +
-                    "&mesAtual=" +
-                    mesAtual +
-                    "&alteraStatusEscala=" +
-                    alteraStatusEscala +
                     "&loja=" +
                     loja +
                     "&usuarioLogado=" +
                     usuarioLogado,
-                success: function (atualizaTabela) {
+                success: function (mes_Pesquisado) {
 
+                    $('#PesquisaEscalaMensal').empty().html(mes_Pesquisado);
 
-                    $.ajax({
-                        url: "config/pesquisar_escalaMensal.php",
-                        method: 'POST',
-                        data: 'mesPesquisa=' +
-                            mesPesquisa +
-                            "&loja=" +
-                            loja +
-                            "&usuarioLogado=" +
-                            usuarioLogado,
-                        success: function (mes_Pesquisado) {
-
-                            $('#PesquisaEscalaMensal').empty().html(mes_Pesquisado);
-                            criandoHtmlmensagemCarregamento("ocultar");
-                            Toasty("Sucesso", "A escala foi Liberada !", "#00a550");
-                        }
-                    });
-
-
+                    $('.estilezaSelect').attr('disabled', 'disabled');
+                    $('.statusDaTabela').prop('type', 'text');
+                    $('.statusDaTabela').css('border', 'none');
+                    $('.statusDaTabela').attr('disabled', 'disabled');
+                    if ($('.statusDaTabela').val() === "JÁ FINALIZADA.") {
+                        $('#LiberarEscala').attr('disabled', false);
+                        $('.estilezaSelect').css('font-weight', 'bold');
+                        $('.statusDaTabela').after("<p class='retornoDoStatusDaTabela'>A Escala do mês está finalizada</p>");
+                        $('.statusDaTabela').remove();
+                        criandoHtmlmensagemCarregamento("ocultar");
+                        Toasty("Sucesso", "A escala foi Liberada !", "#00a550");
+                    }else{
+                        $('#LiberarEscala').attr('disabled', 'disabled');
+                        $('.estilezaSelect').css('font-weight', 'bold');
+                        $('.statusDaTabela').after("<p class='retornoDoStatusDaTabela'>A Escala do mês não está finalizada</p>");
+                        $('.statusDaTabela').remove();
+                    }
 
                 }
             });
-           
-    
+
+
+
+        }
+    });
+
+
 
 });

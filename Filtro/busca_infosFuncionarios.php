@@ -5,7 +5,7 @@ include "../config/php/CRUD_geral.php";
 $verificacaoDeDados = new Verifica();
 $MatriculaDaPessoaSelecionada = $_GET['MatriculaDaPessoaSelecionada'];
 $loja = trim($_GET['loja']);
-$dataAtual = trim($_GET['dataAtual']);
+$dataAtual = empty($_GET['dataAtual']) ? date("Y-m-d") : $_GET['dataAtual'];
 $nomeFunc = trim($_GET['nomeSelecionado']);
 
 
