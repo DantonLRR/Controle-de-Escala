@@ -182,7 +182,12 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
         if (statusDaTabelaPosPesquisa === "JÁ FINALIZADA.") {
             criandoHtmlmensagemCarregamento("exibir");
 
+
             $('#table1').find('input, select, textarea, button').prop('disabled', true);
+            $('.btnVermelho').addClass('ocultarBotao');
+        } else {
+            $('#table1').find('input, select, textarea, button').prop('disabled', false);
+            $('.btnVermelho').removeClass('ocultarBotao');
         }
         criandoHtmlmensagemCarregamento("ocultar");
 

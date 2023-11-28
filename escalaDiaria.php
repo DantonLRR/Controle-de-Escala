@@ -20,6 +20,7 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
 // print_r($dadosDoFuncionarioAPartirDaEscalaMensal);
 
 // print_r($buscaNomeFuncionario);
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -64,99 +65,111 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
                 <div class="card" style="border-color:#00a550;  ">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">Escala Diaria</h6>
                     <div class="card-body">
-                        <table id="table1" class="table table-bordered table-striped text-center " style="width:100%">
-                            <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
-                            <thead style="background-color: #00a550;">
-                                <tr>
-                                    <th class="text-center">Nome</th>
-                                    <th class="text-center">matricula</th>
-                                    <th class="text-center">Cargo</th>
-                                    <th class="text-center"><a style="color:white" href="escalaMensal.php">Escala Mensal</a></th>
-                                    <th class="text-center">Hora Entrada</th>
-                                    <th class="text-center">Hora Intervalo</th>
-                                    <th class="text-center">Hora Saida</th>
-                                  
+                        <?php
 
-                                    <th class="text-center">Periodo de validade</th>
-                                </tr>
-                            </thead>
-
-
-                            <tbody style="background-color: #DCDCDC;">
-                                <?php
+                        if (!empty($dadosDoFuncionarioAPartirDaEscalaMensal)) {
+                        ?>
+                            <table id="table1" class="table table-bordered table-striped text-center " style="width:100%">
+                                <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
+                                <thead style="background-color: #00a550;">
+                                    <tr>
+                                        <th class="text-center">Nome</th>
+                                        <th class="text-center">matricula</th>
+                                        <th class="text-center">Cargo</th>
+                                        <th class="text-center"><a style="color:white" href="escalaMensal.php">Escala Mensal</a></th>
+                                        <th class="text-center">Hora Entrada</th>
+                                        <th class="text-center">Hora Intervalo</th>
+                                        <th class="text-center">Hora Saida</th>
 
 
+                                        <th class="text-center">Periodo de validade</th>
+                                    </tr>
+                                </thead>
 
-                                foreach ($dadosDoFuncionarioAPartirDaEscalaMensal as $ROWconsultaNomeFunc) :
-                                    // echo "dados abaixo recuperados do banco PLSQL <br><br>";
-                                    // print_r($ROWconsultaNomeFunc);
-                                    // echo "<br><br>";
-                                ?>
 
-                                    <tr class="trr">
-                                        <td class="text-center td nomeFuncionario" scope="row" id="nome">
-                                            <?= $ROWconsultaNomeFunc['NOME'] ?>
-                                        </td>
-                                        <td class=" text-center td matriculaFunc">
-                                            <?= $ROWconsultaNomeFunc['MATRICULA'] ?>
-                                        </td>
-                                        <td class="text-center td cargo" scope="row" id="cargo">
-                                            <?= $ROWconsultaNomeFunc['CARGO'] ?>
-                                        </td>
-                                        <td class="text-center td" scope="row" id="escalaMensal">
-                                            <?= $ROWconsultaNomeFunc[$diaAtual] ?? '' ?>
-                                        </td>
+                                <tbody style="background-color: #DCDCDC;">
+                                    <?php
 
-                                        <?php
-                                        $verifica = $verificacaoDeDados->verificaAlteracaoNoHorarioDiario($oracle, $ROWconsultaNomeFunc['MATRICULA'], $hoje,  $ROWconsultaNomeFunc['NOME'], $_SESSION['LOJA']);
-                                        if ($retorno == "Já existem dados.") {
-                                            $dadosAPartirDaEscalaIntermed = $dadosFunc->recuperaDadosDaEscalaIntermed($oracle, $ROWconsultaNomeFunc['MATRICULA'],   $ROWconsultaNomeFunc['NOME'], $_SESSION['LOJA'], $hoje,);
-                                            foreach ($dadosAPartirDaEscalaIntermed as $RowDadosIntermed) :
-                                        ?>
+
+
+                                    foreach ($dadosDoFuncionarioAPartirDaEscalaMensal as $ROWconsultaNomeFunc) :
+                                        // echo "dados abaixo recuperados do banco PLSQL <br><br>";
+                                        // print_r($ROWconsultaNomeFunc);
+                                        // echo "<br><br>";
+                                    ?>
+
+                                        <tr class="trr">
+                                            <td class="text-center td nomeFuncionario" scope="row" id="nome">
+                                                <?= $ROWconsultaNomeFunc['NOME'] ?>
+                                            </td>
+                                            <td class=" text-center td matriculaFunc">
+                                                <?= $ROWconsultaNomeFunc['MATRICULA'] ?>
+                                            </td>
+                                            <td class="text-center td cargo" scope="row" id="cargo">
+                                                <?= $ROWconsultaNomeFunc['CARGO'] ?>
+                                            </td>
+                                            <td class="text-center td" scope="row" id="escalaMensal">
+                                                <?= $ROWconsultaNomeFunc[$diaAtual] ?? '' ?>
+                                            </td>
+
+                                            <?php
+                                            $verifica = $verificacaoDeDados->verificaAlteracaoNoHorarioDiario($oracle, $ROWconsultaNomeFunc['MATRICULA'], $hoje,  $ROWconsultaNomeFunc['NOME'], $_SESSION['LOJA']);
+                                            if ($retorno == "Já existem dados.") {
+                                                $dadosAPartirDaEscalaIntermed = $dadosFunc->recuperaDadosDaEscalaIntermed($oracle, $ROWconsultaNomeFunc['MATRICULA'],   $ROWconsultaNomeFunc['NOME'], $_SESSION['LOJA'], $hoje,);
+                                                foreach ($dadosAPartirDaEscalaIntermed as $RowDadosIntermed) :
+                                            ?>
+                                                    <td class="text-center td horaEntrada " scope="row">
+                                                        <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORAENTRADA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
+                                                    </td>
+
+                                                    <td class="text-center td horaSaida horarioIntervalo" scope="row">
+                                                        <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORAINTERVALO'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
+                                                    </td>
+                                                    <td class="text-center td horaSaida horarioSaidaFunc" scope="row">
+                                                        <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORASAIDA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
+
+                                                    </td>
+                                                <?php
+                                                endforeach;
+                                            } else if ($retorno == "Não existem dados.") {
+                                                ?>
                                                 <td class="text-center td horaEntrada " scope="row">
-                                                <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORAENTRADA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>                                               
+                                                    <input class=" " id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAENTRADA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
+
                                                 </td>
 
                                                 <td class="text-center td horaSaida horarioIntervalo" scope="row">
-                                                    <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORAINTERVALO'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
+                                                    <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAINTERVALO'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
                                                 </td>
                                                 <td class="text-center td horaSaida horarioSaidaFunc" scope="row">
-                                                    <input class="" id="" type="time" value="<?= $RowDadosIntermed['HORASAIDA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
+                                                    <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORASAIDA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
 
                                                 </td>
                                             <?php
-                                            endforeach;
-                                        } else if ($retorno == "Não existem dados.") {
+
+                                            }
                                             ?>
-                                            <td class="text-center td horaEntrada " scope="row">
-                                                <input class=" " id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAENTRADA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
-
+                                            <td class="text-center td" scope="row">
+                                                <?= $ROWconsultaNomeFunc['MESSELECIONADOFORMATADO'] ?>
                                             </td>
 
-                                            <td class="text-center td horaSaida horarioIntervalo" scope="row">
-                                                <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORAINTERVALO'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
-                                            </td>
-                                            <td class="text-center td horaSaida horarioSaidaFunc" scope="row">
-                                                <input class="" id="" type="time" value="<?= $ROWconsultaNomeFunc['HORASAIDA'] ?>" <?= isset($ROWconsultaNomeFunc[$diaAtual]) ? 'readonly' : '' ?>>
+                                        </tr>
+                                    <?php
+                                    endforeach;
 
-                                            </td>
-                                        <?php
-
-                                        }
-                                        ?>
-                                        <td class="text-center td" scope="row">
-                                            <?= $ROWconsultaNomeFunc['MESSELECIONADOFORMATADO'] ?>
-                                        </td>
-
-                                    </tr>
-                                <?php
-                                endforeach;
-
-                                ?>
-                            </tbody>
+                                    ?>
+                                </tbody>
 
 
-                        </table>
+                            </table>
+                        <?php
+                        } else {
+                        ?>
+                        <p><b>Para visualizar a escala Diária finalize a Escala Mensal.</b></p>
+                        <a style="font-size: large;" href="escalaMensal.php"><b> Clique aqui para acessar a Escala Mensal</b></a>
+                        <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
