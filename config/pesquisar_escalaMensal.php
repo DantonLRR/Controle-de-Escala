@@ -115,20 +115,20 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                         } else {
                             $d = $i;
                         }
-                        $recuperaAPrimeiraColunaComFA = $verifica->verificaSeALinhaDoBancoTemFAESETiverRetornaAPrimeiraColunaComFA($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
-                        $verficaSeAInserçãoDeFAFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFAFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
-                        // echo ($retornoVerificacaoSeOFAFoiInseridoNoMesAnterior);
+                        $recuperaAPrimeiraColunaComF = $verifica->verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
+                        $verficaSeAInserçãoDeFFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
+                        // echo ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior);
 
-                        $primeiroDiaNaoFA = $recuperaAPrimeiraColunaComFA['nome_coluna'] ?? $d;
-                        // echo "<br>" . $primeiroDiaNaoFA;
+                        $primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
+                        // echo "<br>" . $primeiroDiaNaoF;
                         $primeiroDiaEncontrado = false;
 
-                        $isFA = ($recuperacaoDedados[0]["$d"] ?? '') === 'FA';
+                        $isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
 
 
-                        if ($retornoVerificacaoSeOFAFoiInseridoNoMesAnterior == 1) {
+                        if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
                             // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
-                            if ($isFA) {
+                            if ($isF) {
                                 $disabled = ' disabled  name="desabilitarEsteSelect"';
                                 // echo $disabled;
                             } else {
@@ -136,11 +136,11 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                             }
                         } else {
                             // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
-                            if ($isFA && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoFA) {
+                            if ($isF && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoF) {
                                 $disabled = ' disabled name="desabilitarEsteSelect"';
                             } else {
                                 $disabled = '';
-                                if ($d === $primeiroDiaNaoFA) {
+                                if ($d === $primeiroDiaNaoF) {
                                     $primeiroDiaEncontrado = true;
                                 }
                             }
@@ -149,10 +149,10 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                         ?>
                         <select class="estilezaSelect" id="" <?= $disabled ?>>
                             <option value="<?= $recuperacaoDedados[0]["$d"] ?? '' ?>"><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
-
-                            <option value="F">F</option>
                             <option value="FA">FA</option>
-                            <option value="V">V</option>
+                            <option value="FD">FD</option>
+                            <option value="FF">FF</option>
+                            <option value="F">F</option>
                             <option value=""></option>
 
                         </select>
@@ -198,7 +198,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                 var opcaoSelecionada = $(this).val();
                 // alert(valorINICIAL)
                 // alert(opcaoSelecionada)
-                if (valorINICIAL != 'FA' && opcaoSelecionada == 'FA' || valorINICIAL == '' && opcaoSelecionada == 'FA') {
+                if (valorINICIAL != 'F' && opcaoSelecionada == 'F' || valorINICIAL == '' && opcaoSelecionada == 'F') {
                     console.log('Valor inicial : ' + valorINICIAL);
                     console.log('opcao Escolhida :' + opcaoSelecionada)
                     console.log("caiu na primeira");
@@ -212,7 +212,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                         mesPesquisa = mesAtual
                     }
 
-                    var opcaoSelecionada = 'FA';
+                    var opcaoSelecionada = 'F';
                     var $tr = $(this).closest('tr');
                     var funcionario = $tr.find('td.funcionario').text();
                     var matriculaFunc = $tr.find('td.matriculaFunc').text();
@@ -238,14 +238,14 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
 
                     var indexAtualNumero = parseInt(indexAtual, 10);
-                    var numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes = [];
+                    var numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes = [];
                     for (var i = indexAtualNumero; i <= indexUltimoDia; i++) {
                         var aux = i < 10 ? "0" + i : i.toString();
-                        numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes.push('"' + aux + '"');
+                        numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes.push('"' + aux + '"');
 
-                        console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes);
+                        console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes);
 
-                        $selects.eq(i).prop('disabled', true).val('FA');
+                        $selects.eq(i).prop('disabled', true).val('F');
                     }
 
 
@@ -253,7 +253,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                         url: "config/insertEUpdate_EscalaMensal.php",
                         method: 'get',
                         data: 'numeroDiaDaSemana=' +
-                            numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes +
+                            numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes +
                             "&opcaoSelecionada=" +
                             opcaoSelecionada +
                             "&funcionario=" +
@@ -288,7 +288,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                     // Calcular quantos dias faltam até o final do mês
                     var diasRestantes = indexUltimoDia - indexAtual;
-                    var diasParaProximoMes = Math.min(30 - diasRestantes, diasRestantes);
+                    var diasParaProximoMes = Math.min(29 - diasRestantes, diasRestantes);
                     //console.log("faltaram  para o proximo mes: " + diasParaProximoMes);
 
 
@@ -310,18 +310,18 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                         // Formata o novo mês para o formato 'AAAA-MM'
                         mesPesquisa = ano + '-' + (mes < 10 ? '0' + mes : mes);
-                        var numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes = [];
+                        var numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes = [];
                         for (var i = 1; i <= diasParaProximoMes; i++) {
                             var aux = i < 10 ? "0" + i : i.toString();
-                            console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes);
-                            numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes.push('"' + aux + '"');
+                            console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes);
+                            numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes.push('"' + aux + '"');
                         }
                         var inclusaoDoMesAnterior = "SIM";
                         $.ajax({
                             url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
                             method: 'get',
                             data: 'numeroDiaDaSemana=' +
-                                numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes +
+                                numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes +
                                 "&opcaoSelecionada=" +
                                 opcaoSelecionada +
                                 "&funcionario=" +
@@ -355,7 +355,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                         });
 
                     }
-                } else if (valorINICIAL != 'FA' && opcaoSelecionada != 'FA' || valorINICIAL == '' && opcaoSelecionada != 'FA') {
+                } else if (valorINICIAL != 'F' && opcaoSelecionada != 'F' || valorINICIAL == '' && opcaoSelecionada != 'F') {
                     console.log('Valor INICIAL: ' + valorINICIAL);
                     console.log('opcao Escolhida :' + opcaoSelecionada)
                     console.log("caiu na segunda");
@@ -417,7 +417,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                         }
                     });
 
-                } else if (valorINICIAL == 'FA' && opcaoSelecionada != 'FA' || valorINICIAL == 'FA' && opcaoSelecionada != '') {
+                } else if (valorINICIAL == 'F' && opcaoSelecionada != 'F' || valorINICIAL == 'F' && opcaoSelecionada != '') {
 
                     console.log('Valor INICIAL: ' + valorINICIAL);
                     console.log('opcao Escolhida :' + opcaoSelecionada)
@@ -461,14 +461,14 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                     var indexAtualNumero = parseInt(indexAtual, 10);
                     alert("Dia Selecionado " + indexAtualNumero);
-                    var numeroDiaDaSemanaArrayLimpaFA = [];
+                    var numeroDiaDaSemanaArrayLimpaF = [];
 
                     for (var i = indexAtualNumero; i <= indexUltimoDia; i++) {
                         var aux = i < 10 ? "0" + i : i.toString();
 
-                        numeroDiaDaSemanaArrayLimpaFA.push('"' + aux + '"');
+                        numeroDiaDaSemanaArrayLimpaF.push('"' + aux + '"');
 
-                        console.log("dia inserido : " + numeroDiaDaSemanaArrayLimpaFA);
+                        console.log("dia inserido : " + numeroDiaDaSemanaArrayLimpaF);
 
                         $selects.eq(i).prop('disabled', false).val(' ');
                     }
@@ -478,7 +478,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                         url: "config/insertEUpdate_EscalaMensal.php",
                         method: 'get',
                         data: 'numeroDiaDaSemana=' +
-                            numeroDiaDaSemanaArrayLimpaFA +
+                            numeroDiaDaSemanaArrayLimpaF +
                             "&opcaoSelecionada=" +
                             opcaoSelecionada +
                             "&funcionario=" +
@@ -513,7 +513,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                     // Calcular quantos dias faltam até o final do mês
                     var diasRestantes = indexUltimoDia - indexAtual;
-                    var diasParaProximoMes = Math.min(30 - diasRestantes, diasRestantes);
+                    var diasParaProximoMes = Math.min(29 - diasRestantes, diasRestantes);
                     //console.log("faltaram  para o proximo mes: " + diasParaProximoMes);
 
 
@@ -525,7 +525,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                     // Converte 'mesPesquisa' para um objeto Date
                     var data = new Date(ano, mes - 1); // O mês em JavaScript começa em zero (janeiro é 0)
-                    var numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes = [];
+                    var numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes = [];
                     // Verifica se a quantidade de dias é maior que 1 para avançar para o próximo mês
                     if (diasParaProximoMes > 1) {
                         // Adiciona a quantidade de dias à data atual
@@ -541,9 +541,9 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                         // Loop para contar até a quantidade de dias desejada
                         for (var i = 1; i <= diasParaProximoMes; i++) {
                             var aux = i < 10 ? "0" + i : i.toString();
-                            numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes.push('"' + aux + '"');
+                            numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes.push('"' + aux + '"');
 
-                            console.log(numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes);
+                            console.log(numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes);
 
                         }
                         var inclusaoDoMesAnterior = " ";
@@ -551,7 +551,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                             url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
                             method: 'get',
                             data: 'numeroDiaDaSemana=' +
-                                numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes +
+                                numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes +
                                 "&opcaoSelecionada=" +
                                 opcaoSelecionada +
                                 "&funcionario=" +
@@ -604,15 +604,15 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                     if (mesPesquisa == "") {
                         mesPesquisa = mesAtual
                     }
-                    var numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOFA = [];
+                    var numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOF = [];
 
-                    numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOFA.push('"' + $('#table1 thead tr.trr th').eq(colIndex).text() + '"');
+                    numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOF.push('"' + $('#table1 thead tr.trr th').eq(colIndex).text() + '"');
 
                     $.ajax({
                         url: "config/insertEUpdate_EscalaMensal.php",
                         method: 'get',
                         data: 'numeroDiaDaSemana=' +
-                            numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOFA +
+                            numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOF +
                             "&opcaoSelecionada=" +
                             opcaoSelecionada +
                             "&funcionario=" +

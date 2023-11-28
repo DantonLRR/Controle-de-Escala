@@ -616,7 +616,7 @@ class Verifica
         return $lista;
         echo "</br>" + $retorno1;
     }
-    public function verificaSeALinhaDoBancoTemFAESETiverRetornaAPrimeiraColunaComFA($oracle, $mesPesquisado, $loja, $matricula)
+    public function verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $mesPesquisado, $loja, $matricula)
     {
         $query = "SELECT * FROM WEB_ESCALA_MENSAL a
         WHERE a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
@@ -628,7 +628,7 @@ class Verifica
         if (oci_execute($parse)) {
             while ($row = oci_fetch_assoc($parse)) {
                 foreach ($row as $coluna => $valor) {
-                    if ($valor === 'FA') {
+                    if ($valor === 'F') {
 
                         $resultado['MATRICULA'] = $row['MATRICULA'];
                         $resultado['NOME'] = $row['NOME'];
@@ -643,13 +643,13 @@ class Verifica
             echo "Erro na consulta.";
         }
 
-        return null; // Retorna null se não encontrar 'FA' em nenhuma coluna
+        return null; // Retorna null se não encontrar 'F' em nenhuma coluna
     }
 
-    public function verificaSeALinhaFAFoiInseridaNoMesAnterior($oracle, $mesPesquisado, $loja, $matricula)
+    public function verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $mesPesquisado, $loja, $matricula)
     {
         $lista = array();
-        global  $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior;
+        global  $retornoVerificacaoSeOFFoiInseridoNoMesAnterior;
         $query = "SELECT * FROM WEB_ESCALA_MENSAL a
         WHERE a.matricula = '$matricula'
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
@@ -666,14 +666,14 @@ class Verifica
 
         if (oci_num_rows($parse) >= 1) {
 
-            $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior = 1;
+            $retornoVerificacaoSeOFFoiInseridoNoMesAnterior = 1;
         }
         if (oci_num_rows($parse) < 1) {
 
-            $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior = 0;
+            $retornoVerificacaoSeOFFoiInseridoNoMesAnterior = 0;
         }
-        // echo $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior."<br><br>";
-        // echo "verificaSeALinhaFAFoiInseridaNoMesAnterior   " . $query;
+        // echo $retornoVerificacaoSeOFFoiInseridoNoMesAnterior."<br><br>";
+        // echo "verificaSeALinhaFFoiInseridaNoMesAnterior   " . $query;
     }
 
 
@@ -1279,7 +1279,7 @@ class Porcentagem
         T.QTD_CUPONS,
         T.PART_BIPS,
         ROUND($quantidadePorDiaDeFuncionarios * 6 * (PART_BIPS / 100)) AS QTD_FUNCIONARIOS
-   FROM (DW_DMT.AGG_FATO_VENDAREF_LOJA@PDB_DW) T
+   FROM (DW_DMT.AGG_FTO_VENDAREF_LOJA@PDB_DW) T
  WHERE T.NROEMPRESA = $lojaDaPessoaLogada
     AND T.DTA_PROGRAMAR =  TO_DATE('$dataAtual', 'YYYY-MM-DD')
     ";

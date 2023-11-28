@@ -154,32 +154,32 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                                     } else {
                                                         $d = $i;
                                                     }
-                                                    $recuperaAPrimeiraColunaComFA = $verifica->verificaSeALinhaDoBancoTemFAESETiverRetornaAPrimeiraColunaComFA($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
-                                                    $verficaSeAInserçãoDeFAFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFAFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
-                                                //    echo $retornoVerificacaoSeOFAFoiInseridoNoMesAnterior;
+                                                    $recuperaAPrimeiraColunaComF = $verifica->verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
+                                                    $verficaSeAInserçãoDeFFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
+                                                //    echo $retornoVerificacaoSeOFFoiInseridoNoMesAnterior;
                                                   
                                                   
                                                   
                                                   
-                                                    $primeiroDiaNaoFA = $recuperaAPrimeiraColunaComFA['nome_coluna'] ?? $d;
+                                                    $primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
                                                     $primeiroDiaEncontrado = false;
                                                     
-                                                        $isFA = ($recuperacaoDedados[0]["$d"] ?? '') === 'FA';
+                                                        $isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
                                                     
                                                         // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
-                                                        if ($retornoVerificacaoSeOFAFoiInseridoNoMesAnterior == 1) {
+                                                        if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
                                                             // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
-                                                            if ($isFA) {
+                                                            if ($isF) {
                                                                 $disabled = ' disabled  name="desabilitarEsteSelect"';
                                                             } else {
                                                                 $disabled = '';
                                                             }
                                                         } else {
-                                                        if ($isFA && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoFA) {
+                                                        if ($isF && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoF) {
                                                             $disabled = ' disabled  name="desabilitarEsteSelect"';
                                                         } else {
                                                             $disabled = '';
-                                                            if ($d === $primeiroDiaNaoFA) {
+                                                            if ($d === $primeiroDiaNaoF) {
                                                                 $primeiroDiaEncontrado = true;
                                                             }
                                                         }                                                                                                      
@@ -189,11 +189,11 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                                                     <select <?= $disabled ?> class="estilezaSelect" name="" id="">
                                                         <option value="<?= $recuperacaoDedados[0]["$d"] ?? '' ?>"> <?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
-                                                        <option value="F">F</option>
                                                         <option value="FA">FA</option>
-                                                        <option value="V">V</option>
+                                                        <option value="FD">FD</option>
+                                                        <option value="FF">FF</option>
+                                                        <option value="F">F</option>
                                                         <option value=""></option>
-
                                                     </select>
                                                 </td>
                                             <?php

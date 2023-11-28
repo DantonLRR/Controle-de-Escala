@@ -190,7 +190,7 @@ $(document).ready(function () {
             var opcaoSelecionada = $(this).val();
             // alert(valorINICIAL)
             // alert(opcaoSelecionada)
-            if (valorINICIAL != 'FA' && opcaoSelecionada == 'FA' || valorINICIAL == '' && opcaoSelecionada == 'FA') {
+            if (valorINICIAL != 'F' && opcaoSelecionada == 'F' || valorINICIAL == '' && opcaoSelecionada == 'F') {
                 console.log('Valor inicial : ' + valorINICIAL);
                 console.log('opcao Escolhida :' + opcaoSelecionada)
                 console.log("caiu na primeira");
@@ -204,7 +204,7 @@ $(document).ready(function () {
                     mesPesquisa = mesAtual
                 }
 
-                var opcaoSelecionada = 'FA';
+                var opcaoSelecionada = 'F';
                 var $tr = $(this).closest('tr');
                 var funcionario = $tr.find('td.funcionario').text();
                 var matriculaFunc = $tr.find('td.matriculaFunc').text();
@@ -230,14 +230,14 @@ $(document).ready(function () {
 
 
                 var indexAtualNumero = parseInt(indexAtual, 10);
-                var numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes = [];
+                var numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes = [];
                 for (var i = indexAtualNumero; i <= indexUltimoDia; i++) {
                     var aux = i < 10 ? "0" + i : i.toString();
-                    numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes.push('"' + aux + '"');
+                    numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes.push('"' + aux + '"');
 
-                    console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes);
+                    console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes);
 
-                    $selects.eq(i).prop('disabled', true).val('FA');                  
+                    $selects.eq(i).prop('disabled', true).val('F');                  
                 }
 
 
@@ -245,7 +245,7 @@ $(document).ready(function () {
                     url: "config/insertEUpdate_EscalaMensal.php",
                     method: 'get',
                     data: 'numeroDiaDaSemana=' +
-                        numeroDiaDaSemanaArrayInsereFATrintaDiasSeguintes +
+                        numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes +
                         "&opcaoSelecionada=" +
                         opcaoSelecionada +
                         "&funcionario=" +
@@ -280,7 +280,7 @@ $(document).ready(function () {
 
                 // Calcular quantos dias faltam até o final do mês
                 var diasRestantes = indexUltimoDia - indexAtual;
-                var diasParaProximoMes = Math.min(30 - diasRestantes, diasRestantes);
+                var diasParaProximoMes = Math.min(29 - diasRestantes, diasRestantes);
                 //console.log("faltaram  para o proximo mes: " + diasParaProximoMes);
 
 
@@ -302,18 +302,18 @@ $(document).ready(function () {
 
                     // Formata o novo mês para o formato 'AAAA-MM'
                     mesPesquisa = ano + '-' + (mes < 10 ? '0' + mes : mes);
-                    var numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes = [];
+                    var numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes = [];
                     for (var i = 1; i <= diasParaProximoMes; i++) {
                         var aux = i < 10 ? "0" + i : i.toString();
-                        console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes);
-                        numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes.push('"' + aux + '"');
+                        console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes);
+                        numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes.push('"' + aux + '"');
                     }
                    var inclusaoDoMesAnterior = "SIM";
                     $.ajax({
                         url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
                         method: 'get',
                         data: 'numeroDiaDaSemana=' +
-                            numeroDiaDaSemanaArrayInsereFANosDiasFaltantesDoProximoMes +
+                            numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes +
                             "&opcaoSelecionada=" +
                             opcaoSelecionada +
                             "&funcionario=" +
@@ -348,7 +348,7 @@ $(document).ready(function () {
 
                 }
             }
-            else if (valorINICIAL != 'FA' && opcaoSelecionada != 'FA' || valorINICIAL == '' && opcaoSelecionada != 'FA') {
+            else if (valorINICIAL != 'F' && opcaoSelecionada != 'F' || valorINICIAL == '' && opcaoSelecionada != 'F') {
                 console.log('Valor INICIAL: ' + valorINICIAL);
                 console.log('opcao Escolhida :' + opcaoSelecionada)
                 console.log("caiu na segunda");
@@ -411,7 +411,7 @@ $(document).ready(function () {
                 });
 
             }
-            else if (valorINICIAL == 'FA' && opcaoSelecionada != 'FA' || valorINICIAL == 'FA' && opcaoSelecionada != '') {
+            else if (valorINICIAL == 'F' && opcaoSelecionada != 'F' || valorINICIAL == 'F' && opcaoSelecionada != '') {
 
                 console.log('Valor INICIAL: ' + valorINICIAL);
                 console.log('opcao Escolhida :' + opcaoSelecionada)
@@ -507,7 +507,7 @@ $(document).ready(function () {
 
                 // Calcular quantos dias faltam até o final do mês
                 var diasRestantes = indexUltimoDia - indexAtual;
-                var diasParaProximoMes = Math.min(30 - diasRestantes, diasRestantes);
+                var diasParaProximoMes = Math.min(29 - diasRestantes, diasRestantes);
                 //console.log("faltaram  para o proximo mes: " + diasParaProximoMes);
 
 
@@ -519,7 +519,7 @@ $(document).ready(function () {
 
                 // Converte 'mesPesquisa' para um objeto Date
                 var data = new Date(ano, mes - 1); // O mês em JavaScript começa em zero (janeiro é 0)
-                var numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes = [];
+                var numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes = [];
                 // Verifica se a quantidade de dias é maior que 1 para avançar para o próximo mês
                 if (diasParaProximoMes > 1) {
                     // Adiciona a quantidade de dias à data atual
@@ -535,9 +535,9 @@ $(document).ready(function () {
                     // Loop para contar até a quantidade de dias desejada
                     for (var i = 1; i <= diasParaProximoMes; i++) {
                         var aux = i < 10 ? "0" + i : i.toString();
-                        numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes.push('"' + aux + '"');
+                        numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes.push('"' + aux + '"');
 
-                        console.log(numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes);
+                        console.log(numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes);
 
                     }
                     var inclusaoDoMesAnterior = " ";
@@ -545,7 +545,7 @@ $(document).ready(function () {
                         url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
                         method: 'get',
                         data: 'numeroDiaDaSemana=' +
-                            numeroDiaDaSemanaArrayLimpaFaDiasRestantesParaOProximoMes +
+                            numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes +
                             "&opcaoSelecionada=" +
                             opcaoSelecionada +
                             "&funcionario=" +
@@ -598,15 +598,15 @@ $(document).ready(function () {
                 if (mesPesquisa == "") {
                     mesPesquisa = mesAtual
                 }
-                var numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOFA = [];
+                var numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOF = [];
 
-                numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOFA.push('"' + $('#table1 thead tr.trr th').eq(colIndex).text() + '"');
+                numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOF.push('"' + $('#table1 thead tr.trr th').eq(colIndex).text() + '"');
 
                 $.ajax({
                     url: "config/insertEUpdate_EscalaMensal.php",
                     method: 'get',
                     data: 'numeroDiaDaSemana=' +
-                        numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOFA +
+                        numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOF +
                         "&opcaoSelecionada=" +
                         opcaoSelecionada +
                         "&funcionario=" +
