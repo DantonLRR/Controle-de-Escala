@@ -67,3 +67,6 @@ td {
     background-color: #a50000 !important;
 
 }
+.ocultarBotao {
+    display: none !important;
+}

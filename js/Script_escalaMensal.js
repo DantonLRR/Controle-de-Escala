@@ -6,10 +6,6 @@ var loja = $("#loja").val();
 
 var statusDaTabela = $("#statusDaTabela").val();
 
-if (statusDaTabela === "JÁ FINALIZADA.") {
-
-    $('#table1').find('input, select, textarea, button').prop('disabled', true);;
-}
 
 
 
@@ -138,6 +134,22 @@ $('#table1').DataTable({
     ],
 
 });
+
+
+
+if (statusDaTabela === "JÁ FINALIZADA.") {
+
+    $('#table1').find('input, select, textarea, button').prop('disabled', true);
+    $('.btnVermelho').addClass('ocultarBotao');
+}else{
+    $('#table1').find('input, select, textarea, button').prop('disabled', false);
+    $('.btnVermelho').removeClass('ocultarBotao');
+}
+
+
+$('select[name="desabilitarEsteSelect"]').prop('disabled', true);
+
+
 
 
 $('#dataPesquisa').on('change', function () {

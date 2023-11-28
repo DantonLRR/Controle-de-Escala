@@ -160,7 +160,6 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                                   
                                                   
                                                   
-                                                  
                                                     $primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
                                                     $primeiroDiaEncontrado = false;
                                                     
