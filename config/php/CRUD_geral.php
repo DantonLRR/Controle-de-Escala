@@ -280,6 +280,7 @@ class Funcionarios
         WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
         AND b.loja = $lojaDaPessoaLogada 
         AND b.horaentrada BETWEEN '07:00' AND '11:59'
+        order by nome asc
         ";
         // echo $query;
         $resultado = oci_parse($oracle, $query);
@@ -322,6 +323,7 @@ class Funcionarios
         WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
         AND b.loja = $lojaDaPessoaLogada 
         AND b.horaentrada BETWEEN '12:00' AND '14:00'
+        order by nome asc
         ";
         // echo $query;
         $resultado = oci_parse($oracle, $query);
@@ -1279,10 +1281,10 @@ class Porcentagem
         T.QTD_CUPONS,
         T.PART_BIPS,
         ROUND($quantidadePorDiaDeFuncionarios * 6 * (PART_BIPS / 100)) AS QTD_FUNCIONARIOS
-   FROM (DW_DMT.AGG_FTO_VENDAREF_LOJA@PDB_DW) T
- WHERE T.NROEMPRESA = $lojaDaPessoaLogada
-    AND T.DTA_PROGRAMAR =  TO_DATE('$dataAtual', 'YYYY-MM-DD')
-    ";
+        FROM (DW_DMT.AGG_FATO_VENDAREF_LOJA@PDB_DW) T
+        WHERE T.NROEMPRESA = $lojaDaPessoaLogada
+            AND T.DTA_PROGRAMAR =  TO_DATE('$dataAtual', 'YYYY-MM-DD')
+     ";
         // echo $query;
 
         $resultado = oci_parse($oracle, $query);

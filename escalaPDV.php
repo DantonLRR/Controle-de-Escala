@@ -231,7 +231,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <td scope="row" class="Matricula1"></td>
                                                 <td scope="row" class="NomeFunc">
                                                     <select class="estilezaSelect form-control" id="selectFuncionario">
-                                                        <option value=""></option>
+                                                        <option value=" "></option>
                                                         <?php
                                                         foreach ($naoRepetidosMANHA as $rowManha) :
                                                         ?>

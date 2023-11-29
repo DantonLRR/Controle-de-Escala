@@ -1,5 +1,11 @@
 import { criandoHtmlmensagemCarregamento, Toasty } from "../../base/jsGeral.js";
 
+var quantidadePorDiaDeFuncionariosImpressao = $("#quantidadePorDiaDeFuncionariosImpressao").val();
+if (quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado para hoje"){
+    $('.DesabilitaClasseCasoEscalaNaoFinalizada').css('display', 'none');
+    $("#quantidadePorDiaDeFuncionariosVisivel").text("Escala mensal não finalizada");
+    $('#dataPesquisa').prop('disabled', true);
+}
 
 $('#table1').DataTable({
 
@@ -210,12 +216,7 @@ function calcularHorasIntermediarias(horaEntrada, horaSaida, horaParaPular) {
     return horasIntermediarias;
 }
 
-var quantidadePorDiaDeFuncionariosImpressao = $("#quantidadePorDiaDeFuncionariosImpressao").val();
-if (quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado para hoje"){
-    $('.DesabilitaClasseCasoEscalaNaoFinalizada').css('display', 'none');
-    $("#quantidadePorDiaDeFuncionariosVisivel").text("Escala mensal não finalizada");
-    $('#dataPesquisa').prop('disabled', true);
-}
+
 
 
 
