@@ -63,7 +63,7 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
         <div class="row">
             <div class="col-md-12">
                 <div class="card" style="border-color:#00a550;  ">
-                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">Escala Diaria</h6>
+                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">Escala Diaria</h6>
                     <div class="card-body">
                         <?php
 
@@ -71,12 +71,12 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
                         ?>
                             <table id="table1" class="table table-bordered table-striped text-center " style="width:100%">
                                 <input class="usu" type="HIDDEN" value="<?= $_SESSION['nome'] ?>">
-                                <thead style="background-color: #00a550;">
+                                <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
                                     <tr>
                                         <th class="text-center">Nome</th>
                                         <th class="text-center">matricula</th>
                                         <th class="text-center">Cargo</th>
-                                        <th class="text-center"><a style="color:white" href="escalaMensal.php">Escala Mensal</a></th>
+                                        <th class="text-center"><a style="color:white" href="escalaMensal.php"><u>  Escala Mensal</u></a></th>
                                         <th class="text-center">Hora Entrada</th>
                                         <th class="text-center">Hora Intervalo</th>
                                         <th class="text-center">Hora Saida</th>

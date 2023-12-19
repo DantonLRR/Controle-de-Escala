@@ -103,7 +103,7 @@ for ($i = 7; $i <= 21; $i++) {
         <div class="row" id="qntPessoasPorPDV">
             <div class="col-lg-12">
                 <div class="card">
-                    <div style="font-weight: bold; background-color: #00a550; color:white" class="text-center card-header">NECESSIDADE DE OPERADORES POR HORÁRIO</div>
+                    <div style="font-weight: bold; background: linear-gradient(to right, #00a451, #052846 85%); color:white;" class="text-center card-header">NECESSIDADE DE OPERADORES POR HORÁRIO</div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-2 informacoesEsquerda1Card">
@@ -137,7 +137,7 @@ for ($i = 7; $i <= 21; $i++) {
                                 <div class="">
                                     <table id="tableHeader" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
-                                        <thead style="background-color: #00a550; color: white;">
+                                        <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
                                             <tr class="trr">
                                                 <?php
                                                 $pessoasPorHora = $calculoDeFuncionariosNecessariosPorHora->quantidadesDePessoasPorHoraCalculo($oracle, $quantidadeDePessoasEscaladas, $_SESSION['LOJA'], $hoje);
@@ -178,7 +178,7 @@ for ($i = 7; $i <= 21; $i++) {
         <div class="row DesabilitaClasseCasoEscalaNaoFinalizada">
             <div class="col-lg-12">
                 <div class="card" style="border-color:#00a550;">
-                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">
+                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
 
                         <i id="BTNAdicionarDescritivo" class="far fa-plus-square ocultar "> </i>
                         <i id="BTNremoverDescritivo" class="far fa-minus-square "> </i>
@@ -190,7 +190,7 @@ for ($i = 7; $i <= 21; $i++) {
                         <div class="table dadosEscalaPDV" style="overflow-x:auto;">
                             <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
-                                <thead style="background-color: #00a550; color: white;">
+                                <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
                                     <tr class="trr">
                                         <th class="text-center" colspan="6">Manhã</th>
 
@@ -322,7 +322,7 @@ for ($i = 7; $i <= 21; $i++) {
         <div class="row DesabilitaClasseCasoEscalaNaoFinalizada">
             <div class="col-lg-12">
                 <div class="card" style="border-color:#00a550;">
-                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">
+                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
 
                         <i id="BTNAdicionarDescritivo2" class="far fa-plus-square ocultar "> </i>
                         <i id="BTNremoverDescritivo2" class="far fa-minus-square "> </i>
@@ -332,7 +332,7 @@ for ($i = 7; $i <= 21; $i++) {
                     <div id="relatorioPDV" class="card-body ">
                         <table id="table2" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
-                            <thead style="background-color: #00a550; color: white;">
+                            <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
                                 <tr class="trr">
                                     <th> PDV </th>
                                     <?php

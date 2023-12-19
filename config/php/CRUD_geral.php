@@ -909,7 +909,6 @@ class Insert
             return true;
         } else {
             $sucess = 0;
-            //  echo "<br>" . $query;
             return false;
         }
 
@@ -1295,5 +1294,54 @@ class Porcentagem
             array_push($lista, $row);
         }
         return $lista;
+    }
+}
+
+class log_escala_mensal
+{
+
+    public function log_liberacao_escala_mensal($oracle, $loja, $mesSelecionadoParaLiberacao, $usuariologado)
+    {
+
+        $sql2 = 'select S_Log_escala_mensal.Nextval from dual';
+        $parse = oci_parse($oracle, $sql2);
+        oci_execute($parse);
+        while (($row = oci_fetch_assoc($parse)) != false) {
+
+            $id = $row['NEXTVAL'];
+        }
+
+
+
+        $query = "INSERT INTO WEB_ESCALA_MENSAL_log (
+            id, 
+            loja, 
+            messelecionado, 
+            dataliberacao,
+             usuliberacao
+             )
+            VALUES (
+            1,
+            $loja,
+             TO_DATE('$mesSelecionadoParaLiberacao', 'YYYY-MM'),
+            sysdate,
+             '$usuariologado'
+        
+        )";
+        $parse = oci_parse($oracle, $query);
+        
+        $retorno = oci_execute($parse);
+        if ($retorno) {
+            global $sucess;
+            $sucess = 1;
+            
+            return true;
+        } else {
+            $sucess = 0;
+            
+            return false;
+        }
+        echo  $query;
+        
     }
 }

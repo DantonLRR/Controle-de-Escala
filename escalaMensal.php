@@ -69,7 +69,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
         <div class="row">
             <div class="col-lg-12  ">
                 <div class="card " style="border-color:#00a550;  ">
-                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">Escala Mensal</h6>
+                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">Escala Mensal</h6>
                     <div class="card-body">
                         <div class="mb-4">
                             <label for="validationCustom02" class="form-label">Mês/Ano: </label>

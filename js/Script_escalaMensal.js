@@ -131,20 +131,28 @@ $('#table1').DataTable({
                 });
             }
         },
+        {
+            extend: 'excel',
+            className: 'btnverdeEXCEL',
+            text: '<i class="fa-solid fa-table" style="color: #ffffff;"></i> Excel ',
+            exportOptions: {
+                format: {
+                    body: function (data, row, column, node) {
+                        if ($(node).find('select[disabled]').length > 0) {
+                            return $(node).find('select[disabled]').val();
+                        }
+                        return data;
+                    }
+                }
+            }
+
+        }
     ],
 
 });
 
 
 
-if (statusDaTabela === "JÁ FINALIZADA.") {
-
-    $('#table1').find('input, select, textarea, button').prop('disabled', true);
-    $('.btnVermelho').addClass('ocultarBotao');
-}else{
-    $('#table1').find('input, select, textarea, button').prop('disabled', false);
-    $('.btnVermelho').removeClass('ocultarBotao');
-}
 
 
 $('select[name="desabilitarEsteSelect"]').prop('disabled', true);
@@ -249,7 +257,7 @@ $(document).ready(function () {
 
                     console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes);
 
-                    $selects.eq(i).prop('disabled', true).val('F');                  
+                    $selects.eq(i).prop('disabled', true).val('F');
                 }
 
 
@@ -320,7 +328,7 @@ $(document).ready(function () {
                         console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes);
                         numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes.push('"' + aux + '"');
                     }
-                   var inclusaoDoMesAnterior = "SIM";
+                    var inclusaoDoMesAnterior = "SIM";
                     $.ajax({
                         url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
                         method: 'get',
@@ -347,8 +355,8 @@ $(document).ready(function () {
                             "&horarioIntervaloFunc=" +
                             horarioIntervaloFunc +
                             "&cargoFunc=" +
-                            cargoFunc+
-                            "&inclusaoDoMesAnterior="+
+                            cargoFunc +
+                            "&inclusaoDoMesAnterior=" +
                             inclusaoDoMesAnterior,
 
                         // dataType: 'json',
@@ -579,7 +587,7 @@ $(document).ready(function () {
                             "&horarioIntervaloFunc=" +
                             horarioIntervaloFunc +
                             "&cargoFunc=" +
-                            cargoFunc+"&inclusaoDoMesAnterior="+inclusaoDoMesAnterior,
+                            cargoFunc + "&inclusaoDoMesAnterior=" + inclusaoDoMesAnterior,
 
                         // dataType: 'json',
                         success: function (retorno) {
@@ -658,3 +666,15 @@ $(document).ready(function () {
         });
     });
 });
+
+if (statusDaTabela === "JÁ FINALIZADA.") {
+
+    $('#table1').find('select').prop('disabled', true);
+    $('.btnVermelho').addClass('ocultarBotao');
+    $('. btnverdeEXCEL').removeClass('ocultarBotao');
+    } else {
+    $('#table1').find('select').prop('disabled', false);
+    $('.btnVermelho').removeClass('ocultarBotao');
+    $('.btnverdeEXCEL').addClass('ocultarBotao');
+}
+

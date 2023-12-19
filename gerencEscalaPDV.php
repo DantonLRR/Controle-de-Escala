@@ -39,7 +39,7 @@ $informacoesDaslojas = new lojas;
         <div class="row" id="qntPessoasPorPDV">
             <div class="col-lg-12">
                 <div class="card">
-                    <div style="font-weight: bold; background-color: #00a550; color:white" class="text-center card-header">Gerenciamento de Escala de PDV</div>
+                    <div style="font-weight: bold;  background: linear-gradient(to right, #00a451, #052846 85%); color:white" class="text-center card-header">Gerenciamento de Escala de PDV</div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-2 informacoesEsquerda1Card">
@@ -70,23 +70,6 @@ $informacoesDaslojas = new lojas;
                                 </select>
 
                             </div>
-                            <!-- <div class="col-lg-2">
-                                <label class="form-label">
-                                    Data Final
-                                </label>
-                                <input value="<?= $dataFimMes ?>" type="date" class="form-control dataFinalPesquisa" id="dataFinalPesquisa">
-                            </div>
-                            <div class="col-lg-2">
-                                <label class="form-label">
-                                    Status
-                                </label>
-
-                                <select id="status" class="form-control statusocul">
-                                    <option value="ENVIADO">Enviado</option>
-                                    <option value="Pendente">Pendente</option>
-                                    <option value="ACEITO">Aceito</option>
-                                </select>
-                            </div> -->
                             <div class="col-lg-2 pt-4">
                                 <button type="button" id="PesquisarEscalaMensal" style="background-color: #00a550 ;color: white;font-weight:bold" class="btn">Pesquisar</button>
                             </div>
@@ -107,16 +90,21 @@ $informacoesDaslojas = new lojas;
     <div class="row blocoVerificaELiberaEscala" style="visibility:hidden;">
         <div class="col-lg-12">
             <div class="card" style="border-color:#00a550;">
-                <h6 class="card-header text-center font-weight-bold text-uppercase " style="background-color: #00a550;color:white;">
+                <h6 class="card-header text-center font-weight-bold text-uppercase " style="background: linear-gradient(to right, #00a451, #052846 85%); color: white;font-weight:bold">
 
                     <i id="BTNAdicionarDescritivo2" class="far fa-plus-square ocultar "> </i>
                     <i id="BTNremoverDescritivo2" class="far fa-minus-square "> </i>
 
                     Visualização da escala Mensal
                 </h6>
-                <div class="col-lg-2 pt-4">
-                    <button type="button" id="LiberarEscala" style="background-color: #00a550 ;color: white;font-weight:bold" class="btn">Liberar Escala</button>
-                </div>
+
+                    <div class="col-lg-6 mt-3">
+                        <button type="button" id="LiberarEscala" style="background-color: #00a550 ;color: white;font-weight:bold" class="btn">Liberar Escala</button>
+                        <button id="exportButton" style="background-color: #00a550 ;color: white;font-weight:bold" class="btn">
+                        <i class="fa-solid fa-table" style="color: #ffffff;"></i> 
+                        Excel
+                    </button>
+                    </div>
                 <div id="PesquisaEscalaMensal" class="card-body ">
                 </div>
             </div>
@@ -135,6 +123,7 @@ $informacoesDaslojas = new lojas;
     <script type="text/javascript" src="../base/DataTables/FixedColumns/js/dataTables.fixedColumns.min.js"></script>
     <script src="../base/dist/sidenav.js"></script>
     <script type="module" src="js/Script_gerenciamentoEscalaMensal.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin/tableExport.min.js"></script>
 
     <script type="text/javascript" src="../base/mdb/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>

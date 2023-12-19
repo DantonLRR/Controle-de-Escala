@@ -785,7 +785,22 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                         }
                     });
                 }
-            },
+            }, {
+                extend: 'excel',
+                className: 'btnverdeEXCEL',
+                text: '<i class="fa-solid fa-table" style="color: #ffffff;"></i> Excel ',
+                exportOptions: {
+                    format: {
+                        body: function(data, row, column, node) {
+                            if ($(node).find('select[disabled]').length > 0) {
+                                return $(node).find('select[disabled]').val();
+                            }
+                            return data;
+                        }
+                    }
+                }
+
+            }
         ],
 
     });
