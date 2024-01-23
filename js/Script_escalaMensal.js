@@ -188,25 +188,65 @@ $('#dataPesquisa').on('change', function () {
 });
 
 
-$('select').on('change', function () {
-    $('tr').removeClass('selecionado').css('background-color', '').css('color', '');
+var rows = $("#table1 tr");
 
-    var linha = $(this).closest('tr');
-    var opcao = $(this).closest('.estilezaSelect');
-    linha.addClass('selecionado');
-    linha.css('background-color', '#00a550d0');
-
-    opcao.css('font-weight', 'bold');
-
-
-
+rows.on('click', function () {
+    rows.removeClass("selected");
+    $(this).addClass("selected");
 });
-
-
 $(document).ready(function () {
     $('.estilezaSelect').on('click', function () {
+        
+        var opcaoSelecionadaAux = $(this).val();
+        var $selects = $(this).closest('tr').find('.estilezaSelect');
+        var colIndex = $(this).closest('td').index();
+        var indexAtual = $selects.index(this);
+        var PeriodoMaximoDeDiasTrabalhados = false
+        var indexUltimoPreenchido = -1;
+        var indexProximoPreenchido;
+        $selects.slice(0, indexAtual).each(function (index) {
+            if ($(this).val() !== '') {
+                indexUltimoPreenchido = index;
+            }
+        });
+
+        $selects.slice(indexAtual + 1).each(function (index) {
+            if ($(this).val() !== '') {
+                indexProximoPreenchido = indexAtual + index + 1; // Ajuste aqui
+                return false; // Para interromper o loop assim que encontrar um select preenchido
+            }
+        });
+
+        var THDoSelectAtual = $('#table1 thead tr.trr th').eq(colIndex).text()
+        console.log(THDoSelectAtual)
+
+
+        // Calcular a quantidade de selects em branco entre o último e o atual
+        var selectsEmBrancoEntre = indexAtual - indexUltimoPreenchido - 1;
+
+        var thDoUltimoSelectPreenchido = THDoSelectAtual - selectsEmBrancoEntre - 1
+
+        console.log("th Do Ultimo Select Preenchido:  " + thDoUltimoSelectPreenchido)
+        // console.log('Selects em branco entre o último selecionado e o atual: ' + selectsEmBrancoEntre);
+
+        var selectsEmBrancoEntreOProximo = indexProximoPreenchido - indexAtual - 1;
+        // console.log('Selects em branco entre próximo selecionado e o atual: ' + selectsEmBrancoEntreOProximo);
+
+        var thDoProximoSelectPreenchido = parseInt(THDoSelectAtual) + selectsEmBrancoEntreOProximo + 1;
+        if (isNaN(thDoProximoSelectPreenchido)) {
+            thDoProximoSelectPreenchido = 0;
+        }
+        console.log("th Do Proximo Select Preenchido: " + thDoProximoSelectPreenchido);
+
+
+
+        if (selectsEmBrancoEntre >= 7) {
+            PeriodoMaximoDeDiasTrabalhados = true
+        }
         var valorINICIAL = $(this).val();
         $(this).off('change').on('change', function () {
+
+            var periodoParaEdicaoDeEscala = parseInt(thDoProximoSelectPreenchido) - thDoUltimoSelectPreenchido
             var opcaoSelecionada = $(this).val();
             // alert(valorINICIAL)
             // alert(opcaoSelecionada)
@@ -369,8 +409,8 @@ $(document).ready(function () {
                 }
             }
             else if (valorINICIAL != 'F' && opcaoSelecionada != 'F' || valorINICIAL == '' && opcaoSelecionada != 'F') {
-                console.log('Valor INICIAL: ' + valorINICIAL);
-                console.log('opcao Escolhida :' + opcaoSelecionada)
+                // console.log('Valor INICIAL: ' + valorINICIAL);
+                // console.log('opcao Escolhida :' + opcaoSelecionada)
                 console.log("caiu na segunda");
                 var opcaoSelecionada = $(this).val();
                 var $tr = $(this).closest('tr');
@@ -393,42 +433,47 @@ $(document).ready(function () {
                 var numeroDiaDaSemana = [];
 
                 numeroDiaDaSemana.push('"' + $('#table1 thead tr.trr th').eq(colIndex).text() + '"');
+                if (PeriodoMaximoDeDiasTrabalhados) {
+                    $(this).val(' ');
+                    Toasty("Atenção", "Funcionario escalado sem folga mais de SEIS dias", "#E20914");
 
-                $.ajax({
-                    url: "config/insertEUpdate_EscalaMensal.php",
-                    method: 'get',
-                    data: 'numeroDiaDaSemana=' +
-                        numeroDiaDaSemana +
-                        "&opcaoSelecionada=" +
-                        opcaoSelecionada +
-                        "&funcionario=" +
-                        funcionario +
-                        "&mesAtual=" +
-                        mesAtual +
-                        "&mesPesquisa=" +
-                        mesPesquisa +
-                        "&usuarioLogado=" +
-                        usuarioLogado +
-                        "&matriculaFunc=" +
-                        matriculaFunc +
-                        "&loja=" +
-                        loja +
-                        "&horarioEntradaFunc=" +
-                        horarioEntradaFunc +
-                        "&horarioSaidaFunc=" +
-                        horarioSaidaFunc +
-                        "&horarioIntervaloFunc=" +
-                        horarioIntervaloFunc +
-                        "&cargoFunc=" +
-                        cargoFunc,
-
-                    // dataType: 'json',
-                    success: function (retorno) {
-                        // console.log(retorno)
-
-
-                    }
-                });
+                } else if (opcaoSelecionada == '' && periodoParaEdicaoDeEscala >= 7) {
+                    $(this).val(opcaoSelecionadaAux);
+                    Toasty("Atenção", "Funcionario escalado sem folga mais de SEIS dias", "#E20914");
+                } else {
+                    $.ajax({
+                        url: "config/insertEUpdate_EscalaMensal.php",
+                        method: 'get',
+                        data: 'numeroDiaDaSemana=' +
+                            numeroDiaDaSemana +
+                            "&opcaoSelecionada=" +
+                            opcaoSelecionada +
+                            "&funcionario=" +
+                            funcionario +
+                            "&mesAtual=" +
+                            mesAtual +
+                            "&mesPesquisa=" +
+                            mesPesquisa +
+                            "&usuarioLogado=" +
+                            usuarioLogado +
+                            "&matriculaFunc=" +
+                            matriculaFunc +
+                            "&loja=" +
+                            loja +
+                            "&horarioEntradaFunc=" +
+                            horarioEntradaFunc +
+                            "&horarioSaidaFunc=" +
+                            horarioSaidaFunc +
+                            "&horarioIntervaloFunc=" +
+                            horarioIntervaloFunc +
+                            "&cargoFunc=" +
+                            cargoFunc,
+                        // dataType: 'json',
+                        success: function (retorno) {
+                            // console.log(retorno)
+                        }
+                    });
+                }
 
             }
             else if (valorINICIAL == 'F' && opcaoSelecionada != 'F' || valorINICIAL == 'F' && opcaoSelecionada != '') {
@@ -672,7 +717,7 @@ if (statusDaTabela === "JÁ FINALIZADA.") {
     $('#table1').find('select').prop('disabled', true);
     $('.btnVermelho').addClass('ocultarBotao');
     $('. btnverdeEXCEL').removeClass('ocultarBotao');
-    } else {
+} else {
     $('#table1').find('select').prop('disabled', false);
     $('.btnVermelho').removeClass('ocultarBotao');
     $('.btnverdeEXCEL').addClass('ocultarBotao');
