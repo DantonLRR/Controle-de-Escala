@@ -155,7 +155,6 @@ $('#table1').DataTable({
 
 
 
-$('select[name="desabilitarEsteSelect"]').prop('disabled', true);
 
 
 
@@ -719,6 +718,7 @@ if (statusDaTabela === "JÁ FINALIZADA.") {
     $('. btnverdeEXCEL').removeClass('ocultarBotao');
 } else {
     $('#table1').find('select').prop('disabled', false);
+    $('select[name="desabilitarEsteSelect"]').prop('disabled', true);
     $('.btnVermelho').removeClass('ocultarBotao');
     $('.btnverdeEXCEL').addClass('ocultarBotao');
 }

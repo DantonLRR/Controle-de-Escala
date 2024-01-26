@@ -187,6 +187,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
             $('.btnVermelho').addClass('ocultarBotao');
         } else {
             $('#table1').find('input, select, textarea, button').prop('disabled', false);
+            $('select[name="desabilitarEsteSelect"]').prop('disabled', true);
             $('.btnVermelho').removeClass('ocultarBotao');
         }
         criandoHtmlmensagemCarregamento("ocultar");
@@ -1188,7 +1189,6 @@ $(document).ready(function () {
 
 
 
-    $('select[name="desabilitarEsteSelect"]').prop('disabled', true);
 
 
     $('#table1').DataTable({
