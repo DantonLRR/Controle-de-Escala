@@ -253,6 +253,11 @@ $(document).ready(function () {
                 console.log('Valor inicial : ' + valorINICIAL);
                 console.log('opcao Escolhida :' + opcaoSelecionada)
                 console.log("caiu na primeira");
+                if (PeriodoMaximoDeDiasTrabalhados) {
+                    $(this).val(' ');
+                    Toasty("Atenção", "Funcionario escalado sem folga mais de SEIS dias", "#E20914");
+
+                } else {
                 var colIndex = $(this).closest('td').index();
                 var mesPesquisa = $("#dataPesquisa").val();
                 //console.log(mesPesquisa)
@@ -404,7 +409,7 @@ $(document).ready(function () {
 
                         }
                     });
-
+                }
                 }
             }
             else if (valorINICIAL != 'F' && opcaoSelecionada != 'F' || valorINICIAL == '' && opcaoSelecionada != 'F') {
