@@ -82,7 +82,7 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
                                         <th class="text-center">Hora Saida</th>
 
 
-                                        <th class="text-center">Periodo de validade</th>
+                                        <!-- <th class="text-center">Periodo de validade</th> -->
                                     </tr>
                                 </thead>
 
@@ -149,9 +149,9 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
 
                                             }
                                             ?>
-                                            <td class="text-center td" scope="row">
-                                                <?= $ROWconsultaNomeFunc['MESSELECIONADOFORMATADO'] ?>
-                                            </td>
+                                            <!-- <td class="text-center td" scope="row">
+                                                <//?= $ROWconsultaNomeFunc['MESSELECIONADOFORMATADO'] ?>
+                                            </td> -->
 
                                         </tr>
                                     <?php
