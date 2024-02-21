@@ -110,24 +110,8 @@ $informacoesDaslojas = new lojas;
         criandoHtmlmensagemCarregamento,
         Toasty
     } from "../../../../base/jsGeral.js";
-    $('.selectloja').on('change', function() {
-        var lojaSelecionada = $('#loja').val();
-        $.ajax({
-            url: "config/select_funcionarioComBaseNaLojaGerencADM.php",
-            method: 'POST',
-            data: "lojaSelecionada=" +
-                lojaSelecionada,
-            success: function(mes_Pesquisado) {
-                $('.recebeNomeNuncionario').empty().html(mes_Pesquisado);
-            }
-        });
-    });
-
 
     $('#PesquisarEscaladiaria').on('click', function() {
-        var FuncEscolhidoMATRICULA = $('#funcionario').val();
-        var nomeFuncEscolhido = $('#funcionario option:selected').text();
-        console.log("Valor selecionado: " + FuncEscolhidoMATRICULA + "\n Texto selecionado: " + nomeFuncEscolhido);
         var dataPesquisaInicial = $('#dataPesquisaInicial').val();
         var dataPesquisaFinal = $('#dataPesquisaFinal').val();
         var lojaSelecionada = $('#loja').val();
@@ -138,8 +122,6 @@ $informacoesDaslojas = new lojas;
             Toasty("Atenção", "Selecione uma Data Final", "#E20914");
         } else if (dataPesquisaFinal < dataPesquisaInicial) {
             Toasty("Atenção", "A Data final não pode ser maior que a inicial", "#E20914");
-        } else if (lojaSelecionada == "") {
-            Toasty("Atenção", "Selecione uma loja para Continuar", "#E20914");
         } else {
             criandoHtmlmensagemCarregamento("exibir");
             $.ajax({
@@ -150,11 +132,7 @@ $informacoesDaslojas = new lojas;
                     "&dataPesquisaFinal=" +
                     dataPesquisaFinal +
                     "&lojaSelecionada=" +
-                    lojaSelecionada +
-                    "&FuncEscolhidoMATRICULA=" +
-                    FuncEscolhidoMATRICULA +
-                    "&nomeFuncEscolhido=" +
-                    nomeFuncEscolhido,
+                    lojaSelecionada,
                 success: function(mes_Pesquisado) {
                     $('#PesquisaEscaladiariaResultado').empty().html(mes_Pesquisado);
                     $('.blocoVerificaELiberaEscala').css('visibility', 'visible');

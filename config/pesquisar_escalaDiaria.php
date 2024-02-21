@@ -5,12 +5,10 @@ include "php/CRUD_geral.php";
 session_start();
 
 $lojaSelecionada = $_POST['lojaSelecionada'];
-$FuncEscolhidoMATRICULA = $_POST['FuncEscolhidoMATRICULA'];
-$nomeFuncEscolhido = $_POST['nomeFuncEscolhido'];
 $dataPesquisaInicial = $_POST['dataPesquisaInicial'];
 $dataPesquisaFinal = $_POST['dataPesquisaFinal'];
 $dadosFunc = new Funcionarios();
-$dadosEscalaDiaria = $dadosFunc->gerencGPRselectNaEscalaDiaria($oracle, $FuncEscolhidoMATRICULA, $dataPesquisaInicial, $dataPesquisaFinal, $lojaSelecionada);
+$dadosEscalaDiaria = $dadosFunc->gerencGPRselectNaEscalaDiaria($oracle, $dataPesquisaInicial, $dataPesquisaFinal, $lojaSelecionada);
 // print_r($dadosEscalaDiaria);
 ?>
 <table id="table11" class="table table-bordered table-striped text-center " style="width:100%">
@@ -108,7 +106,7 @@ $dadosEscalaDiaria = $dadosFunc->gerencGPRselectNaEscalaDiaria($oracle, $FuncEsc
         "paging": true,
         "info": false,
         order: [
-                [3, "asc"] // Ordenar pela coluna de índice 19 em ordem decrescente
+                [0, "asc"],[3, "asc"]
             ],
         "lengthMenu": [
             [40],

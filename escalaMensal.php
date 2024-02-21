@@ -37,9 +37,9 @@ $InsertDeDados = new Insert();
 $updateDeDados = new Update();
 $mesAtual = date("Y-m");
 $usuarioLogado = $_SESSION['nome'];
+$CPFusuarioLogado = $_SESSION['cpf'];
 $dadosFunc = new Funcionarios();
-$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA']);
-
+$verificaSeAPessoaLogadaEEncarregada = $dadosFunc->informacaoPessoaLogada($TotvsOracle, $_SESSION['cpf'], $_SESSION['LOJA']);
 $verifica = new verifica();
 
 $verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA']);
@@ -54,7 +54,7 @@ if ($retorno === "NÃO FINALIZADA.") {
 $recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA']);
 // ECHO $retorno1;
 if ($retorno1 == "NÃO EXISTE CADASTRO.") {
-    $statusDaTabela = "NÃO FINALIZADA.";
+    $statusDaTabela = "NÃO FINALIZADA.";                                                                                                         
 }
 
 ?>
@@ -66,6 +66,20 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
         <input class="loja" type="hidden" id="loja" value="<?= $_SESSION['LOJA'] ?>">
         <input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
         <input class="statusDaTabela" type="hidden" id="statusDaTabela" value="<?= $statusDaTabela ?>">
+        <input class="statusDaTabela" type="hidden"id="" value="<?= $CPFusuarioLogado ?>">
+        <?php
+        foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+            $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
+            $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
+            $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
+            if($dadosDeQuemEstaLogadoFuncao === "ENCARREGADO"){
+            $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor);
+
+        ?>
+            <input class="statusDaTabela" id="" value="<?= $rowVerificaEncarregado['NOME'] ?>">
+            <input class="statusDaTabela" id="" value="<?= $rowVerificaEncarregado['FUNCAO'] ?>">
+            <input class="statusDaTabela" id="" value="<?= $rowVerificaEncarregado['SETOR'] ?>">
+
         <div class="row">
             <div class="col-lg-12  ">
                 <div class="card " style="border-color:#00a550;  ">
@@ -85,12 +99,14 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                                     <tr class="trr ">
                                         <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
-                                        <th class="text-center theadColor">Entrada</th>
-                                        <th class="text-center theadColor">Saida</th>
-                                        <th class="text-center theadColor">Intervalo</th>
+                                        <th class="text-center theadColor">Cargo</th>
+                                        <th class="text-center theadColor">Situação</th>
+                                        <th class="text-center theadColor" style="display:none">Entrada</th>
+                                        <th class="text-center theadColor" style="display:none">Saida</th>
+                                        <th class="text-center theadColor" style="display:none">Intervalo</th>
                                         <th class="text-center theadColor" scope="row" style="width:150px ;display:none">matricula</th>
 
-                                        <th class="text-center theadColor" style="display:none"> cargo</th>
+
                                         <?php
                                         foreach ($buscandoMesAno as $row) :
                                         ?>
@@ -114,13 +130,14 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
+                                        <td style="display:none"></td>
+                                        <td style="display:none"></td>
                                         <td style="display:none"></td>
                                         <td style="display:none"></td>
                                         <?php
                                         foreach ($buscandoMesAno as $row) :
                                         ?>
-                                            <td class="text-center diaDaSemana" scope="row"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
+                                            <td class="text-center diaDaSemana" scope="row" style="font-weight:bold"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
 
                                         <?php
                                         endforeach
@@ -135,12 +152,14 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                     ?>
                                         <tr class="trr">
                                             <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
-                                            <td class="text-center horarioEntradaFunc" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
-                                            <td class="text-center horarioSaidaFunc" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
-                                            <td class="text-center horarioIntervaloFunc" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
+                                            <td class="text-center cargo"  scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
+                                            <td class="text-center situacao"  scope="row"><?= $nomeFunc['SITUACAO'] ?></td>
+                                            <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
+                                            <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
+                                            <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
                                             <td class="text-center matriculaFunc" style="display:none" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
 
-                                            <td class="text-center cargo" style="display:none" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
+
                                             <?php
                                             $i = 1;
                                             foreach ($buscandoMesAno as $row) :
@@ -156,24 +175,24 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                                     }
                                                     $recuperaAPrimeiraColunaComF = $verifica->verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
                                                     $verficaSeAInserçãoDeFFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
-                                                //    echo $retornoVerificacaoSeOFFoiInseridoNoMesAnterior;
-                                                  
-                                                  
-                                                  
+                                                    //    echo $retornoVerificacaoSeOFFoiInseridoNoMesAnterior;
+
+
+
                                                     $primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
                                                     $primeiroDiaEncontrado = false;
-                                                    
-                                                        $isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
-                                                    
-                                                        // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
-                                                        if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
-                                                            // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
-                                                            if ($isF) {
-                                                                $disabled = ' disabled  name="desabilitarEsteSelect"';
-                                                            } else {
-                                                                $disabled = '';
-                                                            }
+
+                                                    $isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
+
+                                                    // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
+                                                    if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
+                                                        // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
+                                                        if ($isF) {
+                                                            $disabled = ' disabled  name="desabilitarEsteSelect"';
                                                         } else {
+                                                            $disabled = '';
+                                                        }
+                                                    } else {
                                                         if ($isF && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoF) {
                                                             $disabled = ' disabled  name="desabilitarEsteSelect"';
                                                         } else {
@@ -181,7 +200,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                                             if ($d === $primeiroDiaNaoF) {
                                                                 $primeiroDiaEncontrado = true;
                                                             }
-                                                        }                                                                                                      
+                                                        }
                                                     }
                                                     // echo $disabled;
                                                     ?>
@@ -213,7 +232,9 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                 </div>
             </div>
         </div>
-
+        <?php
+       } endforeach;
+        ?>
 
 
 

@@ -60,7 +60,7 @@ $('#table1').DataTable({
         [40],
     ],
     fixedColumns: {
-        left: 4,
+        left: 3,
     },
 
     buttons: [
