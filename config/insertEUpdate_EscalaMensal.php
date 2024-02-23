@@ -8,7 +8,7 @@ $tabela = "WEB_ESCALA_MENSAL";
 $dia= $_GET['numeroDiaDaSemana'];
 
 $arrayDia = explode(',', $dia);
-print_r($arrayDia);
+// print_r($arrayDia);
 $opcaoSelect = $_GET['opcaoSelecionada'];
 $nome = $_GET['funcionario'];
 $mesAtual = $_GET['mesAtual'];
