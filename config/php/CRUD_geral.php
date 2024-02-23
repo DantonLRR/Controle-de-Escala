@@ -610,14 +610,16 @@ class Verifica
         echo "</br>" + $retorno;
     }
 
-    public function verificaCadastroNaEscalaMensal2($oracle, $matricula, $mesPesquisado, $loja)
+    public function verificaCadastroNaEscalaMensal2($oracle, $matricula, $mesPesquisado, $loja,$departamentoFunc)
     {
         $lista = array();
         global  $retorno;
         $query = "SELECT * FROM WEB_ESCALA_MENSAL a
         WHERE a.matricula = '$matricula'
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
-        AND a.loja = $loja ";
+        AND a.loja = $loja
+        AND a.departamento = '$departamentoFunc' 
+        ";
 
 
 
@@ -850,7 +852,7 @@ class Verifica
 class Insert
 {
     // mensal
-    public function insertEscalaMensal($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado)
+    public function insertEscalaMensal($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado,$departamentoFunc)
     {
 
         $query = "INSERT INTO $tabela (
@@ -864,7 +866,8 @@ class Insert
             horaintervalo,
              $dia,
           datainclusao, 
-           usuinclusao
+           usuinclusao,
+           Departamento
          ) VALUES (
          '$matricula',
           '$nome',
@@ -876,7 +879,8 @@ class Insert
           '$horarioIntervaloFunc ',
           '$opcaoSelect',
            SYSDATE,
-           '$usuarioLogado'
+           '$usuarioLogado',
+          '$departamentoFunc'
         )";
         echo $query;
         $parse = oci_parse($oracle, $query);

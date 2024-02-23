@@ -276,7 +276,8 @@ $(document).ready(function () {
                 var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
                 var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
                 var cargoFunc = $tr.find('td.cargo').text();
-
+                var departamentoFunc = $tr.find('td.departamento').text();
+                alert(departamentoFunc)
                 var colIndex = $(this).closest('td').index();
                 var mesPesquisa = $("#dataPesquisa").val();
 
@@ -429,6 +430,8 @@ $(document).ready(function () {
                 var mesPesquisa = $("#dataPesquisa").val();
                 //console.log(mesPesquisa)
 
+                var departamentoFunc = $tr.find('td.departamento').text();
+                alert(departamentoFunc)
                 var mesAtual = $("#mesAtual").val();
 
                 if (mesPesquisa == "") {
@@ -471,7 +474,9 @@ $(document).ready(function () {
                             "&horarioIntervaloFunc=" +
                             horarioIntervaloFunc +
                             "&cargoFunc=" +
-                            cargoFunc,
+                            cargoFunc+
+                            "&departamentoFunc=" +                            
+                            departamentoFunc,
                         // dataType: 'json',
                         success: function (retorno) {
                             // console.log(retorno)
@@ -502,7 +507,8 @@ $(document).ready(function () {
                 var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
                 var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
                 var cargoFunc = $tr.find('td.cargo').text();
-
+                var departamentoFunc = $tr.find('td.departamento').text();
+                alert(departamentoFunc)
 
 
 

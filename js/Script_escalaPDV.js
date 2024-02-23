@@ -163,8 +163,8 @@ var iconeAddTables1 = document.getElementById("BTNAdicionarDescritivo");
 var iconeRemoveTable1 = document.getElementById("BTNremoverDescritivo");
 var table1 = document.getElementById("cardTable1");
 
-var iconeAddTables2 = document.getElementById("BTNAdicionarDescritivo2"); // Adicione um ID diferente para o segundo ícone
-var iconeRemoveTable2 = document.getElementById("BTNremoverDescritivo2"); // Adicione um ID diferente para o segundo ícone
+var iconeAddTables2 = document.getElementById("BTNAdicionarDescritivo2"); 
+var iconeRemoveTable2 = document.getElementById("BTNremoverDescritivo2"); 
 var table2 = document.getElementById("relatorioPDV");
 
 iconeAddTables1.addEventListener("click", function () {

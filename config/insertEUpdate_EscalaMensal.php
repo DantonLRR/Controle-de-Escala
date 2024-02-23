@@ -16,7 +16,7 @@ $mesPesquisado = $_GET['mesPesquisa'];
 $usuarioLogado = $_GET['usuarioLogado'];
 $matricula = $_GET['matriculaFunc'];
 $loja = $_GET['loja'];
-
+$departamentoFunc = $_GET['departamentoFunc'];
 $horarioEntradaFunc = $_GET['horarioEntradaFunc'];
 $horarioSaidaFunc = $_GET['horarioSaidaFunc'];
 $horarioIntervaloFunc = $_GET['horarioIntervaloFunc'];
@@ -30,7 +30,7 @@ $update = new Update();
 
 foreach ($arrayDia as $diaSelecionado) :
 
-$verificaSeJaExistemDados = $verifica ->verificaCadastroNaEscalaMensaL2($oracle,$matricula,$mesPesquisado,$loja );
+$verificaSeJaExistemDados = $verifica ->verificaCadastroNaEscalaMensaL2($oracle,$matricula,$mesPesquisado,$loja, $departamentoFunc);
 
 if ($retorno == '1'){
 echo $retorno." update <br>";
@@ -40,7 +40,7 @@ echo $retorno." update <br>";
 } else if($retorno == '0') {
     echo $retorno." insert <br>";
 
-    $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle, $tabela,$diaSelecionado,  $matricula,$nome,$loja,  $cargoFunc,$mesPesquisado, $horarioEntradaFunc,$horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado);
+    $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle, $tabela,$diaSelecionado,  $matricula,$nome,$loja,  $cargoFunc,$mesPesquisado, $horarioEntradaFunc,$horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado,$departamentoFunc);
 
 
 }
