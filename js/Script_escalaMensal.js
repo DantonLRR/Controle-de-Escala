@@ -332,8 +332,9 @@ $(document).ready(function () {
                         "&horarioIntervaloFunc=" +
                         horarioIntervaloFunc +
                         "&cargoFunc=" +
-                        cargoFunc,
-
+                        cargoFunc+
+                        "&departamentoFunc=" +                            
+                        departamentoFunc,
                     // dataType: 'json',
                     success: function (retorno) {
                         console.log(retorno)
@@ -569,7 +570,9 @@ $(document).ready(function () {
                         "&horarioIntervaloFunc=" +
                         horarioIntervaloFunc +
                         "&cargoFunc=" +
-                        cargoFunc,
+                        cargoFunc+
+                        "&departamentoFunc=" +                            
+                        departamentoFunc,
 
                     // dataType: 'json',
                     success: function (retorno) {
@@ -703,7 +706,9 @@ $(document).ready(function () {
                         "&horarioIntervaloFunc=" +
                         horarioIntervaloFunc +
                         "&cargoFunc=" +
-                        cargoFunc,
+                        cargoFunc+
+                        "&departamentoFunc=" +                            
+                        departamentoFunc,
 
                     // dataType: 'json',
                     success: function (retorno) {
