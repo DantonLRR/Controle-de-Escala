@@ -76,10 +76,9 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                 $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor);
 
         ?>
-                <input class="" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
-                <input class="" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
-
-                <input class="" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
+                <input class="" type="hidden" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
+                <input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
+                <input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
                 <div class="row">
                     <div class="col-lg-12  ">
@@ -102,7 +101,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                                 <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
                                                 <th class="text-center theadColor">Cargo</th>
                                                 <th class="text-center theadColor">Situação</th>
-                                                <th class="text-center theadColor">Departamento</th>
+                                                <th class="text-center theadColor" style="display:none">Departamento</th>
                                                 <th class="text-center theadColor" style="display:none">Entrada</th>
                                                 <th class="text-center theadColor" style="display:none">Saida</th>
                                                 <th class="text-center theadColor" style="display:none">Intervalo</th>
@@ -132,7 +131,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td></td>
+                                                <td style="display:none"></td>
                                                 <td style="display:none"></td>
                                                 <td style="display:none"></td>
                                                 <td style="display:none"></td>
@@ -157,7 +156,7 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                                     <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
                                                     <td class="text-center cargo" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
                                                     <td class="text-center situacao" scope="row"><?= $nomeFunc['SITUACAO'] ?></td>
-                                                    <td class="text-center departamento" scope="row"><?= $nomeFunc['DEPARTAMENTO'] ?></td>
+                                                    <td class="text-center departamento" style="display:none" scope="row"><?= $nomeFunc['DEPARTAMENTO'] ?></td>
                                                     <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
                                                     <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
                                                     <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>

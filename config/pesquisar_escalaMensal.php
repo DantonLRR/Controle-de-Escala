@@ -59,6 +59,7 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
                 <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
                 <th class="text-center theadColor">Cargo</th>
                 <th class="text-center theadColor">Situação</th>
+                <th class="text-center theadColor" style="display:none">departamento</th>
                 <th class="text-center theadColor" style="display:none">Entrada</th>
                 <th class="text-center theadColor" style="display:none">Saida</th>
                 <th class="text-center theadColor" style="display:none">Intervalo</th>
@@ -94,6 +95,7 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
                 <td style="display:none"></td>
                 <td style="display:none"></td>
                 <td style="display:none"></td>
+                <td style="display:none"></td>
                 <?php
                 foreach ($buscandoMesAno as $row) :
                 ?>
@@ -114,6 +116,7 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
                     <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
                     <td class="text-center cargo" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
                     <td class="text-center situacao" scope="row"><?= $nomeFunc['SITUACAO'] ?></td>
+                    <td class="text-center departamento" scope="row" style="display:none"><?= $nomeFunc['DEPARTAMENTO'] ?></td>
                     <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
                     <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
                     <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
@@ -210,6 +213,16 @@ endforeach;
                 $('#table1').find('input, select, textarea, button').prop('disabled', false);
                 $('select[name="desabilitarEsteSelect"]').prop('disabled', true);
                 $('.btnVermelho').removeClass('ocultarBotao');
+                var dataPesquisa = $(".dataSelecionadaNoFiltro").val();
+                var mesAtual = $("#mesAtual").val();
+                if (dataPesquisa < mesAtual) {
+                    $('.estilezaSelect').css('background-color', 'grey');
+                    $('#table1').find('input, select, textarea, button').prop('disabled', true);
+                    $('.btnVermelho').addClass('ocultarBotao');
+                } else {
+                    $('.estilezaSelect').prop('disabled', false);
+                    $('.estilezaSelect').css('background-color', '');
+                }
             }
             criandoHtmlmensagemCarregamento("ocultar");
 
@@ -308,7 +321,8 @@ endforeach;
                             var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
                             var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
                             var cargoFunc = $tr.find('td.cargo').text();
-
+                            var departamentoFunc = $tr.find('td.departamento').text();
+                            //alert(departamentoFunc)
                             var colIndex = $(this).closest('td').index();
                             var mesPesquisa = $("#dataPesquisa").val();
 
@@ -363,8 +377,9 @@ endforeach;
                                     "&horarioIntervaloFunc=" +
                                     horarioIntervaloFunc +
                                     "&cargoFunc=" +
-                                    cargoFunc,
-
+                                    cargoFunc +
+                                    "&departamentoFunc=" +
+                                    departamentoFunc,
                                 // dataType: 'json',
                                 success: function(retorno) {
                                     console.log(retorno)
@@ -433,7 +448,9 @@ endforeach;
                                         "&cargoFunc=" +
                                         cargoFunc +
                                         "&inclusaoDoMesAnterior=" +
-                                        inclusaoDoMesAnterior,
+                                        inclusaoDoMesAnterior +
+                                        "&departamentoFunc=" +
+                                        departamentoFunc,
 
                                     // dataType: 'json',
                                     success: function(retorno) {
@@ -455,7 +472,8 @@ endforeach;
                         var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
                         var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
                         var cargoFunc = $tr.find('td.cargo').text();
-
+                        var departamentoFunc = $tr.find('td.departamento').text();
+                        //
                         var colIndex = $(this).closest('td').index();
                         var mesPesquisa = $("#dataPesquisa").val();
                         //console.log(mesPesquisa)
@@ -502,7 +520,9 @@ endforeach;
                                     "&horarioIntervaloFunc=" +
                                     horarioIntervaloFunc +
                                     "&cargoFunc=" +
-                                    cargoFunc,
+                                    cargoFunc +
+                                    "&departamentoFunc=" +
+                                    departamentoFunc,
                                 // dataType: 'json',
                                 success: function(retorno) {
                                     // console.log(retorno)
@@ -532,7 +552,8 @@ endforeach;
                         var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
                         var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
                         var cargoFunc = $tr.find('td.cargo').text();
-
+                        var departamentoFunc = $tr.find('td.departamento').text();
+                        //alert(departamentoFunc)
 
 
 
@@ -593,7 +614,9 @@ endforeach;
                                 "&horarioIntervaloFunc=" +
                                 horarioIntervaloFunc +
                                 "&cargoFunc=" +
-                                cargoFunc,
+                                cargoFunc +
+                                "&departamentoFunc=" +
+                                departamentoFunc,
 
                             // dataType: 'json',
                             success: function(retorno) {
@@ -666,7 +689,11 @@ endforeach;
                                     "&horarioIntervaloFunc=" +
                                     horarioIntervaloFunc +
                                     "&cargoFunc=" +
-                                    cargoFunc + "&inclusaoDoMesAnterior=" + inclusaoDoMesAnterior,
+                                    cargoFunc +
+                                    "&inclusaoDoMesAnterior=" +
+                                    inclusaoDoMesAnterior +
+                                    "&departamentoFunc=" +
+                                    departamentoFunc,
 
                                 // dataType: 'json',
                                 success: function(retorno) {
@@ -727,7 +754,9 @@ endforeach;
                                 "&horarioIntervaloFunc=" +
                                 horarioIntervaloFunc +
                                 "&cargoFunc=" +
-                                cargoFunc,
+                                cargoFunc +
+                                "&departamentoFunc=" +
+                                departamentoFunc,
 
                             // dataType: 'json',
                             success: function(retorno) {
@@ -1356,20 +1385,3 @@ endforeach;
 
         });
     </script>
-
-
-    <Script>
-        var dataPesquisa = $(".dataSelecionadaNoFiltro").val();
-        var mesAtual = $("#mesAtual").val();
-
-        if (dataPesquisa < mesAtual) {
-            $('.estilezaSelect').prop('disabled', true);
-            $('.estilezaSelect').css('background-color', 'grey');
-        } else {
-            $('.estilezaSelect').prop('disabled', false);
-            $('.estilezaSelect').css('background-color', '');
-        }
-
-        var usuarioLogado = $("#usuarioLogado").val();
-        var loja = $("#loja").val();
-    </Script>

@@ -195,7 +195,7 @@ rows.on('click', function () {
 });
 $(document).ready(function () {
     $('.estilezaSelect').on('click', function () {
-        
+
         var opcaoSelecionadaAux = $(this).val();
         var $selects = $(this).closest('tr').find('.estilezaSelect');
         var colIndex = $(this).closest('td').index();
@@ -258,128 +258,59 @@ $(document).ready(function () {
                     Toasty("Atenção", "Funcionario escalado sem folga mais de SEIS dias", "#E20914");
 
                 } else {
-                var colIndex = $(this).closest('td').index();
-                var mesPesquisa = $("#dataPesquisa").val();
-                //console.log(mesPesquisa)
+                    var colIndex = $(this).closest('td').index();
+                    var mesPesquisa = $("#dataPesquisa").val();
+                    //console.log(mesPesquisa)
 
-                var mesAtual = $("#mesAtual").val();
+                    var mesAtual = $("#mesAtual").val();
 
-                if (mesPesquisa == "") {
-                    mesPesquisa = mesAtual
-                }
-
-                var opcaoSelecionada = 'F';
-                var $tr = $(this).closest('tr');
-                var funcionario = $tr.find('td.funcionario').text();
-                var matriculaFunc = $tr.find('td.matriculaFunc').text();
-                var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
-                var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
-                var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
-                var cargoFunc = $tr.find('td.cargo').text();
-                var departamentoFunc = $tr.find('td.departamento').text();
-                alert(departamentoFunc)
-                var colIndex = $(this).closest('td').index();
-                var mesPesquisa = $("#dataPesquisa").val();
-
-
-                var $selects = $(this).closest('tr').find('.estilezaSelect'); // Todos os selects da linha
-
-                var indexAtual = $('#table1 thead tr.trr th').eq(colIndex).text();
-
-                // alert("dia selecionado :" + indexAtual)
-
-                var indexUltimoDia = $selects.length;
-                //console.log(indexAtual);
-                //console.log(indexUltimoDia);
-
-
-
-                var indexAtualNumero = parseInt(indexAtual, 10);
-                var numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes = [];
-                for (var i = indexAtualNumero; i <= indexUltimoDia; i++) {
-                    var aux = i < 10 ? "0" + i : i.toString();
-                    numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes.push('"' + aux + '"');
-
-                    console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes);
-
-                    $selects.eq(i).prop('disabled', true).val('F');
-                }
-
-
-                $.ajax({
-                    url: "config/insertEUpdate_EscalaMensal.php",
-                    method: 'get',
-                    data: 'numeroDiaDaSemana=' +
-                        numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes +
-                        "&opcaoSelecionada=" +
-                        opcaoSelecionada +
-                        "&funcionario=" +
-                        funcionario +
-                        "&mesAtual=" +
-                        mesAtual +
-                        "&mesPesquisa=" +
-                        mesPesquisa +
-                        "&usuarioLogado=" +
-                        usuarioLogado +
-                        "&matriculaFunc=" +
-                        matriculaFunc +
-                        "&loja=" +
-                        loja +
-                        "&horarioEntradaFunc=" +
-                        horarioEntradaFunc +
-                        "&horarioSaidaFunc=" +
-                        horarioSaidaFunc +
-                        "&horarioIntervaloFunc=" +
-                        horarioIntervaloFunc +
-                        "&cargoFunc=" +
-                        cargoFunc+
-                        "&departamentoFunc=" +                            
-                        departamentoFunc,
-                    // dataType: 'json',
-                    success: function (retorno) {
-                        console.log(retorno)
-
+                    if (mesPesquisa == "") {
+                        mesPesquisa = mesAtual
                     }
-                });
+
+                    var opcaoSelecionada = 'F';
+                    var $tr = $(this).closest('tr');
+                    var funcionario = $tr.find('td.funcionario').text();
+                    var matriculaFunc = $tr.find('td.matriculaFunc').text();
+                    var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
+                    var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
+                    var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
+                    var cargoFunc = $tr.find('td.cargo').text();
+                    var departamentoFunc = $tr.find('td.departamento').text();
+                    //alert(departamentoFunc)
+                    var colIndex = $(this).closest('td').index();
+                    var mesPesquisa = $("#dataPesquisa").val();
+
+
+                    var $selects = $(this).closest('tr').find('.estilezaSelect'); // Todos os selects da linha
+
+                    var indexAtual = $('#table1 thead tr.trr th').eq(colIndex).text();
+
+                    // alert("dia selecionado :" + indexAtual)
+
+                    var indexUltimoDia = $selects.length;
+                    //console.log(indexAtual);
+                    //console.log(indexUltimoDia);
 
 
 
-                // Calcular quantos dias faltam até o final do mês
-                var diasRestantes = indexUltimoDia - indexAtual;
-                var diasParaProximoMes = Math.min(29 - diasRestantes, diasRestantes);
-                //console.log("faltaram  para o proximo mes: " + diasParaProximoMes);
-
-
-                // Obtém o ano e o mês a partir da string mesPesquisa
-                var ano = parseInt(mesPesquisa.split('-')[0]);
-                var mes = parseInt(mesPesquisa.split('-')[1]);
-
-
-
-                // Converte 'mesPesquisa' para um objeto Date
-                var data = new Date(ano, mes - 1); // O mês em JavaScript começa em zero (janeiro é 0)
-
-                // Verifica se a quantidade de dias é maior que 1 para avançar para o próximo mês
-                if (diasParaProximoMes > 1) {
-                    // Adiciona a quantidade de dias à data atual
-                    data.setMonth(data.getMonth() + 1);
-                    ano = data.getFullYear();
-                    mes = data.getMonth() + 1;
-
-                    // Formata o novo mês para o formato 'AAAA-MM'
-                    mesPesquisa = ano + '-' + (mes < 10 ? '0' + mes : mes);
-                    var numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes = [];
-                    for (var i = 1; i <= diasParaProximoMes; i++) {
+                    var indexAtualNumero = parseInt(indexAtual, 10);
+                    var numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes = [];
+                    for (var i = indexAtualNumero; i <= indexUltimoDia; i++) {
                         var aux = i < 10 ? "0" + i : i.toString();
-                        console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes);
-                        numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes.push('"' + aux + '"');
+                        numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes.push('"' + aux + '"');
+
+                        console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes);
+
+                        $selects.eq(i).prop('disabled', true).val('F');
                     }
-                    var inclusaoDoMesAnterior = "SIM";
+
+
                     $.ajax({
-                        url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
+                        url: "config/insertEUpdate_EscalaMensal.php",
                         method: 'get',
                         data: 'numeroDiaDaSemana=' +
-                            numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes +
+                            numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes +
                             "&opcaoSelecionada=" +
                             opcaoSelecionada +
                             "&funcionario=" +
@@ -402,16 +333,87 @@ $(document).ready(function () {
                             horarioIntervaloFunc +
                             "&cargoFunc=" +
                             cargoFunc +
-                            "&inclusaoDoMesAnterior=" +
-                            inclusaoDoMesAnterior,
-
+                            "&departamentoFunc=" +
+                            departamentoFunc,
                         // dataType: 'json',
                         success: function (retorno) {
-                            // console.log(retorno)
+                            console.log(retorno)
 
                         }
                     });
-                }
+
+
+
+                    // Calcular quantos dias faltam até o final do mês
+                    var diasRestantes = indexUltimoDia - indexAtual;
+                    var diasParaProximoMes = Math.min(29 - diasRestantes, diasRestantes);
+                    //console.log("faltaram  para o proximo mes: " + diasParaProximoMes);
+
+
+                    // Obtém o ano e o mês a partir da string mesPesquisa
+                    var ano = parseInt(mesPesquisa.split('-')[0]);
+                    var mes = parseInt(mesPesquisa.split('-')[1]);
+
+
+
+                    // Converte 'mesPesquisa' para um objeto Date
+                    var data = new Date(ano, mes - 1); // O mês em JavaScript começa em zero (janeiro é 0)
+
+                    // Verifica se a quantidade de dias é maior que 1 para avançar para o próximo mês
+                    if (diasParaProximoMes > 1) {
+                        // Adiciona a quantidade de dias à data atual
+                        data.setMonth(data.getMonth() + 1);
+                        ano = data.getFullYear();
+                        mes = data.getMonth() + 1;
+
+                        // Formata o novo mês para o formato 'AAAA-MM'
+                        mesPesquisa = ano + '-' + (mes < 10 ? '0' + mes : mes);
+                        var numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes = [];
+                        for (var i = 1; i <= diasParaProximoMes; i++) {
+                            var aux = i < 10 ? "0" + i : i.toString();
+                            console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes);
+                            numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes.push('"' + aux + '"');
+                        }
+                        var inclusaoDoMesAnterior = "SIM";
+                        $.ajax({
+                            url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
+                            method: 'get',
+                            data: 'numeroDiaDaSemana=' +
+                                numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes +
+                                "&opcaoSelecionada=" +
+                                opcaoSelecionada +
+                                "&funcionario=" +
+                                funcionario +
+                                "&mesAtual=" +
+                                mesAtual +
+                                "&mesPesquisa=" +
+                                mesPesquisa +
+                                "&usuarioLogado=" +
+                                usuarioLogado +
+                                "&matriculaFunc=" +
+                                matriculaFunc +
+                                "&loja=" +
+                                loja +
+                                "&horarioEntradaFunc=" +
+                                horarioEntradaFunc +
+                                "&horarioSaidaFunc=" +
+                                horarioSaidaFunc +
+                                "&horarioIntervaloFunc=" +
+                                horarioIntervaloFunc +
+                                "&cargoFunc=" +
+                                cargoFunc +
+                                "&inclusaoDoMesAnterior=" +
+                                inclusaoDoMesAnterior +
+                                "&departamentoFunc=" +
+                                departamentoFunc,
+
+                            // dataType: 'json',
+                            success: function (retorno) {
+                                // console.log(retorno)
+
+                            }
+                        });
+                    }
                 }
             }
             else if (valorINICIAL != 'F' && opcaoSelecionada != 'F' || valorINICIAL == '' && opcaoSelecionada != 'F') {
@@ -432,7 +434,7 @@ $(document).ready(function () {
                 //console.log(mesPesquisa)
 
                 var departamentoFunc = $tr.find('td.departamento').text();
-                alert(departamentoFunc)
+                //alert(departamentoFunc)
                 var mesAtual = $("#mesAtual").val();
 
                 if (mesPesquisa == "") {
@@ -475,8 +477,8 @@ $(document).ready(function () {
                             "&horarioIntervaloFunc=" +
                             horarioIntervaloFunc +
                             "&cargoFunc=" +
-                            cargoFunc+
-                            "&departamentoFunc=" +                            
+                            cargoFunc +
+                            "&departamentoFunc=" +
                             departamentoFunc,
                         // dataType: 'json',
                         success: function (retorno) {
@@ -509,7 +511,7 @@ $(document).ready(function () {
                 var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
                 var cargoFunc = $tr.find('td.cargo').text();
                 var departamentoFunc = $tr.find('td.departamento').text();
-                alert(departamentoFunc)
+                //alert(departamentoFunc)
 
 
 
@@ -570,8 +572,8 @@ $(document).ready(function () {
                         "&horarioIntervaloFunc=" +
                         horarioIntervaloFunc +
                         "&cargoFunc=" +
-                        cargoFunc+
-                        "&departamentoFunc=" +                            
+                        cargoFunc +
+                        "&departamentoFunc=" +
                         departamentoFunc,
 
                     // dataType: 'json',
@@ -645,7 +647,11 @@ $(document).ready(function () {
                             "&horarioIntervaloFunc=" +
                             horarioIntervaloFunc +
                             "&cargoFunc=" +
-                            cargoFunc + "&inclusaoDoMesAnterior=" + inclusaoDoMesAnterior,
+                            cargoFunc +
+                            "&inclusaoDoMesAnterior=" +
+                            inclusaoDoMesAnterior +
+                            "&departamentoFunc=" +
+                            departamentoFunc,
 
                         // dataType: 'json',
                         success: function (retorno) {
@@ -706,8 +712,8 @@ $(document).ready(function () {
                         "&horarioIntervaloFunc=" +
                         horarioIntervaloFunc +
                         "&cargoFunc=" +
-                        cargoFunc+
-                        "&departamentoFunc=" +                            
+                        cargoFunc +
+                        "&departamentoFunc=" +
                         departamentoFunc,
 
                     // dataType: 'json',

@@ -898,7 +898,7 @@ class Insert
         }
     }
 
-    public function insertEscalaMensalProximoMes($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado, $inclusaodomesanterior)
+    public function insertEscalaMensalProximoMes($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado, $inclusaodomesanterior,$departamentoFunc)
     {
 
         $query = "INSERT INTO $tabela (
@@ -913,7 +913,8 @@ class Insert
              $dia,
           datainclusao, 
            usuinclusao,
-           inclusaodomesanterior
+           inclusaodomesanterior,
+           departamento
          ) VALUES (
          '$matricula',
           '$nome',
@@ -926,7 +927,8 @@ class Insert
           '$opcaoSelect',
            SYSDATE,
            '$usuarioLogado',
-           '$inclusaodomesanterior'
+           '$inclusaodomesanterior',
+           '$departamentoFunc'
         )";
         echo $query;
         $parse = oci_parse($oracle, $query);
