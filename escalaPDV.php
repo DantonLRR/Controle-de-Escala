@@ -33,6 +33,13 @@ $diaDeHojeComAspas = '"' . $diaDeHoje . '"';
 
 $InformacaoDosDias = new Dias();
 $InformacaoFuncionarios = new Funcionarios();
+$verificaSeAPessoaLogadaEEncarregada = $InformacaoFuncionarios->informacaoPessoaLogada($TotvsOracle, $_SESSION['cpf'], $_SESSION['LOJA']);
+// print_r($verificaSeAPessoaLogadaEEncarregada);
+foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+    $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
+    $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
+    $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
+endforeach;
 $calculoDeFuncionariosNecessariosPorHora = new Porcentagem();
 
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
@@ -98,6 +105,10 @@ for ($i = 7; $i <= 21; $i++) {
     <input class="usu" id="loja" type="hidden" value="<?= $_SESSION['LOJA'] ?>">
     <input class="dataAtual" id="dataAtual" type="hidden" value="<?= $hoje ?>">
     <input class="" id="" type="hidden" value="<?= $mesEAnoAtual ?>">
+    <input class="" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
+    <input class="" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
+    <input class="" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
+
     <div class="container-fluid">
 
         <div class="row" id="qntPessoasPorPDV">
@@ -116,7 +127,7 @@ for ($i = 7; $i <= 21; $i++) {
                                 </label>
                                 <div class="atualizaOpPorDia">
                                     <?php
-                                    $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual, $hoje, $_SESSION['LOJA']);
+                                    $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual,$dadosDeQuemEstaLogadoSetor, $hoje, $_SESSION['LOJA']);
                                     $quantidadeDePessoasEscaladas = 0;
                                     if (empty($quantidadePorDiaDeFuncionarios)) {
                                         $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para hoje";

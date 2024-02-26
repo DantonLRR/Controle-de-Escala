@@ -19,9 +19,15 @@ $mesEAnoDaPesquisa = $partesData[0] . '-' . $partesData[1]; // Ano e Mês
 
 
 $InformacaoFuncionarios = new Funcionarios();
+$verificaSeAPessoaLogadaEEncarregada = $InformacaoFuncionarios->informacaoPessoaLogada($TotvsOracle, $_SESSION['cpf'], $_SESSION['LOJA']);
+// print_r($verificaSeAPessoaLogadaEEncarregada);
+foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+    $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
+    $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
+    $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
+endforeach;
 
-
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $loja, $diaDaPesquisaComAspas , $mesEAnoDaPesquisa , $dataPesquisada);
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $loja, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dataPesquisada);
 // var_dump($FuncManha);
 // echo "<br><br><br>";
 $FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $dataPesquisada,$loja);
@@ -46,8 +52,8 @@ foreach ($FuncManha as $funcManha1) {
 // var_dump($naoRepetidosMANHA);
 
 
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDaPesquisaComAspas , $mesEAnoDaPesquisa , $dataPesquisada);
-$FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $dataPesquisada,$loja);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dataPesquisada);
+$FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $dataPesquisada, $loja);
 // var_dump($FuncEscaladosTARDE);
 // echo"<br><br><br>";
 $naoRepetidosTARDE = array();
@@ -67,7 +73,7 @@ foreach ($FuncTarde as $funcTarde2) {
 // var_dump($naoRepetidosTARDE);
 
 
-$quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dataPesquisada, $loja);
+$quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dadosDeQuemEstaLogadoSetor, $dataPesquisada, $loja);
 
 if (empty($quantidadePorDiaDeFuncionarios)) {
     $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para este dia,";
@@ -79,130 +85,133 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 } else {
 
 ?>
+    <input class="" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
+    <input class="" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
+    <input class="" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
-<table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
+    <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
-    <input id="dataPesquisar" type="hidden" value="<?= $dataPesquisada ?>">
+        <input id="dataPesquisar" type="hidden" value="<?= $dataPesquisada ?>">
 
-    <input class="usu" id="loja" type="hidden" value="<?= $loja ?>">
-    <input class="usu" type="hidden" value="<?= $_SESSION['nome'] ?>">
-    <thead style="background-color: #00a550; color: white;">
-        <tr class="trr">
-            <th class="text-center" colspan="6">Manhã</th>
-
-            <th class="vertical-line text-center" style=" border-left: 1px solid #000;" colspan="6">Tarde</th>
-        </tr>
-        <tr class="trr">
-            <th>pdv</th>
-            <th class="text-center">MATRICULA</th>
-            <th class="text-center">NOME</th>
-            <th class="text-center">ENTRADA:</th>
-            <th class="text-center">SAIDA</th>
-            <th class="text-center">INTERVALO</th>
-            <th class="vertical-line text-center" style=" border-left: 1px solid #000;">MATRICULA</th>
-            <th class="text-center">NOME</th>
-            <th class="text-center">ENTRADA:</th>
-            <th class="text-center">SAIDA</th>
-            <th class="text-center">INTERVALO</th>
-            <th class="text-center">EXCLUSÃO</th>
-        </tr>
-    </thead>
-    <tbody style="background-color: #DCDCDC;">
-        <?php
-        $qntPDV = array();
-        for ($i = 1; $i <= 30; $i++) {
-            $i;
-            $horariosFuncManha = $InformacaoFuncionarios->filtroFuncionariosCadastradosManha($oracle, $dataPesquisada, $i,$_SESSION['LOJA']);
-            $horariosFuncTarde = $InformacaoFuncionarios->filtroFuncionariosCadastradoTarde($oracle, $dataPesquisada, $i,$_SESSION['LOJA']);
-            $totalManha = count($horariosFuncManha);
-            $totalTarde = count($horariosFuncTarde);
-        ?>
+        <input class="usu" id="loja" type="hidden" value="<?= $loja ?>">
+        <input class="usu" type="hidden" value="<?= $_SESSION['nome'] ?>">
+        <thead style="background-color: #00a550; color: white;">
             <tr class="trr">
-                <td scope="row" class="numerosPDVS" id="">
-                    <?= $i ?>
-                </td>
-                <?php
-                if (empty($horariosFuncManha)) {
-                ?>
-                    <td scope="row" class="Matricula1" contenteditable="true"></td>
-                    <td scope="row" class="NomeFunc">
-                        <select class="estilezaSelect form-control" id="selectFuncionario">
-                            <option value=""></option>
-                            <?php
-                            foreach ($naoRepetidosMANHA as $rowManha) :
-                            ?>
-                                <div>
-                                    <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
-                                </div>
-                            <?php
-                            endforeach
-                            ?>
-                        </select>
+                <th class="text-center" colspan="6">Manhã</th>
+
+                <th class="vertical-line text-center" style=" border-left: 1px solid #000;" colspan="6">Tarde</th>
+            </tr>
+            <tr class="trr">
+                <th>pdv</th>
+                <th class="text-center">MATRICULA</th>
+                <th class="text-center">NOME</th>
+                <th class="text-center">ENTRADA:</th>
+                <th class="text-center">SAIDA</th>
+                <th class="text-center">INTERVALO</th>
+                <th class="vertical-line text-center" style=" border-left: 1px solid #000;">MATRICULA</th>
+                <th class="text-center">NOME</th>
+                <th class="text-center">ENTRADA:</th>
+                <th class="text-center">SAIDA</th>
+                <th class="text-center">INTERVALO</th>
+                <th class="text-center">EXCLUSÃO</th>
+            </tr>
+        </thead>
+        <tbody style="background-color: #DCDCDC;">
+            <?php
+            $qntPDV = array();
+            for ($i = 1; $i <= 30; $i++) {
+                $i;
+                $horariosFuncManha = $InformacaoFuncionarios->filtroFuncionariosCadastradosManha($oracle, $dataPesquisada, $i, $_SESSION['LOJA']);
+                $horariosFuncTarde = $InformacaoFuncionarios->filtroFuncionariosCadastradoTarde($oracle, $dataPesquisada, $i, $_SESSION['LOJA']);
+                $totalManha = count($horariosFuncManha);
+                $totalTarde = count($horariosFuncTarde);
+            ?>
+                <tr class="trr">
+                    <td scope="row" class="numerosPDVS" id="">
+                        <?= $i ?>
                     </td>
-                    <td scope="row" class="text-center horaEntrada1"></td>
-                    <td scope="row" class="horaSaida1"></td>
-                    <td scope="row" class="horaIntervalo1"></td>
                     <?php
-                } else {
-                    foreach ($horariosFuncManha as $row2Manha) :
+                    if (empty($horariosFuncManha)) {
                     ?>
-                        <td scope="row" class="Matricula1" contenteditable="true"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
+                        <td scope="row" class="Matricula1" contenteditable="true"></td>
                         <td scope="row" class="NomeFunc">
                             <select class="estilezaSelect form-control" id="selectFuncionario">
-                                <option value="<?= $rowManha['MATRICULA'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
+                                <option value=""></option>
+                                <?php
+                                foreach ($naoRepetidosMANHA as $rowManha) :
+                                ?>
+                                    <div>
+                                        <option style="color: black; font-weight: bold;" value="<?= $rowManha['MATRICULA'] ?>"> <?= $rowManha['NOME'] ?> </option>
+                                    </div>
+                                <?php
+                                endforeach
+                                ?>
                             </select>
                         </td>
-                        <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?? '' ?></td>
-                        <td scope="row" class="horaSaida1"><?= $row2Manha['HORASAIDA'] ?? '' ?></td>
-                        <td scope="row" class="horaIntervalo1"><?= $row2Manha['HORAINTERVALO'] ?? '' ?></td>
-                <?php
-                    endforeach;
-                } ?>
-                <?php
-                if (empty($horariosFuncTarde)) {
-                ?>
-                    <td scope="row" class="matricula2" contenteditable="true"></td>
-                    <td scope="row" class="text-center nome2">
-                        <select class="estilizaSelect2 form-control">
-                            <option value=""></option>
-                            <?php
-                            foreach ($naoRepetidosTARDE as $rowTarde) :
-                            ?>
-                                <div>
-                                    <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"><?= $rowTarde['NOME'] ?> </option>
-                                </div>
-                            <?php
-                            endforeach
-                            ?>
-                        </select>
-                    </td>
-                    <td scope="row" class="horaEntrada2"></td>
-                    <td scope="row" class="horaSaida2"></td>
-                    <td scope="row" class="horaIntervalo2"></td>
-                    <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
+                        <td scope="row" class="text-center horaEntrada1"></td>
+                        <td scope="row" class="horaSaida1"></td>
+                        <td scope="row" class="horaIntervalo1"></td>
+                        <?php
+                    } else {
+                        foreach ($horariosFuncManha as $row2Manha) :
+                        ?>
+                            <td scope="row" class="Matricula1" contenteditable="true"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
+                            <td scope="row" class="NomeFunc">
+                                <select class="estilezaSelect form-control" id="selectFuncionario">
+                                    <option value="<?= $rowManha['MATRICULA'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
+                                </select>
+                            </td>
+                            <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?? '' ?></td>
+                            <td scope="row" class="horaSaida1"><?= $row2Manha['HORASAIDA'] ?? '' ?></td>
+                            <td scope="row" class="horaIntervalo1"><?= $row2Manha['HORAINTERVALO'] ?? '' ?></td>
                     <?php
-                } else {
-                    foreach ($horariosFuncTarde as $row3Tarde) :
+                        endforeach;
+                    } ?>
+                    <?php
+                    if (empty($horariosFuncTarde)) {
                     ?>
-                        <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
+                        <td scope="row" class="matricula2" contenteditable="true"></td>
                         <td scope="row" class="text-center nome2">
                             <select class="estilizaSelect2 form-control">
-                                <option value="<?= $row3Tarde['MATRICULA'] ?>"><?= $row3Tarde['NOME'] ?? '' ?></option>
+                                <option value=""></option>
+                                <?php
+                                foreach ($naoRepetidosTARDE as $rowTarde) :
+                                ?>
+                                    <div>
+                                        <option style="color: black; font-weight: bold;" value="<?= $rowTarde['MATRICULA'] ?>"><?= $rowTarde['NOME'] ?> </option>
+                                    </div>
+                                <?php
+                                endforeach
+                                ?>
                             </select>
                         </td>
-                        <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>
-                        <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?? '' ?></td>
-                        <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?? '' ?></td>
+                        <td scope="row" class="horaEntrada2"></td>
+                        <td scope="row" class="horaSaida2"></td>
+                        <td scope="row" class="horaIntervalo2"></td>
                         <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
-                <?php
-                    endforeach;
-                } ?>
-            </tr>
-        <?php
-        }
-        ?>
-    </tbody>
-</table>
+                        <?php
+                    } else {
+                        foreach ($horariosFuncTarde as $row3Tarde) :
+                        ?>
+                            <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
+                            <td scope="row" class="text-center nome2">
+                                <select class="estilizaSelect2 form-control">
+                                    <option value="<?= $row3Tarde['MATRICULA'] ?>"><?= $row3Tarde['NOME'] ?? '' ?></option>
+                                </select>
+                            </td>
+                            <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>
+                            <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?? '' ?></td>
+                            <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?? '' ?></td>
+                            <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
+                    <?php
+                        endforeach;
+                    } ?>
+                </tr>
+            <?php
+            }
+            ?>
+        </tbody>
+    </table>
 <?php
 }
 ?>

@@ -1,9 +1,17 @@
 <?php
 include "../../base/Conexao_teste.php";
 include "php/CRUD_geral.php";
+include "../../base/conexao_TotvzOracle.php";
+session_start();
 $calculoDeFuncionariosNecessariosPorHora = new Porcentagem();
 $InformacaoFuncionarios = new Funcionarios();
-
+$verificaSeAPessoaLogadaEEncarregada = $InformacaoFuncionarios->informacaoPessoaLogada($TotvsOracle, $_SESSION['cpf'], $_SESSION['LOJA']);
+// print_r($verificaSeAPessoaLogadaEEncarregada);
+foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+    $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
+    $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
+    $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
+endforeach;
 $dataPesquisa = $_POST['dataPesquisa'];
 $loja = $_POST['loja'];
 
@@ -12,7 +20,7 @@ $diaDaPesquisaComAspas = ' "' . $partesData[2] . '"';
 $mesEAnoDaPesquisa = $partesData[0] . '-' . $partesData[1];
 
 $quantidadeDePessoasEscaladas = 0;
-$quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dataPesquisa, $loja);
+$quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dadosDeQuemEstaLogadoSetor, $dataPesquisa, $loja);
 
 if (empty($quantidadePorDiaDeFuncionarios)) {
     $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para este dia,";

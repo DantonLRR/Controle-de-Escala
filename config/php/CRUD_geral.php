@@ -197,7 +197,6 @@ class Funcionarios
                 F.CODCOLIGADA = DTRECENTE.CODCOLIGADA AND F.CODPESSOA = DTRECENTE.CODPESSOA AND F.DATAADMISSAO = DTRECENTE.DATAADMISSAO
             WHERE 
                 F.CODCOLIGADA = 1 
-                --AND (TIPODEMISSAO IS NULL OR TIPODEMISSAO <> '5')
                 and f.CODCOLIGADA = 1 AND f.CODSITUACAO = 'A'
                 and P.CPF = $cpf
                 and SUBSTR(S.DESCRICAO, 1, 3) = '$lojaDaPessoaLogada'
@@ -245,9 +244,8 @@ class Funcionarios
                     SELECT DISTINCT 
                 
                         AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-                        --NVL(
                         TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-                        TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00')--, '00:00') 
+                        TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00') 
                         AS BATIDA
                     FROM ABATHOR 
                         INNER JOIN AHORARIO ON 
@@ -466,7 +464,7 @@ class Funcionarios
         return $lista;
     }
 
-    public function funcionariosDisponiveisNoDia($oracle, $diaComAspas, $mesSelecionado, $dataPesquisada, $loja)
+    public function funcionariosDisponiveisNoDia($oracle, $diaComAspas, $mesSelecionado,$departamento, $dataPesquisada, $loja)
     {
         $lista = array();
         $query =  "SELECT DISTINCT a.matricula,
@@ -481,6 +479,7 @@ class Funcionarios
         AND a.$diaComAspas IS NULL
         AND a.messelecionado = TO_DATE('$mesSelecionado', 'YYYY-MM')
         and a.status = 'F'
+        and a.departamento like '%$departamento%'
         and a.matricula not in
         (SELECT b.matricula
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b
