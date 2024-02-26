@@ -49,24 +49,15 @@ if ($retorno === "NÃO FINALIZADA.") {
 } else if ($retorno === "JÁ FINALIZADA.") {
     $statusDaTabela = "JÁ FINALIZADA.";
 }
-
-
-$recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA']);
-// ECHO $retorno1;
-if ($retorno1 == "NÃO EXISTE CADASTRO.") {
-    $statusDaTabela = "NÃO FINALIZADA.";
-}
-
 ?>
-
 
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
         <input class="usu" type="hidden" id="usuarioLogado" value="<?= $_SESSION['nome'] ?>">
         <input class="loja" type="hidden" id="loja" value="<?= $_SESSION['LOJA'] ?>">
         <input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
-        <input class="statusDaTabela" type="hidden" id="statusDaTabela" value="<?= $statusDaTabela ?>">
-        <input class="statusDaTabela" type="hidden" id="" value="<?= $CPFusuarioLogado ?>">
+
+        <input class="" type="hidden" id="" value="<?= $CPFusuarioLogado ?>">
         <?php
         foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
             $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
@@ -151,6 +142,12 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
 
                                             <?php
                                             foreach ($buscaNomeFuncionario as $nomeFunc) :
+                                                $recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA'],$nomeFunc['DEPARTAMENTO']);
+                                                // ECHO $retorno1;
+                                                if ($retorno1 == "NÃO EXISTE CADASTRO.") {
+                                                    $statusDaTabela = "NÃO FINALIZADA.";
+                                                }
+                                                
                                             ?>
                                                 <tr class="trr">
                                                     <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
@@ -239,7 +236,10 @@ if ($retorno1 == "NÃO EXISTE CADASTRO.") {
             }
         endforeach;
         ?>
-
+        <input class="statusDaTabela" type="hidden" id="statusDaTabela" value="<?= $statusDaTabela ?>">
+        <?php
+        // echo $statusDaTabela;
+        ?>
 
 
 

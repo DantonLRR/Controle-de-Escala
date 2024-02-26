@@ -660,12 +660,13 @@ class Verifica
         return $lista;
     }
 
-    public function verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $mesPesquisado, $loja)
+    public function verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $mesPesquisado, $loja,$departamento)
     {
         $lista = array();
         global  $retorno1;
         $query = "SELECT * FROM WEB_ESCALA_MENSAL a
         WHERE a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
+        and a.departamento = '$departamento'
         and a.loja = '$loja'";
         // echo "<br> verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado".$query;
 
