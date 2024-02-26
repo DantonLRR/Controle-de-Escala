@@ -45,16 +45,16 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
     <input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['SETOR'] ?>">
 
     <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
-        <thead>
+    <thead style="background: linear-gradient(to right, #00a451, #052846 85%) !important; color:white;">
 
             <tr class="trr ">
                 <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
                 <th class="text-center theadColor">Cargo</th>
                 <th class="text-center theadColor">Situação</th>
-                <th class="text-center theadColor" style="display:none">departamento</th>
-                <th class="text-center theadColor" style="display:none">Entrada</th>
-                <th class="text-center theadColor" style="display:none">Saida</th>
-                <th class="text-center theadColor" style="display:none">Intervalo</th>
+                <th class="text-center" style="display:none">departamento</th>
+                <th class="text-center" style="display:none">Entrada</th>
+                <th class="text-center" style="display:none">Saida</th>
+                <th class="text-center" style="display:none">Intervalo</th>
 
 
                 <th class="text-center theadColor" scope="row" style="width:150px ;display:none">matricula</th>

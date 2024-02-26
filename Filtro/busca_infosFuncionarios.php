@@ -115,7 +115,7 @@ if ($retorno == "Já existem dados.") {
             WHERE   PFUNC.CODCOLIGADA = 1 
             AND PFUNC.CODSITUACAO  <> 'D' 
                 AND SUBSTR(PSECAO.DESCRICAO,1,3) LIKE $loja
-                AND PFUNCAO.NOME = 'OPERADOR DE CAIXA' 
+               -- AND PFUNCAO.NOME = 'OPERADOR DE CAIXA' 
             and  PFUNC.CHAPA = '$MatriculaDaPessoaSelecionada'
 
             ORDER BY PFUNC.NOME

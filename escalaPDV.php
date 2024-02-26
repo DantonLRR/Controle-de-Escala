@@ -45,7 +45,7 @@ $calculoDeFuncionariosNecessariosPorHora = new Porcentagem();
 $buscandoMesAno = $InformacaoDosDias->buscandoMesEDiaDaSemana($oracle, $dataSelecionadaNoFiltro);
 $mesEAnoFiltro = $InformacaoDosDias->mesEAnoFiltro($oracle);
 
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $_SESSION['LOJA'], $diaDeHojeComAspas, $mesEAnoAtual, $hoje);
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $_SESSION['LOJA'], $diaDeHojeComAspas, $mesEAnoAtual, $dadosDeQuemEstaLogadoSetor, $hoje);
 // var_dump($FuncManha);
 // echo "<br><br><br>";
 $FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $hoje, $_SESSION['LOJA']);
@@ -70,7 +70,7 @@ foreach ($FuncManha as $funcManha1) {
 // var_dump($naoRepetidosMANHA);
 
 
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDeHojeComAspas, $mesEAnoAtual, $hoje);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDeHojeComAspas, $mesEAnoAtual, $dadosDeQuemEstaLogadoSetor, $hoje);
 $FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $hoje, $_SESSION['LOJA']);
 // var_dump($FuncEscaladosTARDE);
 // echo"<br><br><br>";
@@ -127,7 +127,7 @@ for ($i = 7; $i <= 21; $i++) {
                                 </label>
                                 <div class="atualizaOpPorDia">
                                     <?php
-                                    $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual,$dadosDeQuemEstaLogadoSetor, $hoje, $_SESSION['LOJA']);
+                                    $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDeHojeComAspas, $mesEAnoAtual, $dadosDeQuemEstaLogadoSetor, $hoje, $_SESSION['LOJA']);
                                     $quantidadeDePessoasEscaladas = 0;
                                     if (empty($quantidadePorDiaDeFuncionarios)) {
                                         $quantidadePorDiaDeFuncionariosImpressao = "Nenhum funcionario escalado para hoje";
@@ -137,7 +137,7 @@ for ($i = 7; $i <= 21; $i++) {
                                     }
 
                                     ?>
-                                    <input type="hidden" id="quantidadePorDiaDeFuncionariosImpressao" value ="<?=$quantidadePorDiaDeFuncionariosImpressao?>">
+                                    <input type="hidden" id="quantidadePorDiaDeFuncionariosImpressao" value="<?= $quantidadePorDiaDeFuncionariosImpressao ?>">
                                     <p id="quantidadePorDiaDeFuncionariosVisivel"><?= $quantidadePorDiaDeFuncionariosImpressao ?></p>
                                 </div>
                             </div>
@@ -239,6 +239,7 @@ for ($i = 7; $i <= 21; $i++) {
                                             <?php
                                             if (empty($horariosFuncManha)) {
                                             ?>
+                                                <!-- SE NÃO TIVER DADOS NO BANCO MOSTRA TODAS OPÇÕES DE FUNCIONARIOS -->
                                                 <td scope="row" class="Matricula1"></td>
                                                 <td scope="row" class="NomeFunc">
                                                     <select class="estilezaSelect form-control" id="selectFuncionario">
@@ -263,6 +264,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 foreach ($horariosFuncManha as $row2Manha) :
                                                     // print_r($horariosFuncManha);  
                                                 ?>
+                                                    <!-- RETORNO DE DADOS EXISTENTE NO BANCO MOSTRA APENAS O FUNCIONARIO SELECIONADO -->
                                                     <td scope="row" class="Matricula1"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
                                                     <td scope="row" class="NomeFunc">
                                                         <select class="estilezaSelect form-control" id="selectFuncionario">
@@ -279,6 +281,7 @@ for ($i = 7; $i <= 21; $i++) {
                                             <?php
                                             if (empty($horariosFuncTarde)) {
                                             ?>
+                                                <!-- SE NÃO TIVER DADOS NO BANCO MOSTRA TODAS OPÇÕES DE FUNCIONARIOS -->
                                                 <td scope="row" class="matricula2"></td>
                                                 <td scope="row" class="text-center nome2">
                                                     <select class="estilizaSelect2 form-control">
@@ -303,6 +306,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 foreach ($horariosFuncTarde as $row3Tarde) :
                                                     // print_r($horariosFuncTarde);                                                
                                                 ?>
+                                                    <!-- RETORNO DE DADOS EXISTENTE NO BANCO MOSTRA APENAS O FUNCIONARIO SELECIONADO -->
                                                     <td scope="row" class="matricula2"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
                                                     <td scope="row" class="text-center nome2">
                                                         <select class="estilizaSelect2 form-control">

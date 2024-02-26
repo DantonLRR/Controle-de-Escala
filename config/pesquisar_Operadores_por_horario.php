@@ -37,7 +37,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
     </label>
     <table id="tableHeader" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
-        <thead style="background-color: #00a550; color: white;">
+    <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
             <tr class="trr">
                 <?php
                 $pessoasPorHora = $calculoDeFuncionariosNecessariosPorHora->quantidadesDePessoasPorHoraCalculo($oracle, $quantidadeDePessoasEscaladas, $loja, $dataPesquisa);

@@ -27,7 +27,7 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
     $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
 endforeach;
 
-$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $loja, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dataPesquisada);
+$FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $loja, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dadosDeQuemEstaLogadoSetor, $dataPesquisada,);
 // var_dump($FuncManha);
 // echo "<br><br><br>";
 $FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $dataPesquisada,$loja);
@@ -52,7 +52,7 @@ foreach ($FuncManha as $funcManha1) {
 // var_dump($naoRepetidosMANHA);
 
 
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dataPesquisada);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDaPesquisaComAspas, $mesEAnoDaPesquisa,$dadosDeQuemEstaLogadoSetor, $dataPesquisada);
 $FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $dataPesquisada, $loja);
 // var_dump($FuncEscaladosTARDE);
 // echo"<br><br><br>";
@@ -85,9 +85,9 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 } else {
 
 ?>
-    <input class="" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
-    <input class="" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
-    <input class="" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
+    <input class="" type="hidden" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
+    <input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
+    <input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
     <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
@@ -95,7 +95,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 
         <input class="usu" id="loja" type="hidden" value="<?= $loja ?>">
         <input class="usu" type="hidden" value="<?= $_SESSION['nome'] ?>">
-        <thead style="background-color: #00a550; color: white;">
+        <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
             <tr class="trr">
                 <th class="text-center" colspan="6">Manhã</th>
 

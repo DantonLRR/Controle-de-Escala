@@ -315,7 +315,7 @@ class Funcionarios
 
     //pdv
 
-    public function buscaFuncEHorarioDeTrabalhoManha($oracle, $lojaDaPessoaLogada, $diaDeHojeComAspas, $mesSelecionadoDaEscalaMensal, $diaMesEAnoAtual)
+    public function buscaFuncEHorarioDeTrabalhoManha($oracle, $lojaDaPessoaLogada, $diaDeHojeComAspas, $mesSelecionadoDaEscalaMensal,$departamento, $diaMesEAnoAtual)
     {
         $lista = array();
         $query = "SELECT DISTINCT a.matricula,
@@ -330,6 +330,7 @@ class Funcionarios
         AND a.$diaDeHojeComAspas IS NULL
         AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
         AND a.horaentrada BETWEEN '07:00' AND '11:59'
+        and a.departamento like '%$departamento%'
         and a.matricula not in
         (SELECT b.matricula
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b
@@ -358,7 +359,7 @@ class Funcionarios
         return $lista;
         // echo  $lista;
     }
-    public function buscaFuncEHorarioDeTrabalhoTarde($oracle, $lojaDaPessoaLogada, $diaDeHojeComAspas, $mesSelecionadoDaEscalaMensal, $diaMesEAnoAtual)
+    public function buscaFuncEHorarioDeTrabalhoTarde($oracle, $lojaDaPessoaLogada, $diaDeHojeComAspas, $mesSelecionadoDaEscalaMensal,$departamento, $diaMesEAnoAtual)
     {
         $lista = array();
         $query = "SELECT DISTINCT a.matricula,
@@ -373,6 +374,7 @@ class Funcionarios
         AND a.$diaDeHojeComAspas IS NULL
         AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
         AND a.horaentrada BETWEEN '12:00' AND '14:00'
+        and a.departamento like '%$departamento%'
         and a.matricula not in
         (SELECT b.matricula
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b
