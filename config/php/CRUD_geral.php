@@ -332,6 +332,7 @@ class Funcionarios
         AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
         AND a.horaentrada BETWEEN '07:00' AND '11:59'
         and a.departamento like '%$departamento%'
+        and a.cargo ='OPERADOR DE CAIXA'
         and a.matricula not in
         (SELECT b.matricula
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b
@@ -376,6 +377,7 @@ class Funcionarios
         AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
         AND a.horaentrada BETWEEN '12:00' AND '14:00'
         and a.departamento like '%$departamento%'
+        and a.cargo ='OPERADOR DE CAIXA'
         and a.matricula not in
         (SELECT b.matricula
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b
@@ -483,6 +485,7 @@ class Funcionarios
         AND a.messelecionado = TO_DATE('$mesSelecionado', 'YYYY-MM')
         and a.status = 'F'
         and a.departamento like '%$departamento%'
+        and a.cargo ='OPERADOR DE CAIXA'
         and a.matricula not in
         (SELECT b.matricula
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b
