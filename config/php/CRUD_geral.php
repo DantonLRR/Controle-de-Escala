@@ -115,7 +115,7 @@ class Funcionarios
         // echo $query
     }
     //diaria
-    public function DadosAPartirDaEscalaMensal($oracle, $dia, $lojaDaPessoaLogada, $mesSelecionado)
+    public function DadosAPartirDaEscalaMensal($oracle, $dia, $lojaDaPessoaLogada, $mesSelecionado,$departamento)
     {
 
 
@@ -134,6 +134,7 @@ class Funcionarios
          where loja = '$lojaDaPessoaLogada'
           and a.mesSelecionado = TO_DATE('$mesSelecionado','YYYY-MM')
           and a.status = 'F'
+          and a.departamento like '%$departamento%'
           order by a.nome asc
           ";
         $resultado = oci_parse($oracle, $query);
@@ -142,7 +143,7 @@ class Funcionarios
             array_push($lista, $row);
         }
         return $lista;
-        echo $query;
+        // echo $query;
     }
 
 

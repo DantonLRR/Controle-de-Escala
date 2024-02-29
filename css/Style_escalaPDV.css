@@ -87,3 +87,6 @@ th, td {
     cursor: pointer;
     color:red !important;
 }
+.nome2,.NomeFunc{
+    width:135px !important
+}

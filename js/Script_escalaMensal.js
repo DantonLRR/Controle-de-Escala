@@ -79,7 +79,7 @@ $('#table1').DataTable({
         },
         {
             text: 'Finalizar Escala',
-            className: 'btnVermelho',
+            className: 'btnVermelho btnverde',
             action: function () {
                 criandoHtmlmensagemCarregamento("exibir");
                 var alteraStatusEscala = "F";

@@ -105,9 +105,9 @@ for ($i = 7; $i <= 21; $i++) {
     <input class="usu" id="loja" type="hidden" value="<?= $_SESSION['LOJA'] ?>">
     <input class="dataAtual" id="dataAtual" type="hidden" value="<?= $hoje ?>">
     <input class="" id="" type="hidden" value="<?= $mesEAnoAtual ?>">
-    <input class="" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
-    <input class="" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
-    <input class="" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
+    <input class="" type="hidden" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
+    <input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
+    <input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
     <div class="container-fluid">
 
@@ -198,7 +198,7 @@ for ($i = 7; $i <= 21; $i++) {
                         Escala de Operadores
                     </h6>
                     <div id="cardTable1" class="card-body ">
-                        <div class="table dadosEscalaPDV" style="overflow-x:auto;">
+                        <div class="table dadosEscalaPDV table-responsive" style="overflow-x:auto;">
                             <table id="table1" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
                                 <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">

@@ -11,12 +11,24 @@ $diaAtual = date("d");
 $diaAtual2 = '"' . date("d") . '"';
 $hoje = date("Y-m-d");
 
+$dadosDeQuemEstaLogadoNome = '';
+$dadosDeQuemEstaLogadoFuncao = '';
+$dadosDeQuemEstaLogadoSetor = '';
+
+$verificaSeAPessoaLogadaEEncarregada = $dadosFunc->informacaoPessoaLogada($TotvsOracle, $_SESSION['cpf'], $_SESSION['LOJA']);
+// print_r($verificaSeAPessoaLogadaEEncarregada);
+foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+    $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
+    $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
+    $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
+endforeach;
+
 // echo $diaAtual2;
 
 
 // print_r($escalaDiaria);
 
-$dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensal($oracle, $diaAtual2, $_SESSION['LOJA'], $mesAtual);
+$dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensal($oracle, $diaAtual2, $_SESSION['LOJA'], $mesAtual,$dadosDeQuemEstaLogadoSetor);
 // print_r($dadosDoFuncionarioAPartirDaEscalaMensal);
 
 // print_r($buscaNomeFuncionario);
@@ -57,6 +69,9 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
 <input id="usuLogado" type="hidden" value="<?= $_SESSION['nome'] ?>">
 <input id="loja" type="hidden" value="<?= $_SESSION['LOJA'] ?>">
 <input id="diaDeHoje" type="hidden" value="<?= $hoje ?>">
+<input class="" type="hidden" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
+<input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
+<input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
 <body style="background-color:#DCDCDC; ">
     <div class="container-fluid">
@@ -76,7 +91,7 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
                                         <th class="text-center">Nome</th>
                                         <th class="text-center">matricula</th>
                                         <th class="text-center">Cargo</th>
-                                        <th class="text-center"><a style="color:white" href="escalaMensal.php"><u>  Escala Mensal</u></a></th>
+                                        <th class="text-center"><a style="color:white" href="escalaMensal.php"><u> Escala Mensal</u></a></th>
                                         <th class="text-center">Hora Entrada</th>
                                         <th class="text-center">Hora Intervalo</th>
                                         <th class="text-center">Hora Saida</th>
@@ -165,8 +180,8 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
                         <?php
                         } else {
                         ?>
-                        <p><b>Para visualizar a escala Diária finalize a Escala Mensal.</b></p>
-                        <a style="font-size: large;" href="escalaMensal.php"><b> Clique aqui para acessar a Escala Mensal</b></a>
+                            <p><b>Para visualizar a escala Diária finalize a Escala Mensal.</b></p>
+                            <a style="font-size: large;" href="escalaMensal.php"><b> Clique aqui para acessar a Escala Mensal</b></a>
                         <?php
                         }
                         ?>
