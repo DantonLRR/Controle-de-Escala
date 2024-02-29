@@ -737,7 +737,7 @@ if (statusDaTabela === "JÁ FINALIZADA.") {
 
     $('#table1').find('select').prop('disabled', true);
     $('.btnVermelho').addClass('ocultarBotao');
-    $('. btnverdeEXCEL').removeClass('ocultarBotao');
+    $('.btnverdeEXCEL').removeClass('ocultarBotao');
 } else {
     $('#table1').find('select').prop('disabled', false);
     $('select[name="desabilitarEsteSelect"]').prop('disabled', true);

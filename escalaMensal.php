@@ -49,6 +49,9 @@ if ($retorno === "NÃO FINALIZADA.") {
 } else if ($retorno === "JÁ FINALIZADA.") {
     $statusDaTabela = "JÁ FINALIZADA.";
 }
+$dadosDeQuemEstaLogadoNome = '';
+$dadosDeQuemEstaLogadoFuncao = '';
+$dadosDeQuemEstaLogadoSetor = '';
 ?>
 
 <body style="background-color:#DCDCDC; ">
@@ -58,184 +61,193 @@ if ($retorno === "NÃO FINALIZADA.") {
         <input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
 
         <input class="" type="hidden" id="" value="<?= $CPFusuarioLogado ?>">
-        <?php
-        foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
-            $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
-            $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
-            $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
-            if ($dadosDeQuemEstaLogadoFuncao === "ENCARREGADO") {
-                $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor);
 
-        ?>
-                <input class="" type="hidden" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
-                <input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
-                <input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
+        <input class="" type="hidden" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
+        <input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
+        <input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
-                <div class="row">
-                    <div class="col-lg-12  ">
-                        <div class="card " style="border-color:#00a550;  ">
-                            <h6 class="card-header text-center font-weight-bold text-uppercase " style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">Escala Mensal</h6>
-                            <div class="card-body">
-                                <div class="mb-4">
-                                    <label for="validationCustom02" class="form-label">Mês/Ano: </label>
+        <div class="row">
+            <div class="col-lg-12  ">
+                <div class="card " style="border-color:#00a550;  ">
+                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">Escala Mensal</h6>
+                    <div class="card-body">
+                        <?php
+                        foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+                            $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
+                            $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
+                            $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
+                        endforeach;
 
-                                    <div class="col-lg-2">
-                                        <input type="month" class="form-control dataPesquisa margin-bottom" value="<?= $mesAtual ?>" id="dataPesquisa">
-                                    </div>
+                        if ($dadosDeQuemEstaLogadoFuncao === "ENCARREGADO") {
+                            $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor); ?>
+
+                            <div class="mb-4">
+                                <label for="validationCustom02" class="form-label">Mês/Ano: </label>
+
+                                <div class="col-lg-2">
+                                    <input type="month" class="form-control dataPesquisa margin-bottom" value="<?= $mesAtual ?>" id="dataPesquisa">
                                 </div>
+                            </div>
 
-                                <div class="atualizaTabela">
-                                    <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
+                            <div class="atualizaTabela">
+                                <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
                                     <thead style="background: linear-gradient(to right, #00a451, #052846 85%) !important; color:white;">
 
-                                            <tr class="trr ">
-                                                <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
-                                                <th class="text-center theadColor">Cargo</th>
-                                                <th class="text-center theadColor">Situação</th>
-                                                <th class="text-center " style="display:none">Departamento</th>
-                                                <th class="text-center " style="display:none">Entrada</th>
-                                                <th class="text-center " style="display:none">Saida</th>
-                                                <th class="text-center " style="display:none">Intervalo</th>
-                                                <th class="text-center " scope="row" style="width:150px ;display:none">matricula</th>
-
-
-                                                <?php
-                                                foreach ($buscandoMesAno as $row) :
-                                                ?>
-                                                    <th class="text-center numeroDiaDaSemana" scope="row"><?= $row['DIA'] ?></th>
-
-                                                <?php
-                                                endforeach
-                                                ?>
-                                            </tr>
-
-
-                                        </thead>
-
-
-                                        <tbody>
-
-
-
-
-                                            <tr class="trr" id="quantDias">
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td style="display:none"></td>
-                                                <td style="display:none"></td>
-                                                <td style="display:none"></td>
-                                                <td style="display:none"></td>
-                                                <td style="display:none"></td>
-                                                <?php
-                                                foreach ($buscandoMesAno as $row) :
-                                                ?>
-                                                    <td class="text-center diaDaSemana" scope="row" style="font-weight:bold"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
-
-                                                <?php
-                                                endforeach
-                                                ?>
-                                            </tr>
-
-
+                                        <tr class="trr ">
+                                            <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
+                                            <th class="text-center theadColor">Cargo</th>
+                                            <th class="text-center theadColor">Situação</th>
+                                            <th class="text-center " style="display:none">Departamento</th>
+                                            <th class="text-center " style="display:none">Entrada</th>
+                                            <th class="text-center " style="display:none">Saida</th>
+                                            <th class="text-center " style="display:none">Intervalo</th>
+                                            <th class="text-center " scope="row" style="width:150px ;display:none">matricula</th>
 
 
                                             <?php
-                                            foreach ($buscaNomeFuncionario as $nomeFunc) :
-                                                $recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA'],$nomeFunc['DEPARTAMENTO']);
-                                                // ECHO $retorno1;
-                                                if ($retorno1 == "NÃO EXISTE CADASTRO.") {
-                                                    $statusDaTabela = "NÃO FINALIZADA.";
-                                                }
-                                                
+                                            foreach ($buscandoMesAno as $row) :
                                             ?>
-                                                <tr class="trr">
-                                                    <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
-                                                    <td class="text-center cargo" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
-                                                    <td class="text-center situacao" scope="row"><?= $nomeFunc['SITUACAO'] ?></td>
-                                                    <td class="text-center departamento" style="display:none" scope="row"><?= $nomeFunc['DEPARTAMENTO'] ?></td>
-                                                    <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
-                                                    <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
-                                                    <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
-                                                    <td class="text-center matriculaFunc" style="display:none" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
+                                                <th class="text-center numeroDiaDaSemana" scope="row"><?= $row['DIA'] ?></th>
 
-
-                                                    <?php
-                                                    $i = 1;
-                                                    foreach ($buscandoMesAno as $row) :
-                                                    ?>
-                                                        <td class=" text-center " scope="row" id="">
-                                                            <?php
-                                                            $recuperaDadosVerificacao = new verifica();
-                                                            $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle,  $nomeFunc['MATRICULA'], $mesAtual);
-                                                            if ($i < 10) {
-                                                                $d = "0" . $i;
-                                                            } else {
-                                                                $d = $i;
-                                                            }
-                                                            $recuperaAPrimeiraColunaComF = $verifica->verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
-                                                            $verficaSeAInserçãoDeFFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
-                                                            //    echo $retornoVerificacaoSeOFFoiInseridoNoMesAnterior;
-
-
-
-                                                            $primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
-                                                            $primeiroDiaEncontrado = false;
-
-                                                            $isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
-
-                                                            // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
-                                                            if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
-                                                                // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
-                                                                if ($isF) {
-                                                                    $disabled = ' disabled  name="desabilitarEsteSelect"';
-                                                                } else {
-                                                                    $disabled = '';
-                                                                }
-                                                            } else {
-                                                                if ($isF && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoF) {
-                                                                    $disabled = ' disabled  name="desabilitarEsteSelect"';
-                                                                } else {
-                                                                    $disabled = '';
-                                                                    if ($d === $primeiroDiaNaoF) {
-                                                                        $primeiroDiaEncontrado = true;
-                                                                    }
-                                                                }
-                                                            }
-                                                            // echo $disabled;
-                                                            ?>
-
-                                                            <select <?= $disabled ?> class="estilezaSelect" name="" id="">
-                                                                <option value="<?= $recuperacaoDedados[0]["$d"] ?? '' ?>"> <?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
-                                                                <option value="FA">FA</option>
-                                                                <option value="FD">FD</option>
-                                                                <option value="FF">FF</option>
-                                                                <option value="F">F</option>
-                                                                <option value=""></option>
-                                                            </select>
-                                                        </td>
-                                                    <?php
-                                                        $i++;
-                                                    endforeach
-                                                    ?>
-                                                </tr>
                                             <?php
                                             endforeach
                                             ?>
-                                        </tbody>
+                                        </tr>
 
 
-                                    </table>
+                                    </thead>
 
-                                </div>
+
+                                    <tbody>
+
+
+
+
+                                        <tr class="trr" id="quantDias">
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="display:none"></td>
+                                            <td style="display:none"></td>
+                                            <td style="display:none"></td>
+                                            <td style="display:none"></td>
+                                            <td style="display:none"></td>
+                                            <?php
+                                            foreach ($buscandoMesAno as $row) :
+                                            ?>
+                                                <td class="text-center diaDaSemana" scope="row" style="font-weight:bold"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
+
+                                            <?php
+                                            endforeach
+                                            ?>
+                                        </tr>
+
+
+
+
+                                        <?php
+                                        foreach ($buscaNomeFuncionario as $nomeFunc) :
+                                            $recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA'], $nomeFunc['DEPARTAMENTO']);
+                                            // ECHO $retorno1;
+                                            if ($retorno1 == "NÃO EXISTE CADASTRO.") {
+                                                $statusDaTabela = "NÃO FINALIZADA.";
+                                            }
+
+                                        ?>
+                                            <tr class="trr">
+                                                <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
+                                                <td class="text-center cargo" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
+                                                <td class="text-center situacao" scope="row"><?= $nomeFunc['SITUACAO'] ?></td>
+                                                <td class="text-center departamento" style="display:none" scope="row"><?= $nomeFunc['DEPARTAMENTO'] ?></td>
+                                                <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
+                                                <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
+                                                <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
+                                                <td class="text-center matriculaFunc" style="display:none" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
+
+
+                                                <?php
+                                                $i = 1;
+                                                foreach ($buscandoMesAno as $row) :
+                                                ?>
+                                                    <td class=" text-center " scope="row" id="">
+                                                        <?php
+                                                        $recuperaDadosVerificacao = new verifica();
+                                                        $recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle,  $nomeFunc['MATRICULA'], $mesAtual);
+                                                        if ($i < 10) {
+                                                            $d = "0" . $i;
+                                                        } else {
+                                                            $d = $i;
+                                                        }
+                                                        $recuperaAPrimeiraColunaComF = $verifica->verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
+                                                        $verficaSeAInserçãoDeFFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
+                                                        //    echo $retornoVerificacaoSeOFFoiInseridoNoMesAnterior;
+
+
+
+                                                        $primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
+                                                        $primeiroDiaEncontrado = false;
+
+                                                        $isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
+
+                                                        // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
+                                                        if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
+                                                            // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
+                                                            if ($isF) {
+                                                                $disabled = ' disabled  name="desabilitarEsteSelect"';
+                                                            } else {
+                                                                $disabled = '';
+                                                            }
+                                                        } else {
+                                                            if ($isF && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoF) {
+                                                                $disabled = ' disabled  name="desabilitarEsteSelect"';
+                                                            } else {
+                                                                $disabled = '';
+                                                                if ($d === $primeiroDiaNaoF) {
+                                                                    $primeiroDiaEncontrado = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // echo $disabled;
+                                                        ?>
+
+                                                        <select <?= $disabled ?> class="estilezaSelect" name="" id="">
+                                                            <option value="<?= $recuperacaoDedados[0]["$d"] ?? '' ?>"> <?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
+                                                            <option value="FA">FA</option>
+                                                            <option value="FD">FD</option>
+                                                            <option value="FF">FF</option>
+                                                            <option value="F">F</option>
+                                                            <option value=""></option>
+                                                        </select>
+                                                    </td>
+                                                <?php
+                                                    $i++;
+                                                endforeach
+                                                ?>
+                                            </tr>
+                                        <?php
+                                        endforeach
+                                        ?>
+                                    </tbody>
+
+
+                                </table>
+
                             </div>
-                        </div>
+
+                        <?php
+                        } else {
+                        ?>
+                            <p style="color:red">Acesso negado!</p>
+                            <p>Apenas Encarregados podem realizar a escala mensal.</p>
+                        <?php
+                        }
+
+                        ?>
                     </div>
                 </div>
-        <?php
-            }
-        endforeach;
-        ?>
+            </div>
+        </div>
+
         <input class="statusDaTabela" type="hidden" id="statusDaTabela" value="<?= $statusDaTabela ?>">
         <?php
         // echo $statusDaTabela;
