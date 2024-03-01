@@ -116,7 +116,7 @@ var tabela2 = $('#table2').DataTable({
 $('#tableHeader').DataTable({
     searching: false,
     dom: 'Bfrtip',
-    "paging": true,
+    "paging": false,
     "info": false,
     "ordering": false,
     language: {
