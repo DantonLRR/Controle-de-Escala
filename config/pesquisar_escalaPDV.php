@@ -30,7 +30,7 @@ endforeach;
 $FuncManha = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoManha($oracle, $loja, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dadosDeQuemEstaLogadoSetor, $dataPesquisada,);
 // var_dump($FuncManha);
 // echo "<br><br><br>";
-$FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $dataPesquisada,$loja);
+$FuncEscaladosMANHA = $InformacaoFuncionarios->FuncsJaEscaladosMANHA($oracle, $dataPesquisada, $loja);
 // var_dump($FuncEscaladosMANHA);
 
 // echo "<br><br><br>";
@@ -52,7 +52,7 @@ foreach ($FuncManha as $funcManha1) {
 // var_dump($naoRepetidosMANHA);
 
 
-$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDaPesquisaComAspas, $mesEAnoDaPesquisa,$dadosDeQuemEstaLogadoSetor, $dataPesquisada);
+$FuncTarde = $InformacaoFuncionarios->buscaFuncEHorarioDeTrabalhoTarde($oracle, $_SESSION['LOJA'], $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dadosDeQuemEstaLogadoSetor, $dataPesquisada);
 $FuncEscaladosTARDE = $InformacaoFuncionarios->FuncsJaEscaladosTARDE($oracle, $dataPesquisada, $loja);
 // var_dump($FuncEscaladosTARDE);
 // echo"<br><br><br>";
@@ -306,22 +306,21 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 
     function calcularHorasIntermediarias(horaEntrada, horaSaida, horaParaPular) {
         var horasIntermediarias = [];
-        var [entradaHora, entradaMinutos] = horaEntrada.split(':').map(Number);
-        var [saidaHora, saidaMinutos] = horaSaida.split(':').map(Number);
-
-        while (entradaHora < saidaHora || (entradaHora === saidaHora && entradaMinutos <= saidaMinutos)) {
-            var horaFormatada = entradaHora.toString().padStart(2, '0') + ':' + entradaMinutos.toString().padStart(2, '0');
-
-            // Verifica se a horaFormatada é igual à horaParaPular e exclui se for diferente.
-            if (horaFormatada !== horaParaPular) {
-                horasIntermediarias.push('"' + horaFormatada + '"');
+        var entradaHora = parseInt(horaEntrada.substring(0, 2));
+        //diminuimos uma hora da saida do operador de caixa devido esta hora ser a de fechamento de caixa
+        var saidaHora = (parseInt(horaSaida.substring(0, 2))) - 1;
+        var pularHora = parseInt(horaParaPular.substring(0, 2));
+        while (entradaHora < saidaHora || entradaHora === saidaHora) {
+            // Verifica se a hora atual não é a hora para pular nem a hora seguinte à hora para pular
+            if (entradaHora !== pularHora && entradaHora !== pularHora + 1) {
+                horasIntermediarias.push('"' + entradaHora.toString().padStart(2, '0') + ':00' + '"');
             }
 
-            if (entradaMinutos === 0) {
+            entradaHora++;
+
+            // Verifica se a hora atual é a hora seguinte à hora para pular e avança para a próxima hora
+            if (entradaHora === pularHora) {
                 entradaHora++;
-                entradaMinutos = 0;
-            } else {
-                entradaMinutos = 0;
             }
         }
 

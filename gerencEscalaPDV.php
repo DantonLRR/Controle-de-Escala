@@ -42,7 +42,7 @@ $informacoesDaslojas = new lojas;
                     <div style="font-weight: bold;  background: linear-gradient(to right, #00a451, #052846 85%); color:white" class="text-center card-header">Gerenciamento de Escala de PDV</div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-lg-2 informacoesEsquerda1Card">
+                            <div class="col-lg-2 ">
                                 <div class="mb-4">
                                     <label for="validationCustom02" class="form-label">Mês/Ano: </label>
 

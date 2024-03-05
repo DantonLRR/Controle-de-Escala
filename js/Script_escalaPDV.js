@@ -1,7 +1,7 @@
 import { criandoHtmlmensagemCarregamento, Toasty } from "../../base/jsGeral.js";
 
 var quantidadePorDiaDeFuncionariosImpressao = $("#quantidadePorDiaDeFuncionariosImpressao").val();
-if (quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado para hoje"){
+if (quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado para hoje") {
     $('.DesabilitaClasseCasoEscalaNaoFinalizada').css('display', 'none');
     $("#quantidadePorDiaDeFuncionariosVisivel").text("Escala mensal não finalizada");
     $('#dataPesquisa').prop('disabled', true);
@@ -163,8 +163,8 @@ var iconeAddTables1 = document.getElementById("BTNAdicionarDescritivo");
 var iconeRemoveTable1 = document.getElementById("BTNremoverDescritivo");
 var table1 = document.getElementById("cardTable1");
 
-var iconeAddTables2 = document.getElementById("BTNAdicionarDescritivo2"); 
-var iconeRemoveTable2 = document.getElementById("BTNremoverDescritivo2"); 
+var iconeAddTables2 = document.getElementById("BTNAdicionarDescritivo2");
+var iconeRemoveTable2 = document.getElementById("BTNremoverDescritivo2");
 var table2 = document.getElementById("relatorioPDV");
 
 iconeAddTables1.addEventListener("click", function () {
@@ -194,28 +194,27 @@ iconeRemoveTable2.addEventListener("click", function () {
 
 function calcularHorasIntermediarias(horaEntrada, horaSaida, horaParaPular) {
     var horasIntermediarias = [];
-    var [entradaHora, entradaMinutos] = horaEntrada.split(':').map(Number);
-    var [saidaHora, saidaMinutos] = horaSaida.split(':').map(Number);
+    var entradaHora = parseInt(horaEntrada.substring(0, 2));
+    //diminuimos uma hora da saida do operador de caixa devido esta hora ser a de fechamento de caixa
+    var saidaHora = (parseInt(horaSaida.substring(0, 2))) - 1;
+    var pularHora = parseInt(horaParaPular.substring(0, 2));
 
-    while (entradaHora < saidaHora || (entradaHora === saidaHora && entradaMinutos <= saidaMinutos)) {
-        var horaFormatada = entradaHora.toString().padStart(2, '0') + ':' + entradaMinutos.toString().padStart(2, '0');
-
-        // Verifica se a horaFormatada é igual à horaParaPular e exclui se for diferente.
-        if (horaFormatada !== horaParaPular) {
-            horasIntermediarias.push('"' + horaFormatada + '"');
+    while (entradaHora < saidaHora || entradaHora === saidaHora) {
+        // Verifica se a hora atual não é a hora para pular nem a hora seguinte à hora para pular
+        if (entradaHora !== pularHora && entradaHora !== pularHora + 1) {
+            horasIntermediarias.push('"' + entradaHora.toString().padStart(2, '0') + ':00' + '"');
         }
 
-        if (entradaMinutos === 0) {
+        entradaHora++;
+
+        // Verifica se a hora atual é a hora seguinte à hora para pular e avança para a próxima hora
+        if (entradaHora === pularHora) {
             entradaHora++;
-            entradaMinutos = 0;
-        } else {
-            entradaMinutos = 0;
         }
     }
 
     return horasIntermediarias;
 }
-
 
 
 
