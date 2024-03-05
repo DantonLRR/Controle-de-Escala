@@ -62,9 +62,6 @@ $dadosDeQuemEstaLogadoSetor = '';
 
         <input class="" type="hidden" id="" value="<?= $CPFusuarioLogado ?>">
 
-        <input class="" type="hidden" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
-        <input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
-        <input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
         <div class="row">
             <div class="col-lg-12  ">
@@ -75,8 +72,13 @@ $dadosDeQuemEstaLogadoSetor = '';
                         foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
                             $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
                             $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
-                            $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
+                            $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['DEPARTAMENTO2'];
                         endforeach;
+                        ?>
+                        <input class="" type="hidden" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
+                        <input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
+                        <input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
+                        <?php
 
                         if ($dadosDeQuemEstaLogadoFuncao === "ENCARREGADO") {
                             $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor); ?>

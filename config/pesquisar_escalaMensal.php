@@ -42,7 +42,7 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
 ?>
     <input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['NOME'] ?>">
     <input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['FUNCAO'] ?>">
-    <input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['SETOR'] ?>">
+    <input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['DEPARTAMENTO2'] ?>">
 
     <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
     <thead style="background: linear-gradient(to right, #00a451, #052846 85%) !important; color:white;">
@@ -1289,7 +1289,7 @@ endforeach;
             searching: true,
 
             "paging": true,
-            "info": false,
+            "info": true,
             "ordering": false,
             "lengthMenu": [
                 [40],

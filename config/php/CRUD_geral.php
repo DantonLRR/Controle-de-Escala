@@ -180,6 +180,13 @@ class Funcionarios
         P.CPF,
         SUBSTR(S.DESCRICAO,7) AS SETOR,
         TO_CHAR(F.DATAADMISSAO, 'YYYY-MM-DD') AS DATA_ADMISSAO,
+        trim(REPLACE(REPLACE(REPLACE(PF.NOME,
+                                             'ENCARREGADO DE',
+                                             ''),
+                                     'TRAINEE',
+                                     ''),
+                             'ENCARREGADO',
+                             '')) AS DEPARTAMENTO2,
         CASE 
             WHEN DTAVISOPREVIOTRAB IS NULL THEN TO_CHAR(DTAVISOPREVIO, 'YYYY-MM-DD') 
             ELSE TO_CHAR(DTAVISOPREVIOTRAB, 'YYYY-MM-DD') 
@@ -311,7 +318,7 @@ class Funcionarios
             array_push($lista, $row);
         }
         return $lista;
-        // echo $query;
+        echo $query;
     }
 
     //pdv

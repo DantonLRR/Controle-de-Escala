@@ -53,8 +53,8 @@ $('#table1').DataTable({
     scrollCollapse: true,
     searching: true,
 
-    "paging": true,
-    "info": false,
+    "paging": false,
+    "info": true,
     "ordering": false,
     "lengthMenu": [
         [40],
