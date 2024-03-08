@@ -7,7 +7,7 @@ $('#PesquisarEscalaMensal').on('click', function () {
     var mesPesquisa = $("#dataPesquisa").val();
     var loja = $("#loja").val();
     var mesAtual = $("#mesAtual").val();
-
+    var Departamento = $('#DEPARTAMENTO').val();
     if (mesPesquisa == "") {
         mesPesquisa = mesAtual
     }
@@ -16,14 +16,16 @@ $('#PesquisarEscalaMensal').on('click', function () {
     } else {
         criandoHtmlmensagemCarregamento("exibir");
         $.ajax({
-            url: "config/pesquisar_escalaMensal.php",
+            url: "config/Pesquisar_gerencEscalaPDV.php",
             method: 'POST',
             data: 'mesPesquisa=' +
                 mesPesquisa +
                 "&loja=" +
                 loja +
                 "&usuarioLogado=" +
-                usuarioLogado,
+                usuarioLogado +
+                "&Departamento=" +
+                Departamento,
             success: function (mes_Pesquisado) {
                 $('#PesquisaEscalaMensal').empty().html(mes_Pesquisado);
                 $('.blocoVerificaELiberaEscala').css('visibility', 'visible');
@@ -36,10 +38,12 @@ $('#PesquisarEscalaMensal').on('click', function () {
                     $('#LiberarEscala').attr('disabled', false);
                     $('.statusDaTabela').after("<p class='retornoDoStatusDaTabela'>A Escala do mês está finalizada</p>");
                     $('.statusDaTabela').hide();
+                    $('#chamaModal').removeAttr('disabled');
                 } else {
                     $('#LiberarEscala').attr('disabled', 'disabled');
                     $('.statusDaTabela').after("<p class='retornoDoStatusDaTabela'>A Escala do mês não está finalizada</p>");
                     $('.statusDaTabela').hide();
+                    $('#chamaModal').attr('disabled', 'disabled');
                 }
 
                 criandoHtmlmensagemCarregamento("ocultar");
@@ -50,77 +54,9 @@ $('#PesquisarEscalaMensal').on('click', function () {
     }
 });
 
-
-$('#table1').DataTable({
-    language: {
-        "sEmptyTable": "Nenhum registro encontrado",
-
-        "sInfo": " _START_ até _END_ de _TOTAL_ registros...  ",
-
-        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
-
-        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
-
-        "sInfoPostFix": "",
-
-        "sInfoThousands": ".",
-
-        "sLengthMenu": "_MENU_ resultados por página",
-
-        "sLoadingRecords": "Carregando...",
-
-        "sProcessing": "Processando...",
-
-        "sZeroRecords": "Nenhum registro encontrado",
-
-        "sSearch": "Pesquisar",
-
-        "oPaginate": {
-
-            "sNext": "Próximo",
-
-            "sPrevious": "Anterior",
-
-            "sFirst": "Primeiro",
-
-            "sLast": "Último"
-
-        },
-    },
-    dom: 'Bfrtip',
-    scrollY: 450,
-    scrollX: true,
-
-    scrollXInner: "100%",
-    scrollCollapse: true,
-    searching: true,
-
-    "paging": true,
-    "info": false,
-    "ordering": false,
-    "lengthMenu": [
-        [40],
-    ],
-    fixedColumns: {
-        left: 4,
-    },
-
-    buttons: [
-
-    ],
-
-});
-// $('#exportButton').on('click', function () {
-//     alert("")
-//     $("#table1").tableExport({
-//         type: 'xls',
-//         escape: 'false', 
-//         fileName: 'Escala_de_PDV', 
-//     });
-// });
 $('#LiberarEscala').on('click', function () {
 
-    criandoHtmlmensagemCarregamento("exibir");
+
     var alteraStatusEscala = '';
     var loja = $("#loja").val();
     var mesPesquisa = $("#dataPesquisa").val();
@@ -130,75 +66,83 @@ $('#LiberarEscala').on('click', function () {
     if (mesPesquisa == "") {
         mesPesquisa = mesAtual
     }
+    var Departamento = $('#DEPARTAMENTO').val();
+    var MotivoLiberacaoEscala = $('#MotivoLiberacaoEscala').val();
 
-    $.ajax({
-        url: "config/desabilita_ou_habilita_mensal.php",
-        method: 'POST',
-        data: "mesPesquisa=" +
-            mesPesquisa +
-            "&mesAtual=" +
-            mesAtual +
-            "&alteraStatusEscala=" +
-            alteraStatusEscala +
-            "&loja=" +
-            loja +
-            "&usuarioLogado=" +
-            usuarioLogado,
-        success: function (atualizaTabela) {
-            $.ajax({
-                url: "config/insert_log_liberacao.php",
-                method: 'POST',
-                data: 'mesPesquisa=' +
-                    mesPesquisa +
-                    "&loja=" +
-                    loja +
-                    "&usuarioLogado=" +
-                    usuarioLogado,
-                success: function () {
-
-                }
-            });
-
-
-            $.ajax({
-                url: "config/pesquisar_escalaMensal.php",
-                method: 'POST',
-                data: 'mesPesquisa=' +
-                    mesPesquisa +
-                    "&loja=" +
-                    loja +
-                    "&usuarioLogado=" +
-                    usuarioLogado,
-                success: function (mes_Pesquisado) {
-
-                    $('#PesquisaEscalaMensal').empty().html(mes_Pesquisado);
-
-                    $('.estilezaSelect').attr('disabled', 'disabled');
-                    $('.statusDaTabela').prop('type', 'text');
-                    $('.statusDaTabela').css('border', 'none');
-                    $('.statusDaTabela').attr('disabled', 'disabled');
-                    if ($('.statusDaTabela').val() === "JÁ FINALIZADA.") {
-                        $('#LiberarEscala').attr('disabled', false);
-                        $('.estilezaSelect').css('font-weight', 'bold');
-                        $('.statusDaTabela').after("<p class='retornoDoStatusDaTabela'>A Escala do mês está finalizada</p>");
-                        $('.statusDaTabela').remove();
-                        criandoHtmlmensagemCarregamento("ocultar");
-                        Toasty("Sucesso", "A escala foi Liberada !", "#00a550");
-                    } else {
-                        $('#LiberarEscala').attr('disabled', 'disabled');
-                        $('.estilezaSelect').css('font-weight', 'bold');
-                        $('.statusDaTabela').after("<p class='retornoDoStatusDaTabela'>A Escala do mês não está finalizada</p>");
-                        $('.statusDaTabela').remove();
+    if (MotivoLiberacaoEscala == '') {
+        Toasty("Atenção", "Digite o motivo da liberação da escala", "#E20914");
+    } else {
+        criandoHtmlmensagemCarregamento("exibir");
+        $.ajax({
+            url: "config/desabilita_ou_habilita_mensal.php",
+            method: 'POST',
+            data: "mesPesquisa=" +
+                mesPesquisa +
+                "&mesAtual=" +
+                mesAtual +
+                "&alteraStatusEscala=" +
+                alteraStatusEscala +
+                "&loja=" +
+                loja +
+                "&usuarioLogado=" +
+                usuarioLogado +
+                "&Departamento=" +
+                Departamento,
+            success: function (atualizaTabela) {
+                $.ajax({
+                    url: "config/insert_log_liberacao.php",
+                    method: 'POST',
+                    data: 'mesPesquisa=' +
+                        mesPesquisa +
+                        "&loja=" +
+                        loja +
+                        "&usuarioLogado=" +
+                        usuarioLogado +
+                        "&Departamento=" +
+                        Departamento +
+                        "&MotivoLiberacaoEscala=" +
+                        MotivoLiberacaoEscala,
+                    success: function () {
                     }
-
-                }
-            });
-
-
-
-        }
-    });
-
-
-
+                });
+                $.ajax({
+                    url: "config/pesquisar_gerencEscalaPDV.php",
+                    method: 'POST',
+                    data: 'mesPesquisa=' +
+                        mesPesquisa +
+                        "&loja=" +
+                        loja +
+                        "&usuarioLogado=" +
+                        usuarioLogado+
+                        "&Departamento=" +
+                        Departamento,
+                    success: function (mes_Pesquisado) {
+                        
+                        criandoHtmlmensagemCarregamento("ocultar");
+                        $('#PesquisaEscalaMensal').empty().html(mes_Pesquisado);
+                        $('.estilezaSelect').attr('disabled', 'disabled');
+                        $('.statusDaTabela').prop('type', 'text');
+                        $('.statusDaTabela').css('border', 'none');
+                        $('.statusDaTabela').attr('disabled', 'disabled');
+                        if ($('.statusDaTabela').val() === "JÁ FINALIZADA.") {
+                            $('#LiberarEscala').attr('disabled', false);
+                            $('.estilezaSelect').css('font-weight', 'bold');
+                            $('.statusDaTabela').after("<p class='retornoDoStatusDaTabela'>A Escala do mês está finalizada</p>");
+                            $('.statusDaTabela').remove();
+                            Toasty("Sucesso", "A escala foi Liberada !", "#00a550");                             
+                            $('#chamaModal').removeAttr('disabled');
+                        } else {
+                            $('#LiberarEscala').attr('disabled', 'disabled');
+                            $('.estilezaSelect').css('font-weight', 'bold');
+                            $('.statusDaTabela').after("<p class='retornoDoStatusDaTabela'>A Escala do mês não está finalizada</p>");
+                            $('.statusDaTabela').remove();
+                            $('#chamaModal').attr('disabled', 'disabled');
+                        }
+                        $('#exampleModal').modal('hide');
+                        //não está fechando o modal ainda
+                    }
+                });
+            }
+        });
+    }
 });

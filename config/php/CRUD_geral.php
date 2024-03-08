@@ -84,6 +84,20 @@ class lojas
         }
         return $lista;
     }
+    public function recuperacaoDosSetoresDaLoja($oracle)
+    {
+        $lista = array();
+        $query = "SELECT DISTINCT(a.departamento) from web_escala_mensal a
+         ORDER BY A.DEPARTAMENTO ASC
+         ";
+        echo $query;
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+    }
 }
 
 class Funcionarios
@@ -115,7 +129,7 @@ class Funcionarios
         // echo $query
     }
     //diaria
-    public function DadosAPartirDaEscalaMensal($oracle, $dia, $lojaDaPessoaLogada, $mesSelecionado,$departamento)
+    public function DadosAPartirDaEscalaMensal($oracle, $dia, $lojaDaPessoaLogada, $mesSelecionado, $departamento)
     {
 
 
@@ -168,8 +182,8 @@ class Funcionarios
 
 
     //mensal
-    public function informacaoPessoaLogada($TotvsOracle, $cpf,$lojaDaPessoaLogada)
-    {    
+    public function informacaoPessoaLogada($TotvsOracle, $cpf, $lojaDaPessoaLogada)
+    {
         $lista = array();
         $query = "SELECT 
         F.CHAPA,
@@ -210,15 +224,15 @@ class Funcionarios
                 and SUBSTR(S.DESCRICAO, 1, 3) = '$lojaDaPessoaLogada'
             ORDER BY   F.NOME
             ";
-                    $resultado = oci_parse($TotvsOracle, $query);
-                    oci_execute($resultado);
-                    while ($row = oci_fetch_assoc($resultado)) {
-                        array_push($lista, $row);
-                    }
-                    return $lista;
-                    // echo $query;
+        $resultado = oci_parse($TotvsOracle, $query);
+        oci_execute($resultado);
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+        // echo $query;
     }
-    public function informacoesOperadoresDeCaixa($TotvsOracle, $lojaDaPessoaLogada,$setorDaPessoaLogada)
+    public function informacoesOperadoresDeCaixa($TotvsOracle, $lojaDaPessoaLogada, $setorDaPessoaLogada)
     {
 
         $lista = array();
@@ -230,7 +244,14 @@ class Funcionarios
                 SUBSTR(PSECAO.DESCRICAO, 7,99) AS DEPARTAMENTO, 
                 SUBSTR(PSECAO.DESCRICAO, 1,3) AS LOJA, 
                 PFUNC.CODFUNCAO AS CODIGO_FUNCAO, 
-                PFUNCAO.NOME AS FUNCAO, 
+                PFUNCAO.NOME AS FUNCAO,
+                trim(REPLACE(REPLACE(REPLACE(pfuncao.nome,
+                                             'ENCARREGADO DE',
+                                             ''),
+                                     'TRAINEE',
+                                     ''),
+                             'ENCARREGADO',
+                             '')) AS DEPARTAMENTO2, 
                 ENTRADA1.BATIDA as HORAEntrada,
                 SAIDA1.BATIDA as SaidaParaAlmoco,
                 ENTRADA2.BATIDA as VoltaDoAlmoco,
@@ -318,12 +339,12 @@ class Funcionarios
             array_push($lista, $row);
         }
         return $lista;
-        echo $query;
+        // echo $query;
     }
 
     //pdv
 
-    public function buscaFuncEHorarioDeTrabalhoManha($oracle, $lojaDaPessoaLogada, $diaDeHojeComAspas, $mesSelecionadoDaEscalaMensal,$departamento, $diaMesEAnoAtual)
+    public function buscaFuncEHorarioDeTrabalhoManha($oracle, $lojaDaPessoaLogada, $diaDeHojeComAspas, $mesSelecionadoDaEscalaMensal, $departamento, $diaMesEAnoAtual)
     {
         $lista = array();
         $query = "SELECT DISTINCT a.matricula,
@@ -368,7 +389,7 @@ class Funcionarios
         return $lista;
         // echo  $lista;
     }
-    public function buscaFuncEHorarioDeTrabalhoTarde($oracle, $lojaDaPessoaLogada, $diaDeHojeComAspas, $mesSelecionadoDaEscalaMensal,$departamento, $diaMesEAnoAtual)
+    public function buscaFuncEHorarioDeTrabalhoTarde($oracle, $lojaDaPessoaLogada, $diaDeHojeComAspas, $mesSelecionadoDaEscalaMensal, $departamento, $diaMesEAnoAtual)
     {
         $lista = array();
         $query = "SELECT DISTINCT a.matricula,
@@ -476,7 +497,7 @@ class Funcionarios
         return $lista;
     }
 
-    public function funcionariosDisponiveisNoDia($oracle, $diaComAspas, $mesSelecionado,$departamento, $dataPesquisada, $loja)
+    public function funcionariosDisponiveisNoDia($oracle, $diaComAspas, $mesSelecionado, $departamento, $dataPesquisada, $loja)
     {
         $lista = array();
         $query =  "SELECT DISTINCT a.matricula,
@@ -622,7 +643,7 @@ class Verifica
         echo "</br>" + $retorno;
     }
 
-    public function verificaCadastroNaEscalaMensal2($oracle, $matricula, $mesPesquisado, $loja,$departamentoFunc)
+    public function verificaCadastroNaEscalaMensal2($oracle, $matricula, $mesPesquisado, $loja, $departamentoFunc)
     {
         $lista = array();
         global  $retorno;
@@ -672,7 +693,7 @@ class Verifica
         return $lista;
     }
 
-    public function verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $mesPesquisado, $loja,$departamento)
+    public function verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $mesPesquisado, $loja, $departamento)
     {
         $lista = array();
         global  $retorno1;
@@ -770,16 +791,20 @@ class Verifica
 
     //verificacao bloqueio da escala mensal
 
-    public function verificaSeAEscalaMensalEstaFinalizada($oracle, $mesPesquisado, $loja,)
+    public function verificaSeAEscalaMensalEstaFinalizada($oracle, $mesPesquisado, $loja,$departamento)
     {
 
         $lista = array();
         global  $retorno;
         $query = "SELECT * from WEB_ESCALA_MENSAL a
         where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
+        and a.departamento = '$departamento'
+        and a.loja = $loja
         and status IS NULL OR TRIM(status) = '' 
-        and a.loja = $loja";
-        //    echo "<br> verificaSeAEscalaMensalEstaFinalizada :". $query;
+        
+        
+        ";
+        // echo "<br> verificaSeAEscalaMensalEstaFinalizada :". $query;
         //VERIFICA SE TEM LINHAS COM STATUS VAZIO NA TABELA E SE TIVER RETORNA NÃO FINALIZADA 
         $parse = oci_parse($oracle, $query);
 
@@ -800,7 +825,7 @@ class Verifica
         }
         return $lista;
 
-        echo "</br>" + $retorno;
+        
     }
 
     //diaria
@@ -866,7 +891,7 @@ class Verifica
 class Insert
 {
     // mensal
-    public function insertEscalaMensal($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado,$departamentoFunc)
+    public function insertEscalaMensal($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado, $departamentoFunc)
     {
 
         $query = "INSERT INTO $tabela (
@@ -912,7 +937,7 @@ class Insert
         }
     }
 
-    public function insertEscalaMensalProximoMes($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado, $inclusaodomesanterior,$departamentoFunc)
+    public function insertEscalaMensalProximoMes($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado, $inclusaodomesanterior, $departamentoFunc)
     {
 
         $query = "INSERT INTO $tabela (
@@ -1200,10 +1225,10 @@ class Update
             return false;
         }
 
-        echo $query;
+       // echo $query;
     }
 
-    public function liberaEscalaMensal($oracle, $status, $usuarioQueliberouNovamenteAEscala, $mesPesquisado, $loja)
+    public function liberaEscalaMensal($oracle, $status, $usuarioQueliberouNovamenteAEscala, $mesPesquisado, $loja,$Departamento)
     {
 
         $query = "UPDATE WEB_ESCALA_MENSAL a
@@ -1212,9 +1237,10 @@ class Update
         usuNovaLiberacaoEscala = '$usuarioQueliberouNovamenteAEscala'
         where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
          and TRIM(status) = 'F'
-        and a.loja = $loja ";
+        and a.loja = $loja
+        and a.departamento ='$Departamento' ";
 
-        echo $query;
+        // echo $query;
 
         $parse = oci_parse($oracle, $query);
 
@@ -1389,7 +1415,7 @@ class Porcentagem
 class log_escala_mensal
 {
 
-    public function log_liberacao_escala_mensal($oracle, $loja, $mesSelecionadoParaLiberacao, $usuariologado)
+    public function log_liberacao_escala_mensal($oracle, $loja, $mesSelecionadoParaLiberacao, $usuariologado,$MotivoLiberacaoEscala)
     {
 
         $sql2 = 'select S_Log_escala_mensal.Nextval from dual';
@@ -1407,14 +1433,16 @@ class log_escala_mensal
             loja, 
             messelecionado, 
             dataliberacao,
-             usuliberacao
+             usuliberacao,
+             MotivoLiberacao
              )
             VALUES (
             $id,
             $loja,
              TO_DATE('$mesSelecionadoParaLiberacao', 'YYYY-MM'),
             sysdate,
-             '$usuariologado'
+             '$usuariologado',
+             '$MotivoLiberacaoEscala'
         
         )";
         $parse = oci_parse($oracle, $query);

@@ -93,7 +93,7 @@ $('#table1').DataTable({
                 if (mesPesquisa == "") {
                     mesPesquisa = mesAtual
                 };
-
+                var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
 
 
                 $.ajax({
@@ -108,7 +108,9 @@ $('#table1').DataTable({
                         "&loja=" +
                         loja +
                         "&usuarioLogado=" +
-                        usuarioLogado,
+                        usuarioLogado+
+                        "&Departamento=" +
+                        Departamento,
                     success: function (atualizaTabela1) {
 
                         $.ajax({

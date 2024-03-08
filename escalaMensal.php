@@ -41,17 +41,23 @@ $CPFusuarioLogado = $_SESSION['cpf'];
 $dadosFunc = new Funcionarios();
 $verificaSeAPessoaLogadaEEncarregada = $dadosFunc->informacaoPessoaLogada($TotvsOracle, $_SESSION['cpf'], $_SESSION['LOJA']);
 $verifica = new verifica();
+$dadosDeQuemEstaLogadoNome = '';
+$dadosDeQuemEstaLogadoFuncao = '';
+$dadosDeQuemEstaLogadoSetor = '';
 
-$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA']);
+foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+    $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
+    $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
+    $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['DEPARTAMENTO2'];
+endforeach;
+
+$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA'],$dadosDeQuemEstaLogadoSetor);
 
 if ($retorno === "NÃO FINALIZADA.") {
     $statusDaTabela = "NÃO FINALIZADA.";
 } else if ($retorno === "JÁ FINALIZADA.") {
     $statusDaTabela = "JÁ FINALIZADA.";
 }
-$dadosDeQuemEstaLogadoNome = '';
-$dadosDeQuemEstaLogadoFuncao = '';
-$dadosDeQuemEstaLogadoSetor = '';
 ?>
 
 <body style="background-color:#DCDCDC; ">
@@ -68,13 +74,6 @@ $dadosDeQuemEstaLogadoSetor = '';
                 <div class="card " style="border-color:#00a550;  ">
                     <h6 class="card-header text-center font-weight-bold text-uppercase " style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">Escala Mensal</h6>
                     <div class="card-body">
-                        <?php
-                        foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
-                            $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
-                            $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
-                            $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['DEPARTAMENTO2'];
-                        endforeach;
-                        ?>
                         <input class="" type="hidden" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
                         <input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
                         <input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
@@ -149,7 +148,7 @@ $dadosDeQuemEstaLogadoSetor = '';
 
                                         <?php
                                         foreach ($buscaNomeFuncionario as $nomeFunc) :
-                                            $recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA'], $nomeFunc['DEPARTAMENTO']);
+                                            $recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor);
                                             // ECHO $retorno1;
                                             if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                                                 $statusDaTabela = "NÃO FINALIZADA.";
@@ -160,7 +159,7 @@ $dadosDeQuemEstaLogadoSetor = '';
                                                 <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
                                                 <td class="text-center cargo" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
                                                 <td class="text-center situacao" scope="row"><?= $nomeFunc['SITUACAO'] ?></td>
-                                                <td class="text-center departamento" style="display:none" scope="row"><?= $nomeFunc['DEPARTAMENTO'] ?></td>
+                                                <td class="text-center departamento" style="display:none" scope="row"><?= $dadosDeQuemEstaLogadoSetor ?></td>
                                                 <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
                                                 <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
                                                 <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>

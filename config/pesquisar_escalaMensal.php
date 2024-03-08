@@ -18,7 +18,16 @@ $verificaSeAPessoaLogadaEEncarregada = $dadosFunc->informacaoPessoaLogada($Totvs
 $verifica = new verifica();
 // echo $dataSelecionadaNoFiltro;
 // echo"<br>".$loja;
-$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $loja);
+
+foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+    $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
+    $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
+    $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
+
+    $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja, $dadosDeQuemEstaLogadoSetor);
+
+
+$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $loja,$dadosDeQuemEstaLogadoSetor);
 // echo $retorno;
 if ($retorno === "NÃO FINALIZADA.") {
     $statusDaTabelaPosPesquisa = "NÃO FINALIZADA.";
@@ -31,18 +40,9 @@ if ($retorno === "NÃO FINALIZADA.") {
 
 <input class="dataSelecionadaNoFiltro" type="hidden" id="dataSelecionadaNoFiltro" value="<?= $dataSelecionadaNoFiltro ?>">
 <input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
-<?php
-foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
-    $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
-    $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
-    $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
-
-    $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja, $dadosDeQuemEstaLogadoSetor);
-
-?>
-    <input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['NOME'] ?>">
-    <input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['FUNCAO'] ?>">
-    <input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['DEPARTAMENTO2'] ?>">
+    <input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoNome ?>">
+    <input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
+    <input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
     <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
     <thead style="background: linear-gradient(to right, #00a451, #052846 85%) !important; color:white;">
@@ -103,7 +103,7 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
 
             <?php
             foreach ($buscaNomeFuncionario as $nomeFunc) :
-                $recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro, $loja, $nomeFunc['DEPARTAMENTO']);
+                $recuperacaoDedados2 = $verifica->verificaSeOMesSelecionadoTemAlgumFuncionarioEscalado($oracle, $dataSelecionadaNoFiltro, $loja, $dadosDeQuemEstaLogadoSetor);
                 // ECHO $retorno1;
                 if ($retorno1 == "NÃO EXISTE CADASTRO.") {
                     $statusDaTabelaPosPesquisa = "NÃO FINALIZADA.";
@@ -1288,7 +1288,7 @@ endforeach;
             scrollCollapse: true,
             searching: true,
 
-            "paging": true,
+            "paging": false,
             "info": true,
             "ordering": false,
             "lengthMenu": [
