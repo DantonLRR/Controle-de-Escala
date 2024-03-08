@@ -108,7 +108,7 @@ $('#table1').DataTable({
                         "&loja=" +
                         loja +
                         "&usuarioLogado=" +
-                        usuarioLogado+
+                        usuarioLogado +
                         "&Departamento=" +
                         Departamento,
                     success: function (atualizaTabela1) {
@@ -133,19 +133,63 @@ $('#table1').DataTable({
                 });
             }
         },
+        // {
+        //     extend: 'excel',
+        //     className: 'btnverdeEXCEL',
+        //     text: '<i class="fa-solid fa-table" style="color: #ffffff;"></i> Excel ',
+        //     exportOptions: {
+        //         format: {
+        //             body: function (data, row, column, node) {
+        //                 if ($(node).find('select[disabled]').length > 0) {
+        //                     return $(node).find('select[disabled]').val();
+        //                 }
+        //                 return data;
+        //             }
+        //         }
+        //     }
+
+        // }
         {
-            extend: 'excel',
-            className: 'btnverdeEXCEL',
-            text: '<i class="fa-solid fa-table" style="color: #ffffff;"></i> Excel ',
-            exportOptions: {
-                format: {
-                    body: function (data, row, column, node) {
-                        if ($(node).find('select[disabled]').length > 0) {
-                            return $(node).find('select[disabled]').val();
-                        }
-                        return data;
-                    }
-                }
+            text: '<i class="fa-solid fa-file-pdf" style="color: #ffffff;"></i> PDF ',
+            className: ' btnverdeEXCEL',
+            action: function () {
+                var usuarioLogado = $("#usuarioLogado").val();
+                var loja = $("#loja").val();
+
+                var mesPesquisa = $("#dataPesquisa").val();
+
+                var mesAtual = $("#mesAtual").val();
+
+                if (mesPesquisa == "") {
+                    mesPesquisa = mesAtual
+                };
+                var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
+                $.ajax({
+                    url: "config/gerarPdf.php",
+                    method: "POST",
+                    data: 'mesPesquisa=' +
+                    mesPesquisa +
+                    "&loja=" +
+                    loja +
+                    "&usuarioLogado=" +
+                    usuarioLogado +
+                    "&Departamento=" +
+                    Departamento,
+                    xhrFields: {
+                        responseType: "blob",
+                    },
+                    success: function (response) {
+                        // Loading("ocultar");
+
+                        let blobUrl = URL.createObjectURL(response);
+                        window.open(blobUrl, "_blank");
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                        // Loading("ocultar");
+                    },
+                });
+
             }
 
         }

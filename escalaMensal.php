@@ -209,15 +209,17 @@ if ($retorno === "NÃO FINALIZADA.") {
                                                             }
                                                         }
                                                         // echo $disabled;
+                                                        $DadoDoDiaSalVoNoBancoDeDados = $recuperacaoDedados[0]["$d"] ?? '';
                                                         ?>
-
+                                                                            
                                                         <select <?= $disabled ?> class="estilezaSelect" name="" id="">
-                                                            <option value="<?= $recuperacaoDedados[0]["$d"] ?? '' ?>"> <?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
-                                                            <option value="FA">FA</option>
-                                                            <option value="FD">FD</option>
-                                                            <option value="FF">FF</option>
-                                                            <option value="F">F</option>
-                                                            <option value=""></option>
+                                                            <option value="<?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?>"> <?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?></option>
+                                                            <!-- Se o dado -->
+                                                            <option value="FA" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FA' ? "style='display: none'" : "" ?> >FA</option>
+                                                            <option value="FD"<?= $DadoDoDiaSalVoNoBancoDeDados == 'FD' ? "style='display: none'" : "" ?>  >FD</option>
+                                                            <option value="FF"<?= $DadoDoDiaSalVoNoBancoDeDados == 'FF' ? "style='display: none'" : "" ?>  >FF</option>
+                                                            <option value="F" <?= $DadoDoDiaSalVoNoBancoDeDados == 'F' ? "style='display: none'" : "" ?> >F</option>
+                                                            <option value="T" <?= $DadoDoDiaSalVoNoBancoDeDados == '' ? "style='display: none'" : "" ?> ></option>
                                                         </select>
                                                     </td>
                                                 <?php
