@@ -153,6 +153,7 @@ $('#table1').DataTable({
             text: '<i class="fa-solid fa-file-pdf" style="color: #ffffff;"></i> PDF ',
             className: ' btnverdeEXCEL',
             action: function () {
+                criandoHtmlmensagemCarregamento("exibir");
                 var usuarioLogado = $("#usuarioLogado").val();
                 var loja = $("#loja").val();
 
@@ -180,7 +181,7 @@ $('#table1').DataTable({
                     },
                     success: function (response) {
                         // Loading("ocultar");
-
+                        criandoHtmlmensagemCarregamento("ocultar");
                         let blobUrl = URL.createObjectURL(response);
                         window.open(blobUrl, "_blank");
                     },

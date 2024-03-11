@@ -47,6 +47,24 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
 <?php
 endforeach
 ?>
+<style>
+    @page {
+        footer: page-footer;
+    }
+
+    #page-footer {
+        position: fixed;
+        bottom: -50px;
+        left: 0;
+        right: 0;
+        height: 50px;
+        text-align: center;
+    }
+
+    .page-number:before {
+        content: counter(page);
+    }
+</style>
 
 <body>
 	<span style="text-transform: capitalize !important;">
@@ -58,7 +76,7 @@ endforeach
 	</span>
 	<br>
 	<span style="text-transform: capitalize !important;">
-		Expedido dia <?= $dataFormatada ?> por :
+		Expedido dia <?= $dataFormatada ?> por:
 		<b>
 			<?= ucfirst(strtolower($rowVerificaEncarregado['NOME'])) ?>,
 			<?= ucfirst(strtolower($rowVerificaEncarregado['FUNCAO'])) ?> de
@@ -70,12 +88,12 @@ endforeach
 	<table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
 		<thead>
 			<tr class="trr">
-				<th class="text-center theadColor" scope="row">Funcionario</th>
+				<th class="text-center" scope="row">Funcionario</th>
 
 				<?php
 				foreach ($buscandoMesAno as $row) :
 				?>
-					<th class="text-center numeroDiaDaSemana" scope="row"><?= $row['DIA'] ?></th>
+					<th style="border-bottom:1px solid black !important; border-right:1px solid black !important;" class="text-center numeroDiaDaSemana" scope="row"><?= $row['DIA'] ?></th>
 				<?php
 				endforeach
 				?>
@@ -84,12 +102,12 @@ endforeach
 		</thead>
 		<tbody style="font-size:10px">
 			<tr class="trr" id="quantDias">
-				<td></td>
+				<td style="border-bottom:1px solid black !important;"></td>
 
 				<?php
 				foreach ($buscandoMesAno as $row) :
 				?>
-					<td class="text-center diaDaSemana" value="" scope="row"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
+					<td style="border-bottom:1px solid black !important; border-right:1px solid black !important;" class="text-center diaDaSemana" value="" scope="row"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
 
 				<?php
 				endforeach
@@ -104,7 +122,7 @@ endforeach
 				}
 			?>
 				<tr class="trr">
-					<td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
+					<td style="border-bottom:1px solid black !important; border-right:1px solid black !important;"class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
 					<?php
 					$i = 1;
 					foreach ($buscandoMesAno as $row) :
@@ -149,7 +167,7 @@ endforeach
 							}
 						}
 						?>
-						<td class=" text-center " scope="row" id=""> <?= $recuperacaoDedados[0][$d] ?? 'T' ?> </td>
+						<td style="border-bottom:1px solid black !important; border-right:1px solid black !important; text-align: center; !important"  scope="row" id=""> <?= $recuperacaoDedados[0][$d] ?? 'T' ?> </td>
 					<?php
 						$i++;
 					endforeach
@@ -169,4 +187,7 @@ endforeach
 		?>
 
 	</table>
+<div id="page-footer">
+    <span class="page-number"></span>
+</div>
 </body>
