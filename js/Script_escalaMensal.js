@@ -53,7 +53,7 @@ $('#table1').DataTable({
     scrollCollapse: true,
     searching: true,
 
-    "paging": false,
+    "paging": true,
     "info": true,
     "ordering": false,
     "lengthMenu": [
@@ -242,8 +242,9 @@ rows.on('click', function () {
     rows.removeClass("selected");
     $(this).addClass("selected");
 });
+
 $(document).ready(function () {
-    $('.estilezaSelect').on('click', function () {
+    $('#table1').on('click','.estilezaSelect', function () {
 
         var opcaoSelecionadaAux = $(this).val();
         var $selects = $(this).closest('tr').find('.estilezaSelect');

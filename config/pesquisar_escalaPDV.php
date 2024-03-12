@@ -616,8 +616,8 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 
 
 
+    $('#table1').on('click', '.fa-trash',function () {
 
-    $('.fa-trash').on('click', function() {
         var dataPesquisa = $("#dataPesquisa").val();
         var dataAtual = $("#dataAtual").val();
 

@@ -35,7 +35,7 @@ $('#table1').DataTable({
     scrollY: 480,
     scrollX: false,
     searching: true,
-    dom: 'Bfrtip',
+    dom: 'frtip',
     "paging": true,
     "info": false,
     "ordering": false,
@@ -43,11 +43,6 @@ $('#table1').DataTable({
         [50],
         [50]
     ],
-
-    buttons: [
-
-    ],
-
     language: {
         "sEmptyTable": "Nenhum registro encontrado",
 
@@ -83,31 +78,9 @@ $('#table1').DataTable({
 
         },
     },
-    // columns: [
-    //     { data: '' },
-    //     { data: 'Cargo' },
-    // ]
-});
-$('#table1').on('blur', '.horaEntrada, .horarioSaidaFunc, .horarioIntervalo', function () {
-
-    var $tr = $(this).closest('tr');
-    // console.log($tr.html());
-    var nomeFuncionario = $tr.find('td.nomeFuncionario').text().trim();
-    var matriculaFunc = $tr.find('td.matriculaFunc').text().trim();
-    var horarioEntradaFunc = $tr.find('td.horaEntrada input').val().trim();
-    var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc input').val().trim();
-    var horarioIntervaloFunc = $tr.find('td.horarioIntervalo input').val().trim();
-    // console.log(nomeFuncionario);
-    // console.log(matriculaFunc);
-    // console.log(horarioEntradaFunc);
-    // console.log(horarioSaidaFunc);
-    // console.log(horarioIntervaloFunc);
-    // console.log(loja);
-    // console.log(usuInclusao);
-    //  console.log(diaDeAlteracaoDoHorario);
-
 
 });
+
 $('#table1').on('change', '.horaEntrada, .horarioSaidaFunc, .horarioIntervalo', function () {
     var $tr = $(this).closest('tr');
     console.log($tr.html());

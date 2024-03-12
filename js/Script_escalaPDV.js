@@ -613,7 +613,7 @@ $('#dataPesquisa').on('change', function () {
 
 });
 
-$('.fa-trash').on('click', function () {
+$('#table1').on('click', '.fa-trash',function () {
     var dataPesquisa = $("#dataPesquisa").val();
     var dataAtual = $("#dataAtual").val();
 

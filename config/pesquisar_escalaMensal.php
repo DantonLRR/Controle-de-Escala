@@ -196,6 +196,8 @@ endforeach;
 
     </table>
     <script type="module" defer>
+         var loja = $("#loja").val();
+         var usuarioLogado = $("#usuarioLogado").val();
         import {
             criandoHtmlmensagemCarregamento,
             Toasty
@@ -239,7 +241,7 @@ endforeach;
             $(this).addClass("selected");
         });
         $(document).ready(function() {
-            $('.estilezaSelect').on('click', function() {
+            $('#table1').on('click','.estilezaSelect', function () {
 
                 var opcaoSelecionadaAux = $(this).val();
                 var $selects = $(this).closest('tr').find('.estilezaSelect');
@@ -1288,7 +1290,7 @@ endforeach;
             scrollCollapse: true,
             searching: true,
 
-            "paging": false,
+            "paging": true,
             "info": true,
             "ordering": false,
             "lengthMenu": [
