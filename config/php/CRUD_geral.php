@@ -358,9 +358,9 @@ class Funcionarios
         WHERE a.loja = $lojaDaPessoaLogada
         AND a.$diaDeHojeComAspas IS NULL
         AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
-        AND a.horaentrada BETWEEN '07:00' AND '11:59'
+        AND a.horaentrada BETWEEN '05:00' AND '11:59'
         and a.departamento like '%$departamento%'
-        and a.cargo ='OPERADOR DE CAIXA'
+        AND a.cargo BETWEEN 'OPERADOR DE CAIXA' AND 'OPERADOR DE LOJA'
         and a.matricula not in
         (SELECT b.matricula
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b
@@ -377,7 +377,7 @@ class Funcionarios
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b
         WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
         AND b.loja = $lojaDaPessoaLogada 
-        AND b.horaentrada BETWEEN '07:00' AND '11:59'
+        AND b.horaentrada BETWEEN '05:00' AND '11:59'
         order by nome asc
         ";
         // echo $query;
@@ -405,7 +405,7 @@ class Funcionarios
         AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
         AND a.horaentrada BETWEEN '12:00' AND '14:00'
         and a.departamento like '%$departamento%'
-        and a.cargo ='OPERADOR DE CAIXA'
+        AND a.cargo BETWEEN 'OPERADOR DE CAIXA' AND 'OPERADOR DE LOJA'
         and a.matricula not in
         (SELECT b.matricula
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b
@@ -513,7 +513,7 @@ class Funcionarios
         AND a.messelecionado = TO_DATE('$mesSelecionado', 'YYYY-MM')
         and a.status = 'F'
         and a.departamento like '%$departamento%'
-        and a.cargo ='OPERADOR DE CAIXA'
+        AND a.cargo BETWEEN 'OPERADOR DE CAIXA' AND 'OPERADOR DE LOJA'
         and a.matricula not in
         (SELECT b.matricula
         FROM WEB_ESCALA_DIARIA_HR_INTERMED b

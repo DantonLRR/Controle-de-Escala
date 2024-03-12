@@ -1,5 +1,5 @@
 <?php 
-
+$diretorioDoPdf = $_POST['diretorioDoPdf'];
 require __DIR__."../../vendor/autoload.php";
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -10,7 +10,7 @@ $dompdf = new Dompdf($options);
 
 ob_start();
 
-$html = include __DIR__."/contrato.php";
+$html = include __DIR__."/$diretorioDoPdf";
 $dompdf->loadHtml(ob_get_clean());
 $dompdf->setpaper('A4', 'landscape');
 $dompdf->render();

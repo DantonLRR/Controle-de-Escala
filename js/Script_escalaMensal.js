@@ -160,7 +160,7 @@ $('#table1').DataTable({
                 var mesPesquisa = $("#dataPesquisa").val();
 
                 var mesAtual = $("#mesAtual").val();
-
+                var diretorioDoPdf = "contrato.php";
                 if (mesPesquisa == "") {
                     mesPesquisa = mesAtual
                 };
@@ -175,7 +175,9 @@ $('#table1').DataTable({
                     "&usuarioLogado=" +
                     usuarioLogado +
                     "&Departamento=" +
-                    Departamento,
+                    Departamento+
+                    "&diretorioDoPdf=" +
+                    diretorioDoPdf,
                     xhrFields: {
                         responseType: "blob",
                     },

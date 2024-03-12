@@ -13,7 +13,7 @@ $('#table1').DataTable({
 
     scrollCollapse: true,
     searching: true,
-    dom: 'Bfrtip',
+    dom: 'frtip',
     "paging": true,
     "info": false,
     "ordering": false,
@@ -74,6 +74,47 @@ var tabela2 = $('#table2').DataTable({
         [50],
         [50]
     ],
+    // buttons: [
+    //     {
+    //         text: '<i class="fa-solid fa-file-pdf"  style="color: #ffffff;"></i> PDF ',
+    //         className: 'btnverde ',
+    //         action: function () {
+    //             criandoHtmlmensagemCarregamento("exibir");
+    //             var dataPesquisa = $("#dataPesquisa").val();
+    //             var dataAtual = $("#dataAtual").val();
+            
+    //             if (dataPesquisa == "") {
+    //                 dataPesquisa = dataAtual
+    //             }
+    //             var diretorioDoPdf = "PDFrelatorio.php";
+    //             $.ajax({
+    //                 url: "config/gerarPdf.php",
+    //                 method: 'POST',
+    //                 data: 'dataPesquisa=' +
+    //                     dataPesquisa +
+    //                     "&loja=" +
+    //                     loja +
+    //                     "&diretorioDoPdf=" +
+    //                     diretorioDoPdf,
+    //                 xhrFields: {
+    //                     responseType: "blob",
+    //                 },
+    //                 success: function (response) {
+    //                     // Loading("ocultar");
+    //                     criandoHtmlmensagemCarregamento("ocultar");
+    //                     let blobUrl = URL.createObjectURL(response);
+    //                     window.open(blobUrl, "_blank");
+    //                 },
+    //                 error: function (xhr, status, error) {
+    //                     console.log(error);
+    //                     // Loading("ocultar");
+    //                 },
+    //             });
+
+    //         }
+
+    //     }
+    // ],
     language: {
         "sEmptyTable": "Nenhum registro encontrado",
 
@@ -109,13 +150,12 @@ var tabela2 = $('#table2').DataTable({
 
         },
     },
-
 });
 
 
 $('#tableHeader').DataTable({
     searching: false,
-    dom: 'Bfrtip',
+    dom: 'frtip',
     "paging": false,
     "info": false,
     "ordering": false,

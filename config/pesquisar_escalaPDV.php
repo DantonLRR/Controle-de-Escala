@@ -451,7 +451,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                             success: function(relatorio_atualizado2) {
 
                                 $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                                criandoHtmlmensagemCarregamento("ocultar");
+                             //   criandoHtmlmensagemCarregamento("ocultar");
 
                             }
                         });
@@ -598,7 +598,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                             success: function(relatorio_atualizado2) {
 
                                 $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                                criandoHtmlmensagemCarregamento("ocultar");
+                               // criandoHtmlmensagemCarregamento("ocultar");
 
                             }
                         });
@@ -649,7 +649,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                     success: function(relatorio_atualizado2) {
 
                         $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                        criandoHtmlmensagemCarregamento("ocultar");
+                      //  criandoHtmlmensagemCarregamento("ocultar");
                     }
                 });
 
