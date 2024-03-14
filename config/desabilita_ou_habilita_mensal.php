@@ -28,3 +28,4 @@ if ($retorno === "NÃO FINALIZADA.") {
     // print_r($updateDadosNaTabela2);
 
 }
+?>

@@ -192,7 +192,7 @@ if ($retorno === "NÃO FINALIZADA.") {
 
                                                         // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
                                                         if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
-                                                            // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
+                                                            // Se a inserção de 'F' foi feita no mês anterior, desabilitar todos os 'FA'
                                                             if ($isF) {
                                                                 $disabled = ' disabled  name="desabilitarEsteSelect"';
                                                             } else {

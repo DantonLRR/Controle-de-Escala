@@ -27,25 +27,25 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
     $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja, $dadosDeQuemEstaLogadoSetor);
 
 
-$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $loja,$dadosDeQuemEstaLogadoSetor);
-// echo $retorno;
-if ($retorno === "NÃO FINALIZADA.") {
-    $statusDaTabelaPosPesquisa = "NÃO FINALIZADA.";
-} else if ($retorno === "JÁ FINALIZADA.") {
-    $statusDaTabelaPosPesquisa = "JÁ FINALIZADA.";
-}
+    $verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $loja, $dadosDeQuemEstaLogadoSetor);
+    // echo $retorno;
+    if ($retorno === "NÃO FINALIZADA.") {
+        $statusDaTabelaPosPesquisa = "NÃO FINALIZADA.";
+    } else if ($retorno === "JÁ FINALIZADA.") {
+        $statusDaTabelaPosPesquisa = "JÁ FINALIZADA.";
+    }
 ?>
-<input class="" type="hidden" id="loja" value="<?= $loja ?>">
-<input class="" type="hidden" id="usuarioLogado12" value="<?= $usuarioLogado ?>">
+    <input class="" type="hidden" id="loja" value="<?= $loja ?>">
+    <input class="" type="hidden" id="usuarioLogado12" value="<?= $usuarioLogado ?>">
 
-<input class="dataSelecionadaNoFiltro" type="hidden" id="dataSelecionadaNoFiltro" value="<?= $dataSelecionadaNoFiltro ?>">
-<input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
+    <input class="dataSelecionadaNoFiltro" type="hidden" id="dataSelecionadaNoFiltro" value="<?= $dataSelecionadaNoFiltro ?>">
+    <input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
     <input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoNome ?>">
     <input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
     <input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
     <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
-    <thead style="background: linear-gradient(to right, #00a451, #052846 85%) !important; color:white;">
+        <thead style="background: linear-gradient(to right, #00a451, #052846 85%) !important; color:white;">
 
             <tr class="trr ">
                 <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
@@ -138,24 +138,21 @@ if ($retorno === "NÃO FINALIZADA.") {
                             // echo ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior);
 
                             $primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
-                            // echo "<br>" . $primeiroDiaNaoF;
                             $primeiroDiaEncontrado = false;
 
                             $isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
 
-
+                            // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
                             if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
-                                // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
+                                // Se a inserção de 'F' foi feita no mês anterior, desabilitar todos os 'FA'
                                 if ($isF) {
                                     $disabled = ' disabled  name="desabilitarEsteSelect"';
-                                    // echo $disabled;
                                 } else {
                                     $disabled = '';
                                 }
                             } else {
-                                // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
                                 if ($isF && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoF) {
-                                    $disabled = ' disabled name="desabilitarEsteSelect"';
+                                    $disabled = ' disabled  name="desabilitarEsteSelect"';
                                 } else {
                                     $disabled = '';
                                     if ($d === $primeiroDiaNaoF) {
@@ -164,15 +161,16 @@ if ($retorno === "NÃO FINALIZADA.") {
                                 }
                             }
                             // echo $disabled;
+                            $DadoDoDiaSalVoNoBancoDeDados = $recuperacaoDedados[0]["$d"] ?? '';
                             ?>
-                            <select class="estilezaSelect" id="" <?= $disabled ?>>
-                                <option value="<?= $recuperacaoDedados[0]["$d"] ?? '' ?>"><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
-                                <option value="FA">FA</option>
-                                <option value="FD">FD</option>
-                                <option value="FF">FF</option>
-                                <option value="F">F</option>
-                                <option value=""></option>
-
+                            <select <?= $disabled ?> class="estilezaSelect" name="" id="">
+                                <option value="<?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?>"> <?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?></option>
+                                <!-- Se o dado -->
+                                <option value="FA" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FA' ? "style='display: none'" : "" ?>>FA</option>
+                                <option value="FD" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FD' ? "style='display: none'" : "" ?>>FD</option>
+                                <option value="FF" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FF' ? "style='display: none'" : "" ?>>FF</option>
+                                <option value="F" <?= $DadoDoDiaSalVoNoBancoDeDados == 'F' ? "style='display: none'" : "" ?>>F</option>
+                                <option value="T" <?= $DadoDoDiaSalVoNoBancoDeDados == '' ? "style='display: none'" : "" ?>></option>
                             </select>
                         </td>
                     <?php
@@ -196,43 +194,41 @@ endforeach;
 
     </table>
     <script type="module" defer>
-         var loja = $("#loja").val();
-         var usuarioLogado = $("#usuarioLogado").val();
+        var loja = $("#loja").val();
+        var usuarioLogado = $("#usuarioLogado").val();
         import {
             criandoHtmlmensagemCarregamento,
             Toasty
         } from "../../../../base/jsGeral.js";
         $(document).ready(function() {
+            var dataPesquisa = $(".dataSelecionadaNoFiltro").val();
+            var mesAtual = $("#mesAtual").val();
+            if (dataPesquisa < mesAtual) {
+                $('.estilezaSelect').css('background-color', 'grey');
+                $('#table1').find('select').prop('disabled', true);
+                $('.btnVermelho').addClass('ocultarBotao');
+                $('.btnverdeEXCEL').addClass('ocultarBotao');
+            } else {
+                $('.estilezaSelect').prop('disabled', false);
+                $('.estilezaSelect').css('background-color', '');
+            }
             var statusDaTabelaPosPesquisa = $("#statusDaTabelaPosPesquisa").val();
 
             if (statusDaTabelaPosPesquisa === "JÁ FINALIZADA.") {
                 criandoHtmlmensagemCarregamento("exibir");
-
-
-                $('#table1').find('input, select, textarea, button').prop('disabled', true);
+                $('#table1').find('select').prop('disabled', true);
                 $('.btnVermelho').addClass('ocultarBotao');
+                $('.btnverdeEXCEL').removeClass('ocultarBotao');
+                criandoHtmlmensagemCarregamento("ocultar");
             } else {
-                $('#table1').find('input, select, textarea, button').prop('disabled', false);
+                criandoHtmlmensagemCarregamento("exibir")
+                $('#table1').find('select').prop('disabled', false);
                 $('select[name="desabilitarEsteSelect"]').prop('disabled', true);
                 $('.btnVermelho').removeClass('ocultarBotao');
-                var dataPesquisa = $(".dataSelecionadaNoFiltro").val();
-                var mesAtual = $("#mesAtual").val();
-                if (dataPesquisa < mesAtual) {
-                    $('.estilezaSelect').css('background-color', 'grey');
-                    $('#table1').find('input, select, textarea, button').prop('disabled', true);
-                    $('.btnVermelho').addClass('ocultarBotao');
-                } else {
-                    $('.estilezaSelect').prop('disabled', false);
-                    $('.estilezaSelect').css('background-color', '');
-                }
+                $('.btnverdeEXCEL').addClass('ocultarBotao');
+                criandoHtmlmensagemCarregamento("ocultar");
             }
-            criandoHtmlmensagemCarregamento("ocultar");
-
         });
-
-
-
-
 
         var rows = $("#table1 tr");
 
@@ -241,7 +237,7 @@ endforeach;
             $(this).addClass("selected");
         });
         $(document).ready(function() {
-            $('#table1').on('click','.estilezaSelect', function () {
+            $('#table1').on('click', '.estilezaSelect', function() {
 
                 var opcaoSelecionadaAux = $(this).val();
                 var $selects = $(this).closest('tr').find('.estilezaSelect');
@@ -264,7 +260,7 @@ endforeach;
                 });
 
                 var THDoSelectAtual = $('#table1 thead tr.trr th').eq(colIndex).text()
-                console.log(THDoSelectAtual)
+                // console.log(THDoSelectAtual)
 
 
                 // Calcular a quantidade de selects em branco entre o último e o atual
@@ -272,7 +268,7 @@ endforeach;
 
                 var thDoUltimoSelectPreenchido = THDoSelectAtual - selectsEmBrancoEntre - 1
 
-                console.log("th Do Ultimo Select Preenchido:  " + thDoUltimoSelectPreenchido)
+                // console.log("th Do Ultimo Select Preenchido:  " + thDoUltimoSelectPreenchido)
                 // console.log('Selects em branco entre o último selecionado e o atual: ' + selectsEmBrancoEntre);
 
                 var selectsEmBrancoEntreOProximo = indexProximoPreenchido - indexAtual - 1;
@@ -282,7 +278,7 @@ endforeach;
                 if (isNaN(thDoProximoSelectPreenchido)) {
                     thDoProximoSelectPreenchido = 0;
                 }
-                console.log("th Do Proximo Select Preenchido: " + thDoProximoSelectPreenchido);
+                // console.log("th Do Proximo Select Preenchido: " + thDoProximoSelectPreenchido);
 
 
 
@@ -294,12 +290,15 @@ endforeach;
 
                     var periodoParaEdicaoDeEscala = parseInt(thDoProximoSelectPreenchido) - thDoUltimoSelectPreenchido
                     var opcaoSelecionada = $(this).val();
+                    if (opcaoSelecionada == 'T') {
+                        opcaoSelecionada = ''
+                    }
                     // alert(valorINICIAL)
                     // alert(opcaoSelecionada)
                     if (valorINICIAL != 'F' && opcaoSelecionada == 'F' || valorINICIAL == '' && opcaoSelecionada == 'F') {
-                        console.log('Valor inicial : ' + valorINICIAL);
-                        console.log('opcao Escolhida :' + opcaoSelecionada)
-                        console.log("caiu na primeira");
+                        // console.log('Valor inicial : ' + valorINICIAL);
+                        // console.log('opcao Escolhida :' + opcaoSelecionada)
+                        // console.log("caiu na primeira");
                         if (PeriodoMaximoDeDiasTrabalhados) {
                             $(this).val(' ');
                             Toasty("Atenção", "Funcionario escalado sem folga mais de SEIS dias", "#E20914");
@@ -315,7 +314,6 @@ endforeach;
                                 mesPesquisa = mesAtual
                             }
 
-                            var opcaoSelecionada = 'F';
                             var $tr = $(this).closest('tr');
                             var funcionario = $tr.find('td.funcionario').text();
                             var matriculaFunc = $tr.find('td.matriculaFunc').text();
@@ -347,7 +345,7 @@ endforeach;
                                 var aux = i < 10 ? "0" + i : i.toString();
                                 numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes.push('"' + aux + '"');
 
-                                console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes);
+                                // console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes);
 
                                 $selects.eq(i).prop('disabled', true).val('F');
                             }
@@ -384,7 +382,7 @@ endforeach;
                                     departamentoFunc,
                                 // dataType: 'json',
                                 success: function(retorno) {
-                                    console.log(retorno)
+                                    // console.log(retorno)
 
                                 }
                             });
@@ -418,7 +416,7 @@ endforeach;
                                 var numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes = [];
                                 for (var i = 1; i <= diasParaProximoMes; i++) {
                                     var aux = i < 10 ? "0" + i : i.toString();
-                                    console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes);
+                                    // console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes);
                                     numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes.push('"' + aux + '"');
                                 }
                                 var inclusaoDoMesAnterior = "SIM";
@@ -465,8 +463,8 @@ endforeach;
                     } else if (valorINICIAL != 'F' && opcaoSelecionada != 'F' || valorINICIAL == '' && opcaoSelecionada != 'F') {
                         // console.log('Valor INICIAL: ' + valorINICIAL);
                         // console.log('opcao Escolhida :' + opcaoSelecionada)
-                        console.log("caiu na segunda");
-                        var opcaoSelecionada = $(this).val();
+                        // console.log("caiu na segunda");
+                        //var opcaoSelecionada = $(this).val();
                         var $tr = $(this).closest('tr');
                         var funcionario = $tr.find('td.funcionario').text();
                         var matriculaFunc = $tr.find('td.matriculaFunc').text();
@@ -534,9 +532,9 @@ endforeach;
 
                     } else if (valorINICIAL == 'F' && opcaoSelecionada != 'F' || valorINICIAL == 'F' && opcaoSelecionada != '') {
 
-                        console.log('Valor INICIAL: ' + valorINICIAL);
-                        console.log('opcao Escolhida :' + opcaoSelecionada)
-                        console.log("caiu na terceira");
+                        // console.log('Valor INICIAL: ' + valorINICIAL);
+                        // console.log('opcao Escolhida :' + opcaoSelecionada)
+                        // console.log("caiu na terceira");
                         var mesPesquisa = $("#dataPesquisa").val();
                         //console.log(mesPesquisa)
 
@@ -584,7 +582,7 @@ endforeach;
 
                             numeroDiaDaSemanaArrayLimpaFA.push('"' + aux + '"');
 
-                            console.log("dia inserido : " + numeroDiaDaSemanaArrayLimpaFA);
+                            // console.log("dia inserido : " + numeroDiaDaSemanaArrayLimpaFA);
 
                             $selects.eq(i).prop('disabled', false).val(' ');
                         }
@@ -654,14 +652,14 @@ endforeach;
                             // Formata o novo mês para o formato 'AAAA-MM'
                             mesPesquisa = ano + '-' + (mes < 10 ? '0' + mes : mes);
 
-                            console.log(mesPesquisa); // Aqui você terá o valor do mês atualizado, seja o mesmo ou o próximo mês
+                            // console.log(mesPesquisa); // Aqui você terá o valor do mês atualizado, seja o mesmo ou o próximo mês
 
                             // Loop para contar até a quantidade de dias desejada
                             for (var i = 1; i <= diasParaProximoMes; i++) {
                                 var aux = i < 10 ? "0" + i : i.toString();
                                 numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes.push('"' + aux + '"');
 
-                                console.log(numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes);
+                                // console.log(numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes);
 
                             }
                             var inclusaoDoMesAnterior = " ";
@@ -776,474 +774,6 @@ endforeach;
                 });
             });
         });
-
-
-        //função anterior sem a verificação dos dias 
-        // $(document).ready(function() {
-        //     $('.estilezaSelect').on('click', function() {
-        //         var valorINICIAL = $(this).val();
-        //         $(this).off('change').on('change', function() {
-        //             var opcaoSelecionada = $(this).val();
-        //             // alert(valorINICIAL)
-        //             // alert(opcaoSelecionada)
-        //             if (valorINICIAL != 'F' && opcaoSelecionada == 'F' || valorINICIAL == '' && opcaoSelecionada == 'F') {
-        //                 console.log('Valor inicial : ' + valorINICIAL);
-        //                 console.log('opcao Escolhida :' + opcaoSelecionada)
-        //                 console.log("caiu na primeira");
-        //                 var colIndex = $(this).closest('td').index();
-        //                 var mesPesquisa = $("#dataPesquisa").val();
-        //                 //console.log(mesPesquisa)
-
-        //                 var mesAtual = $("#mesAtual").val();
-
-        //                 if (mesPesquisa == "") {
-        //                     mesPesquisa = mesAtual
-        //                 }
-
-        //                 var opcaoSelecionada = 'F';
-        //                 var $tr = $(this).closest('tr');
-        //                 var funcionario = $tr.find('td.funcionario').text();
-        //                 var matriculaFunc = $tr.find('td.matriculaFunc').text();
-        //                 var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
-        //                 var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
-        //                 var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
-        //                 var cargoFunc = $tr.find('td.cargo').text();
-
-        //                 var colIndex = $(this).closest('td').index();
-        //                 var mesPesquisa = $("#dataPesquisa").val();
-
-
-        //                 var $selects = $(this).closest('tr').find('.estilezaSelect'); // Todos os selects da linha
-
-        //                 var indexAtual = $('#table1 thead tr.trr th').eq(colIndex).text();
-
-        //                 // alert("dia selecionado :" + indexAtual)
-
-        //                 var indexUltimoDia = $selects.length;
-        //                 //console.log(indexAtual);
-        //                 //console.log(indexUltimoDia);
-
-
-
-        //                 var indexAtualNumero = parseInt(indexAtual, 10);
-        //                 var numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes = [];
-        //                 for (var i = indexAtualNumero; i <= indexUltimoDia; i++) {
-        //                     var aux = i < 10 ? "0" + i : i.toString();
-        //                     numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes.push('"' + aux + '"');
-
-        //                     console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes);
-
-        //                     $selects.eq(i).prop('disabled', true).val('F');
-        //                 }
-
-
-        //                 $.ajax({
-        //                     url: "config/insertEUpdate_EscalaMensal.php",
-        //                     method: 'get',
-        //                     data: 'numeroDiaDaSemana=' +
-        //                         numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes +
-        //                         "&opcaoSelecionada=" +
-        //                         opcaoSelecionada +
-        //                         "&funcionario=" +
-        //                         funcionario +
-        //                         "&mesAtual=" +
-        //                         mesAtual +
-        //                         "&mesPesquisa=" +
-        //                         mesPesquisa +
-        //                         "&usuarioLogado=" +
-        //                         usuarioLogado +
-        //                         "&matriculaFunc=" +
-        //                         matriculaFunc +
-        //                         "&loja=" +
-        //                         loja +
-        //                         "&horarioEntradaFunc=" +
-        //                         horarioEntradaFunc +
-        //                         "&horarioSaidaFunc=" +
-        //                         horarioSaidaFunc +
-        //                         "&horarioIntervaloFunc=" +
-        //                         horarioIntervaloFunc +
-        //                         "&cargoFunc=" +
-        //                         cargoFunc,
-
-        //                     // dataType: 'json',
-        //                     success: function(retorno) {
-        //                         console.log(retorno)
-
-        //                     }
-        //                 });
-
-
-
-        //                 // Calcular quantos dias faltam até o final do mês
-        //                 var diasRestantes = indexUltimoDia - indexAtual;
-        //                 var diasParaProximoMes = Math.min(29 - diasRestantes, diasRestantes);
-        //                 //console.log("faltaram  para o proximo mes: " + diasParaProximoMes);
-
-
-        //                 // Obtém o ano e o mês a partir da string mesPesquisa
-        //                 var ano = parseInt(mesPesquisa.split('-')[0]);
-        //                 var mes = parseInt(mesPesquisa.split('-')[1]);
-
-
-
-        //                 // Converte 'mesPesquisa' para um objeto Date
-        //                 var data = new Date(ano, mes - 1); // O mês em JavaScript começa em zero (janeiro é 0)
-
-        //                 // Verifica se a quantidade de dias é maior que 1 para avançar para o próximo mês
-        //                 if (diasParaProximoMes > 1) {
-        //                     // Adiciona a quantidade de dias à data atual
-        //                     data.setMonth(data.getMonth() + 1);
-        //                     ano = data.getFullYear();
-        //                     mes = data.getMonth() + 1;
-
-        //                     // Formata o novo mês para o formato 'AAAA-MM'
-        //                     mesPesquisa = ano + '-' + (mes < 10 ? '0' + mes : mes);
-        //                     var numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes = [];
-        //                     for (var i = 1; i <= diasParaProximoMes; i++) {
-        //                         var aux = i < 10 ? "0" + i : i.toString();
-        //                         console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes);
-        //                         numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes.push('"' + aux + '"');
-        //                     }
-        //                     var inclusaoDoMesAnterior = "SIM";
-        //                     $.ajax({
-        //                         url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
-        //                         method: 'get',
-        //                         data: 'numeroDiaDaSemana=' +
-        //                             numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes +
-        //                             "&opcaoSelecionada=" +
-        //                             opcaoSelecionada +
-        //                             "&funcionario=" +
-        //                             funcionario +
-        //                             "&mesAtual=" +
-        //                             mesAtual +
-        //                             "&mesPesquisa=" +
-        //                             mesPesquisa +
-        //                             "&usuarioLogado=" +
-        //                             usuarioLogado +
-        //                             "&matriculaFunc=" +
-        //                             matriculaFunc +
-        //                             "&loja=" +
-        //                             loja +
-        //                             "&horarioEntradaFunc=" +
-        //                             horarioEntradaFunc +
-        //                             "&horarioSaidaFunc=" +
-        //                             horarioSaidaFunc +
-        //                             "&horarioIntervaloFunc=" +
-        //                             horarioIntervaloFunc +
-        //                             "&cargoFunc=" +
-        //                             cargoFunc +
-        //                             "&inclusaoDoMesAnterior=" +
-        //                             inclusaoDoMesAnterior,
-
-        //                         // dataType: 'json',
-        //                         success: function(retorno) {
-        //                             // console.log(retorno)
-
-        //                         }
-        //                     });
-
-        //                 }
-        //             } else if (valorINICIAL != 'F' && opcaoSelecionada != 'F' || valorINICIAL == '' && opcaoSelecionada != 'F') {
-        //                 console.log('Valor INICIAL: ' + valorINICIAL);
-        //                 console.log('opcao Escolhida :' + opcaoSelecionada)
-        //                 console.log("caiu na segunda");
-        //                 var opcaoSelecionada = $(this).val();
-        //                 var $tr = $(this).closest('tr');
-        //                 var funcionario = $tr.find('td.funcionario').text();
-        //                 var matriculaFunc = $tr.find('td.matriculaFunc').text();
-        //                 var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
-        //                 var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
-        //                 var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
-        //                 var cargoFunc = $tr.find('td.cargo').text();
-
-        //                 var colIndex = $(this).closest('td').index();
-        //                 var mesPesquisa = $("#dataPesquisa").val();
-        //                 //console.log(mesPesquisa)
-
-        //                 var mesAtual = $("#mesAtual").val();
-
-        //                 if (mesPesquisa == "") {
-        //                     mesPesquisa = mesAtual
-        //                 }
-        //                 var numeroDiaDaSemana = [];
-
-        //                 numeroDiaDaSemana.push('"' + $('#table1 thead tr.trr th').eq(colIndex).text() + '"');
-
-        //                 $.ajax({
-        //                     url: "config/insertEUpdate_EscalaMensal.php",
-        //                     method: 'get',
-        //                     data: 'numeroDiaDaSemana=' +
-        //                         numeroDiaDaSemana +
-        //                         "&opcaoSelecionada=" +
-        //                         opcaoSelecionada +
-        //                         "&funcionario=" +
-        //                         funcionario +
-        //                         "&mesAtual=" +
-        //                         mesAtual +
-        //                         "&mesPesquisa=" +
-        //                         mesPesquisa +
-        //                         "&usuarioLogado=" +
-        //                         usuarioLogado +
-        //                         "&matriculaFunc=" +
-        //                         matriculaFunc +
-        //                         "&loja=" +
-        //                         loja +
-        //                         "&horarioEntradaFunc=" +
-        //                         horarioEntradaFunc +
-        //                         "&horarioSaidaFunc=" +
-        //                         horarioSaidaFunc +
-        //                         "&horarioIntervaloFunc=" +
-        //                         horarioIntervaloFunc +
-        //                         "&cargoFunc=" +
-        //                         cargoFunc,
-
-        //                     // dataType: 'json',
-        //                     success: function(retorno) {
-        //                         // console.log(retorno)
-
-
-        //                     }
-        //                 });
-
-        //             } else if (valorINICIAL == 'F' && opcaoSelecionada != 'F' || valorINICIAL == 'F' && opcaoSelecionada != '') {
-
-        //                 console.log('Valor INICIAL: ' + valorINICIAL);
-        //                 console.log('opcao Escolhida :' + opcaoSelecionada)
-        //                 console.log("caiu na terceira");
-        //                 var mesPesquisa = $("#dataPesquisa").val();
-        //                 //console.log(mesPesquisa)
-
-        //                 var mesAtual = $("#mesAtual").val();
-
-        //                 if (mesPesquisa == "") {
-        //                     mesPesquisa = mesAtual
-        //                 }
-
-        //                 var opcaoSelecionada = '';
-        //                 var $tr = $(this).closest('tr');
-        //                 var funcionario = $tr.find('td.funcionario').text();
-        //                 var matriculaFunc = $tr.find('td.matriculaFunc').text();
-        //                 var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
-        //                 var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
-        //                 var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
-        //                 var cargoFunc = $tr.find('td.cargo').text();
-
-
-
-
-        //                 var colIndex = $(this).closest('td').index();
-        //                 var mesPesquisa = $("#dataPesquisa").val();
-
-
-        //                 var $selects = $(this).closest('tr').find('.estilezaSelect'); // Todos os selects da linha
-
-        //                 var indexAtual = $('#table1 thead tr.trr th').eq(colIndex).text();
-
-        //                 // alert("dia selecionado :" + indexAtual);
-
-        //                 var indexUltimoDia = $selects.length;
-        //                 //console.log(indexAtual);
-        //                 //console.log(indexUltimoDia);
-
-
-
-        //                 var indexAtualNumero = parseInt(indexAtual, 10);
-        //                 alert("Dia Selecionado " + indexAtualNumero);
-        //                 var numeroDiaDaSemanaArrayLimpaF = [];
-
-        //                 for (var i = indexAtualNumero; i <= indexUltimoDia; i++) {
-        //                     var aux = i < 10 ? "0" + i : i.toString();
-
-        //                     numeroDiaDaSemanaArrayLimpaF.push('"' + aux + '"');
-
-        //                     console.log("dia inserido : " + numeroDiaDaSemanaArrayLimpaF);
-
-        //                     $selects.eq(i).prop('disabled', false).val(' ');
-        //                 }
-
-
-        //                 $.ajax({
-        //                     url: "config/insertEUpdate_EscalaMensal.php",
-        //                     method: 'get',
-        //                     data: 'numeroDiaDaSemana=' +
-        //                         numeroDiaDaSemanaArrayLimpaF +
-        //                         "&opcaoSelecionada=" +
-        //                         opcaoSelecionada +
-        //                         "&funcionario=" +
-        //                         funcionario +
-        //                         "&mesAtual=" +
-        //                         mesAtual +
-        //                         "&mesPesquisa=" +
-        //                         mesPesquisa +
-        //                         "&usuarioLogado=" +
-        //                         usuarioLogado +
-        //                         "&matriculaFunc=" +
-        //                         matriculaFunc +
-        //                         "&loja=" +
-        //                         loja +
-        //                         "&horarioEntradaFunc=" +
-        //                         horarioEntradaFunc +
-        //                         "&horarioSaidaFunc=" +
-        //                         horarioSaidaFunc +
-        //                         "&horarioIntervaloFunc=" +
-        //                         horarioIntervaloFunc +
-        //                         "&cargoFunc=" +
-        //                         cargoFunc,
-
-        //                     // dataType: 'json',
-        //                     success: function(retorno) {
-        //                         // console.log(retorno)
-
-        //                     }
-        //                 });
-
-
-
-        //                 // Calcular quantos dias faltam até o final do mês
-        //                 var diasRestantes = indexUltimoDia - indexAtual;
-        //                 var diasParaProximoMes = Math.min(29 - diasRestantes, diasRestantes);
-        //                 //console.log("faltaram  para o proximo mes: " + diasParaProximoMes);
-
-
-        //                 // Obtém o ano e o mês a partir da string mesPesquisa
-        //                 var ano = parseInt(mesPesquisa.split('-')[0]);
-        //                 var mes = parseInt(mesPesquisa.split('-')[1]);
-
-
-
-        //                 // Converte 'mesPesquisa' para um objeto Date
-        //                 var data = new Date(ano, mes - 1); // O mês em JavaScript começa em zero (janeiro é 0)
-        //                 var numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes = [];
-        //                 // Verifica se a quantidade de dias é maior que 1 para avançar para o próximo mês
-        //                 if (diasParaProximoMes > 1) {
-        //                     // Adiciona a quantidade de dias à data atual
-        //                     data.setMonth(data.getMonth() + 1);
-        //                     ano = data.getFullYear();
-        //                     mes = data.getMonth() + 1;
-
-        //                     // Formata o novo mês para o formato 'AAAA-MM'
-        //                     mesPesquisa = ano + '-' + (mes < 10 ? '0' + mes : mes);
-
-        //                     console.log(mesPesquisa); // Aqui você terá o valor do mês atualizado, seja o mesmo ou o próximo mês
-
-        //                     // Loop para contar até a quantidade de dias desejada
-        //                     for (var i = 1; i <= diasParaProximoMes; i++) {
-        //                         var aux = i < 10 ? "0" + i : i.toString();
-        //                         numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes.push('"' + aux + '"');
-
-        //                         console.log(numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes);
-
-        //                     }
-        //                     var inclusaoDoMesAnterior = " ";
-        //                     $.ajax({
-        //                         url: "config/insertEUpdate_EscalaMensal_proximo_mes.php",
-        //                         method: 'get',
-        //                         data: 'numeroDiaDaSemana=' +
-        //                             numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes +
-        //                             "&opcaoSelecionada=" +
-        //                             opcaoSelecionada +
-        //                             "&funcionario=" +
-        //                             funcionario +
-        //                             "&mesAtual=" +
-        //                             mesAtual +
-        //                             "&mesPesquisa=" +
-        //                             mesPesquisa +
-        //                             "&usuarioLogado=" +
-        //                             usuarioLogado +
-        //                             "&matriculaFunc=" +
-        //                             matriculaFunc +
-        //                             "&loja=" +
-        //                             loja +
-        //                             "&horarioEntradaFunc=" +
-        //                             horarioEntradaFunc +
-        //                             "&horarioSaidaFunc=" +
-        //                             horarioSaidaFunc +
-        //                             "&horarioIntervaloFunc=" +
-        //                             horarioIntervaloFunc +
-        //                             "&cargoFunc=" +
-        //                             cargoFunc + "&inclusaoDoMesAnterior=" + inclusaoDoMesAnterior,
-
-        //                         // dataType: 'json',
-        //                         success: function(retorno) {
-        //                             //console.log(retorno)
-
-        //                         }
-        //                     });
-        //                 }
-
-
-
-
-        //                 var opcaoSelecionada = $(this).val();
-        //                 var $tr = $(this).closest('tr');
-        //                 var funcionario = $tr.find('td.funcionario').text();
-        //                 var matriculaFunc = $tr.find('td.matriculaFunc').text();
-        //                 var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
-        //                 var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
-        //                 var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
-        //                 var cargoFunc = $tr.find('td.cargo').text();
-
-        //                 var colIndex = $(this).closest('td').index();
-        //                 var mesPesquisa = $("#dataPesquisa").val();
-        //                 //console.log(mesPesquisa)
-
-        //                 var mesAtual = $("#mesAtual").val();
-
-        //                 if (mesPesquisa == "") {
-        //                     mesPesquisa = mesAtual
-        //                 }
-        //                 var numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOF = [];
-
-        //                 numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOF.push('"' + $('#table1 thead tr.trr th').eq(colIndex).text() + '"');
-
-        //                 $.ajax({
-        //                     url: "config/insertEUpdate_EscalaMensal.php",
-        //                     method: 'get',
-        //                     data: 'numeroDiaDaSemana=' +
-        //                         numeroDiaDaSemanaArrayIncluiAlteracaoFeitaParaLimparOF +
-        //                         "&opcaoSelecionada=" +
-        //                         opcaoSelecionada +
-        //                         "&funcionario=" +
-        //                         funcionario +
-        //                         "&mesAtual=" +
-        //                         mesAtual +
-        //                         "&mesPesquisa=" +
-        //                         mesPesquisa +
-        //                         "&usuarioLogado=" +
-        //                         usuarioLogado +
-        //                         "&matriculaFunc=" +
-        //                         matriculaFunc +
-        //                         "&loja=" +
-        //                         loja +
-        //                         "&horarioEntradaFunc=" +
-        //                         horarioEntradaFunc +
-        //                         "&horarioSaidaFunc=" +
-        //                         horarioSaidaFunc +
-        //                         "&horarioIntervaloFunc=" +
-        //                         horarioIntervaloFunc +
-        //                         "&cargoFunc=" +
-        //                         cargoFunc,
-
-        //                     // dataType: 'json',
-        //                     success: function(retorno) {
-        //                         // console.log(retorno)
-
-
-        //                     }
-        //                 });
-
-
-
-
-
-        //             }
-        //         });
-        //     });
-        // });
-
-
-
-
 
 
         $('#table1').DataTable({

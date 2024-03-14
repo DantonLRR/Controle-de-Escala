@@ -95,7 +95,21 @@ $('#table1').DataTable({
                 };
                 var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
 
+                //  Array para armazenar as matrículas
+                // var matriculas = [];
 
+                //  Itera sobre cada linha da tabela exceto a primeira (cabeçalho)
+                // $('#table1 tbody tr').each(function () {
+                //      Recupera a matrícula da célula oculta
+                //     var matricula = $(this).find('.matriculaFunc').text().trim();
+                //      Adiciona a matrícula ao array se não estiver vazia
+                //     if (matricula !== "") {
+                //         matriculas.push(matricula);
+                //     }
+                // });
+
+                //  Agora, matriculas[] contém todas as matrículas da tabela
+                //  console.log(matriculas);
                 $.ajax({
                     url: "config/desabilita_ou_habilita_mensal.php",
                     method: 'POST',
@@ -169,15 +183,15 @@ $('#table1').DataTable({
                     url: "config/gerarPdf.php",
                     method: "POST",
                     data: 'mesPesquisa=' +
-                    mesPesquisa +
-                    "&loja=" +
-                    loja +
-                    "&usuarioLogado=" +
-                    usuarioLogado +
-                    "&Departamento=" +
-                    Departamento+
-                    "&diretorioDoPdf=" +
-                    diretorioDoPdf,
+                        mesPesquisa +
+                        "&loja=" +
+                        loja +
+                        "&usuarioLogado=" +
+                        usuarioLogado +
+                        "&Departamento=" +
+                        Departamento +
+                        "&diretorioDoPdf=" +
+                        diretorioDoPdf,
                     xhrFields: {
                         responseType: "blob",
                     },
@@ -188,7 +202,7 @@ $('#table1').DataTable({
                         window.open(blobUrl, "_blank");
                     },
                     error: function (xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                         // Loading("ocultar");
                     },
                 });
@@ -244,7 +258,7 @@ rows.on('click', function () {
 });
 
 $(document).ready(function () {
-    $('#table1').on('click','.estilezaSelect', function () {
+    $('#table1').on('click', '.estilezaSelect', function () {
 
         var opcaoSelecionadaAux = $(this).val();
         var $selects = $(this).closest('tr').find('.estilezaSelect');
@@ -267,7 +281,7 @@ $(document).ready(function () {
         });
 
         var THDoSelectAtual = $('#table1 thead tr.trr th').eq(colIndex).text()
-        console.log(THDoSelectAtual)
+        // console.log(THDoSelectAtual)
 
 
         // Calcular a quantidade de selects em branco entre o último e o atual
@@ -275,7 +289,7 @@ $(document).ready(function () {
 
         var thDoUltimoSelectPreenchido = THDoSelectAtual - selectsEmBrancoEntre - 1
 
-        console.log("th Do Ultimo Select Preenchido:  " + thDoUltimoSelectPreenchido)
+        // console.log("th Do Ultimo Select Preenchido:  " + thDoUltimoSelectPreenchido)
         // console.log('Selects em branco entre o último selecionado e o atual: ' + selectsEmBrancoEntre);
 
         var selectsEmBrancoEntreOProximo = indexProximoPreenchido - indexAtual - 1;
@@ -285,7 +299,7 @@ $(document).ready(function () {
         if (isNaN(thDoProximoSelectPreenchido)) {
             thDoProximoSelectPreenchido = 0;
         }
-        console.log("th Do Proximo Select Preenchido: " + thDoProximoSelectPreenchido);
+        // console.log("th Do Proximo Select Preenchido: " + thDoProximoSelectPreenchido);
 
 
 
@@ -297,12 +311,15 @@ $(document).ready(function () {
 
             var periodoParaEdicaoDeEscala = parseInt(thDoProximoSelectPreenchido) - thDoUltimoSelectPreenchido
             var opcaoSelecionada = $(this).val();
+            if(opcaoSelecionada =='T'){
+                opcaoSelecionada=''
+            }
             // alert(valorINICIAL)
             // alert(opcaoSelecionada)
             if (valorINICIAL != 'F' && opcaoSelecionada == 'F' || valorINICIAL == '' && opcaoSelecionada == 'F') {
-                console.log('Valor inicial : ' + valorINICIAL);
-                console.log('opcao Escolhida :' + opcaoSelecionada)
-                console.log("caiu na primeira");
+                // console.log('Valor inicial : ' + valorINICIAL);
+                // console.log('opcao Escolhida :' + opcaoSelecionada)
+                // console.log("caiu na primeira");
                 if (PeriodoMaximoDeDiasTrabalhados) {
                     $(this).val(' ');
                     Toasty("Atenção", "Funcionario escalado sem folga mais de SEIS dias", "#E20914");
@@ -350,7 +367,7 @@ $(document).ready(function () {
                         var aux = i < 10 ? "0" + i : i.toString();
                         numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes.push('"' + aux + '"');
 
-                        console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes);
+                        // console.log("dia inserido : " + numeroDiaDaSemanaArrayInsereFTrintaDiasSeguintes);
 
                         $selects.eq(i).prop('disabled', true).val('F');
                     }
@@ -387,7 +404,7 @@ $(document).ready(function () {
                             departamentoFunc,
                         // dataType: 'json',
                         success: function (retorno) {
-                            console.log(retorno)
+                            // console.log(retorno)
 
                         }
                     });
@@ -421,7 +438,7 @@ $(document).ready(function () {
                         var numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes = [];
                         for (var i = 1; i <= diasParaProximoMes; i++) {
                             var aux = i < 10 ? "0" + i : i.toString();
-                            console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes);
+                            // console.log("dia faltante :" + numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes);
                             numeroDiaDaSemanaArrayInsereFNosDiasFaltantesDoProximoMes.push('"' + aux + '"');
                         }
                         var inclusaoDoMesAnterior = "SIM";
@@ -469,8 +486,8 @@ $(document).ready(function () {
             else if (valorINICIAL != 'F' && opcaoSelecionada != 'F' || valorINICIAL == '' && opcaoSelecionada != 'F') {
                 // console.log('Valor INICIAL: ' + valorINICIAL);
                 // console.log('opcao Escolhida :' + opcaoSelecionada)
-                console.log("caiu na segunda");
-                var opcaoSelecionada = $(this).val();
+                // console.log("caiu na segunda");
+                // var opcaoSelecionada = $(this).val();
                 var $tr = $(this).closest('tr');
                 var funcionario = $tr.find('td.funcionario').text();
                 var matriculaFunc = $tr.find('td.matriculaFunc').text();
@@ -540,9 +557,9 @@ $(document).ready(function () {
             }
             else if (valorINICIAL == 'F' && opcaoSelecionada != 'F' || valorINICIAL == 'F' && opcaoSelecionada != '') {
 
-                console.log('Valor INICIAL: ' + valorINICIAL);
-                console.log('opcao Escolhida :' + opcaoSelecionada)
-                console.log("caiu na terceira");
+                // console.log('Valor INICIAL: ' + valorINICIAL);
+                // console.log('opcao Escolhida :' + opcaoSelecionada)
+                // console.log("caiu na terceira");
                 var mesPesquisa = $("#dataPesquisa").val();
                 //console.log(mesPesquisa)
 
@@ -590,7 +607,7 @@ $(document).ready(function () {
 
                     numeroDiaDaSemanaArrayLimpaFA.push('"' + aux + '"');
 
-                    console.log("dia inserido : " + numeroDiaDaSemanaArrayLimpaFA);
+                    // console.log("dia inserido : " + numeroDiaDaSemanaArrayLimpaFA);
 
                     $selects.eq(i).prop('disabled', false).val(' ');
                 }
@@ -660,14 +677,14 @@ $(document).ready(function () {
                     // Formata o novo mês para o formato 'AAAA-MM'
                     mesPesquisa = ano + '-' + (mes < 10 ? '0' + mes : mes);
 
-                    console.log(mesPesquisa); // Aqui você terá o valor do mês atualizado, seja o mesmo ou o próximo mês
+                    // console.log(mesPesquisa); // Aqui você terá o valor do mês atualizado, seja o mesmo ou o próximo mês
 
                     // Loop para contar até a quantidade de dias desejada
                     for (var i = 1; i <= diasParaProximoMes; i++) {
                         var aux = i < 10 ? "0" + i : i.toString();
                         numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes.push('"' + aux + '"');
 
-                        console.log(numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes);
+                        // console.log(numeroDiaDaSemanaArrayLimpaFDiasRestantesParaOProximoMes);
 
                     }
                     var inclusaoDoMesAnterior = " ";
@@ -784,7 +801,6 @@ $(document).ready(function () {
 });
 
 if (statusDaTabela === "JÁ FINALIZADA.") {
-
     $('#table1').find('select').prop('disabled', true);
     $('.btnVermelho').addClass('ocultarBotao');
     $('.btnverdeEXCEL').removeClass('ocultarBotao');
