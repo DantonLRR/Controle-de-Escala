@@ -18,6 +18,9 @@ $verificaSeAPessoaLogadaEEncarregada = $dadosFunc->informacaoPessoaLogada($Totvs
 $verifica = new verifica();
 // echo $dataSelecionadaNoFiltro;
 // echo"<br>".$loja;
+$dadosDeQuemEstaLogadoNome = '';
+$dadosDeQuemEstaLogadoFuncao = '';
+$dadosDeQuemEstaLogadoSetor = '';
 
 foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
     $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
@@ -42,7 +45,7 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
     <input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
     <input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoNome ?>">
     <input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
-    <input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
+    <input id="dadosDeQuemEstaLogadoSetor" class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
     <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
         <thead style="background: linear-gradient(to right, #00a451, #052846 85%) !important; color:white;">
@@ -860,7 +863,7 @@ endforeach;
                         if (mesPesquisa == "") {
                             mesPesquisa = mesAtual
                         };
-
+                        var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
 
 
                         $.ajax({
@@ -875,7 +878,9 @@ endforeach;
                                 "&loja=" +
                                 loja +
                                 "&usuarioLogado=" +
-                                usuarioLogado,
+                                usuarioLogado +
+                                "&Departamento=" +
+                                Departamento,
                             success: function(atualizaTabela1) {
 
                                 $.ajax({
@@ -897,22 +902,70 @@ endforeach;
                             }
                         });
                     }
-                }, {
-                    extend: 'excel',
-                    className: 'btnverdeEXCEL',
-                    text: '<i class="fa-solid fa-table" style="color: #ffffff;"></i> Excel ',
-                    exportOptions: {
-                        format: {
-                            body: function(data, row, column, node) {
-                                if ($(node).find('select[disabled]').length > 0) {
-                                    return $(node).find('select[disabled]').val();
-                                }
-                                return data;
-                            }
-                        }
+                },
+                {
+                    text: '<i class="fa-solid fa-file-pdf" style="color: #ffffff;"></i> PDF ',
+                    className: ' btnverdeEXCEL',
+                    action: function() {
+                        criandoHtmlmensagemCarregamento("exibir");
+                        var usuarioLogado = $("#usuarioLogado").val();
+                        var loja = $("#loja").val();
+
+                        var mesPesquisa = $("#dataPesquisa").val();
+
+                        var mesAtual = $("#mesAtual").val();
+                        var diretorioDoPdf = "contrato.php";
+                        if (mesPesquisa == "") {
+                            mesPesquisa = mesAtual
+                        };
+                        var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
+                        $.ajax({
+                            url: "config/gerarPdf.php",
+                            method: "POST",
+                            data: 'mesPesquisa=' +
+                                mesPesquisa +
+                                "&loja=" +
+                                loja +
+                                "&usuarioLogado=" +
+                                usuarioLogado +
+                                "&Departamento=" +
+                                Departamento +
+                                "&diretorioDoPdf=" +
+                                diretorioDoPdf,
+                            xhrFields: {
+                                responseType: "blob",
+                            },
+                            success: function(response) {
+                                // Loading("ocultar");
+                                criandoHtmlmensagemCarregamento("ocultar");
+                                let blobUrl = URL.createObjectURL(response);
+                                window.open(blobUrl, "_blank");
+                            },
+                            error: function(xhr, status, error) {
+                                // console.log(error);
+                                // Loading("ocultar");
+                            },
+                        });
+
                     }
 
                 }
+                // {
+                //     extend: 'excel',
+                //     className: 'btnverdeEXCEL',
+                //     text: '<i class="fa-solid fa-table" style="color: #ffffff;"></i> Excel ',
+                //     exportOptions: {
+                //         format: {
+                //             body: function(data, row, column, node) {
+                //                 if ($(node).find('select[disabled]').length > 0) {
+                //                     return $(node).find('select[disabled]').val();
+                //                 }
+                //                 return data;
+                //             }
+                //         }
+                //     }
+
+                // }
             ],
 
         });
