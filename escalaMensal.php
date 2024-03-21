@@ -1,5 +1,5 @@
 <?php
-include "../base/Conexao_teste.php";
+include "../base/conexao_martdb.php";
 
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
@@ -9,6 +9,7 @@ include "../base/conexao_TotvzOracle.php";
 <html lang="pt-BR">
 
 <head>
+    <link rel="icon" type="../base/image/png" href="../base/img/martband.png">
     <link href="../base/mdb/css/bootstrap.css" rel="stylesheet">
     <link href="../base/assets/css/paper-dashboard.css" rel="stylesheet">
     <link rel="stylesheet" href="../base/DataTables/datatables.min.css" type="text/css">
@@ -17,16 +18,18 @@ include "../base/conexao_TotvzOracle.php";
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="../base/dist/sidenav.css" type="text/css">
-    <link rel="stylesheet" href="css/Style_escalaMensal.css" type="text/css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 
 
+
+    
     <link rel="stylesheet" href="../../BASE/DataTables/FixedColumns 4.3.0/FixedColumns-4.3.0/css/fixedColumns.dataTables.min.css" type="text/css">
 
-    <link rel="stylesheet" href="../BASE/cssGeral.css" type="text/css">
-    </link>
 
+
+    <link rel="stylesheet" href="css/Style_escalaMensal.css" type="text/css">
 </head>
 <?php
 
@@ -51,7 +54,7 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
     $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['DEPARTAMENTO2'];
 endforeach;
 
-$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA'],$dadosDeQuemEstaLogadoSetor);
+$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor);
 
 if ($retorno === "NÃO FINALIZADA.") {
     $statusDaTabela = "NÃO FINALIZADA.";
@@ -179,47 +182,26 @@ if ($retorno === "NÃO FINALIZADA.") {
                                                         } else {
                                                             $d = $i;
                                                         }
-                                                        $recuperaAPrimeiraColunaComF = $verifica->verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
-                                                        $verficaSeAInserçãoDeFFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $_SESSION['LOJA'], $nomeFunc['MATRICULA']);
                                                         //    echo $retornoVerificacaoSeOFFoiInseridoNoMesAnterior;
-
-
-
-                                                        $primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
-                                                        $primeiroDiaEncontrado = false;
-
                                                         $isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
-
-                                                        // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
-                                                        if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
-                                                            // Se a inserção de 'F' foi feita no mês anterior, desabilitar todos os 'FA'
-                                                            if ($isF) {
-                                                                $disabled = ' disabled  name="desabilitarEsteSelect"';
-                                                            } else {
-                                                                $disabled = '';
-                                                            }
+                                                        if ($isF) {
+                                                            $disabled = ' disabled  name="desabilitarEsteSelect"';
                                                         } else {
-                                                            if ($isF && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoF) {
-                                                                $disabled = ' disabled  name="desabilitarEsteSelect"';
-                                                            } else {
-                                                                $disabled = '';
-                                                                if ($d === $primeiroDiaNaoF) {
-                                                                    $primeiroDiaEncontrado = true;
-                                                                }
-                                                            }
+                                                            $disabled = '';
                                                         }
                                                         // echo $disabled;
                                                         $DadoDoDiaSalVoNoBancoDeDados = $recuperacaoDedados[0]["$d"] ?? '';
                                                         ?>
-                                                                            
+
                                                         <select <?= $disabled ?> class="estilezaSelect" name="" id="">
                                                             <option value="<?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?>"> <?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?></option>
                                                             <!-- Se o dado -->
-                                                            <option value="FA" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FA' ? "style='display: none'" : "" ?> >FA</option>
-                                                            <option value="FD"<?= $DadoDoDiaSalVoNoBancoDeDados == 'FD' ? "style='display: none'" : "" ?>  >FD</option>
-                                                            <option value="FF"<?= $DadoDoDiaSalVoNoBancoDeDados == 'FF' ? "style='display: none'" : "" ?>  >FF</option>
-                                                            <option value="F" <?= $DadoDoDiaSalVoNoBancoDeDados == 'F' ? "style='display: none'" : "" ?> >F</option>
-                                                            <option value="T" <?= $DadoDoDiaSalVoNoBancoDeDados == '' ? "style='display: none'" : "" ?> ></option>
+                                                            <option value="DSR" <?= $DadoDoDiaSalVoNoBancoDeDados == 'DSR' ? "style='display: none'" : "" ?>>DSR</option>
+                                                            <option value="FA" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FA' ? "style='display: none'" : "" ?>>FA</option>
+                                                            <option value="FD" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FD' ? "style='display: none'" : "" ?>>FD</option>
+                                                            <option value="FF" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FF' ? "style='display: none'" : "" ?>>FF</option>
+                                                            <option value="T" <?= $DadoDoDiaSalVoNoBancoDeDados == '' ? "style='display: none'" : "" ?>></option>
+
                                                         </select>
                                                     </td>
                                                 <?php
@@ -236,7 +218,13 @@ if ($retorno === "NÃO FINALIZADA.") {
                                 </table>
 
                             </div>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg"  role="document">
+                                    <div class="modal-content">
 
+                                    </div>
+                                </div>
+                            </div>
                         <?php
                         } else {
                         ?>
@@ -251,28 +239,42 @@ if ($retorno === "NÃO FINALIZADA.") {
             </div>
         </div>
 
+
         <input class="statusDaTabela" type="hidden" id="statusDaTabela" value="<?= $statusDaTabela ?>">
         <?php
         // echo $statusDaTabela;
         ?>
-
-
-
-        <script type="text/javascript" src="../base/mdb/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="../base/mdb/js/jquery.min.js"></script>
-        <script type="text/javascript" src="../base/bootstrap-5.0.2/bootstrap-5.0.2/dist/js/bootstrap.bundle.js"></script>
-        <script type="text/javascript" src="../base/mdb/js/jquery.validate.min.js"></script>
-        <script type="text/javascript" src="../base/mdb/js/jquery.validate.min.js"></script>
-        <script type="text/javascript" src="../base/DataTables/datatables.min.js"></script>
-        <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-        <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.1.0/js/buttons.html5.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-        <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
-
-        <script type="text/javascript" src="../../base/DataTables//FixedColumns 4.3.0//FixedColumns-4.3.0/js/dataTables.fixedColumns.min.js"></script>
+       
         <script src="../base/dist/sidenav.js"></script>
         <script type="module" src="js/Script_escalaMensal.js" defer></script>
+
+
+        <script type="text/javascript" src="../base/mdb/js/jquery.min.js"></script>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="../BASE/mdb/js/bootstrap.min.js"></script>
+
+
+        <script type="text/javascript" src="../base/DataTables/datatables.min.js"></script>
+
+
+        <script type="text/javascript" src="../BASE/Buttons/js/dataTables.buttons.min.js"></script>
+
+        <script type="text/javascript" src="../BASE/JSZip/jszip.min.js"></script>
+
+        <script type="text/javascript" src="../BASE/Buttons/js/buttons.html5.min.js"></script>
+
+        <script type="text/javascript" src="../BASE/Buttons/js/buttons.print.min.js"></script>
+        <script type="text/javascript" src="../BASE/bootstrap-multiselect/bootstrap-select-1.13.14/dist/js/bootstrap-select.js"></script>
+
+        <script type="text/javascript" src="../base/jquery_ui/jquery/jquery-ui.js"></script>
+
+        <script src="../base/dist/sidenav.js"></script>
+
+        <script src="../BASE/formulario7/formulario/js/out/jquery.idealforms.js"></script>
+
+        <script type="text/javascript" src="../../base/DataTables//FixedColumns 4.3.0//FixedColumns-4.3.0/js/dataTables.fixedColumns.min.js"></script>
 
     </div>
 </body>

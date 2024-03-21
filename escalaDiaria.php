@@ -1,5 +1,5 @@
 <?php
-include "../base/Conexao_teste.php";
+include "../base/conexao_martdb.php";
 
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
@@ -50,7 +50,7 @@ $dadosDoFuncionarioAPartirDaEscalaMensal = $dadosFunc->DadosAPartirDaEscalaMensa
     <link rel="stylesheet" href="../base/dist/sidenav.css" type="text/css">
     <link rel="stylesheet" href="css/Style_escalaDiaria.css" type="text/css">
     <link rel="stylesheet" href="../BASE/cssGeral.css" type="text/css">
-
+   <link rel="icon" type="../base/image/png" href="../base/img/martband.png">
     <style>
         .row {
             display: flex;

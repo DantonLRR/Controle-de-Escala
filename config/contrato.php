@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="css/contrato.css">
 </head>
 <?php
-include "../../base/Conexao_teste.php";
+include "../../base/conexao_martdb.php";
 include "../../base/conexao_TotvzOracle.php";
 include "php/CRUD_geral.php";
 session_start();

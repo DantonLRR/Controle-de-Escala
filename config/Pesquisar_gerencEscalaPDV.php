@@ -1,5 +1,5 @@
 <?php
-include "../../base/Conexao_teste.php";
+include "../../base/conexao_martdb.php";
 include "../../base/conexao_TotvzOracle.php";
 include "php/CRUD_geral.php";
 session_start();
@@ -34,10 +34,19 @@ if ($retorno === "NÃO FINALIZADA.") {
 <input class="dataAtual" type="hidden" id="mesAtual" value="<?= $mesAtual ?>">
 <?php
 $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja, $Departamento);
+$dadosDeQuemEstaLogadoNome = '';
+$dadosDeQuemEstaLogadoFuncao = '';
+$dadosDeQuemEstaLogadoSetor = '';
+
+foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+    $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
+    $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
+    $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['DEPARTAMENTO2'];
+endforeach;
 ?>
-<input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['NOME'] ?>">
-<input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['FUNCAO'] ?>">
-<input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['DEPARTAMENTO2'] ?>">
+<input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoNome ?>">
+<input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
+<input class="" type="hidden" id="" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
 
 <table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
     <thead style="background: linear-gradient(to right, #00a451, #052846 85%) !important; color:white;">

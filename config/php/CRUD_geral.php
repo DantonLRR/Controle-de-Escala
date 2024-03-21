@@ -50,7 +50,7 @@ class Dias
 
         $lista = array();
         $query = "SELECT *
-         FROM Web_Montagem_Escala_Diaria_PDV a
+         FROM webmartminas.Web_Montagem_Escala_Diaria_PDV a
          WHERE NUMPDV = '$numPDV'
          AND a.diaselecionado = TO_DATE('$dataAtual' , 'YYYY-MM-DD')
          and a.loja = '$loja'
@@ -87,7 +87,7 @@ class lojas
     public function recuperacaoDosSetoresDaLoja($oracle)
     {
         $lista = array();
-        $query = "SELECT DISTINCT(a.departamento) from web_escala_mensal a
+        $query = "SELECT DISTINCT(a.departamento) from webmartminas.web_escala_mensal a
          ORDER BY A.DEPARTAMENTO ASC
          ";
         echo $query;
@@ -116,7 +116,7 @@ class Funcionarios
         A.HORAINTERVALO,
         A.DATAINCLUSAO,
         A.USUINCLUSAO           
-        from WEB_ESCALA_DIARIA_HR_INTERMED a 
+        from webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED a 
         where a.diaselecionado BETWEEN TO_DATE('$dataInicial', 'YYYY-MM-DD') and TO_DATE('$dataFinal', 'YYYY-MM-DD')
         and a.loja = '$loja' 
         ";
@@ -144,7 +144,7 @@ class Funcionarios
          a.$dia,
          TO_CHAR(a.mesSelecionado, 'Month- yyyy', 'NLS_DATE_LANGUAGE=PORTUGUESE') as mesSelecionadoFormatado,
          a.status
-         FROM WEB_ESCALA_MENSAL a
+         FROM webmartminas.WEB_ESCALA_MENSAL a
          where loja = '$lojaDaPessoaLogada'
           and a.mesSelecionado = TO_DATE('$mesSelecionado','YYYY-MM')
           and a.status = 'F'
@@ -164,7 +164,7 @@ class Funcionarios
     public function recuperaDadosDaEscalaIntermed($oracle, $matricula, $nome, $loja, $diaselecionado)
     {
         $lista = array();
-        $query = "Select * from WEB_ESCALA_DIARIA_HR_INTERMED a 
+        $query = "SELECT * from webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED a 
         WHERE a.matricula = '$matricula'
         and trim(a.nome) = '$nome'
         and a.loja = $loja      
@@ -342,6 +342,33 @@ class Funcionarios
         // echo $query;
     }
 
+    //agendamento de ferias escala mensal
+    public function recuperaFuncionariosQueTiveramFeriasAgendadas($oracle, $loja, $DEPARTAMENTO)
+    {
+        $lista = array();
+        $query = " SELECT DISTINCT(nome), 
+        a.cargo, 
+        a.matricula,
+        A.HORAENTRADA, A.HORASAIDA, A.HORAINTERVALO,
+        TO_CHAR(TO_DATE(a.datainicioferiasprogramadas, 'DD-MON-RR'), 'YYYY-MM-DD') AS datainicioferiasprogramadas,
+       TO_CHAR(TO_DATE(a.datafimferiasprogramadas, 'DD-MON-RR'), 'YYYY-MM-DD') AS datafimferiasprogramadas
+        from web_escala_mensal a 
+        where a.loja= '$loja'
+        and a.departamento= '$DEPARTAMENTO'
+        and a.datainicioferiasprogramadas || a.datafimferiasprogramadas is not null
+        ";
+        $resultado = oci_parse($oracle, $query);
+        oci_execute($resultado);
+
+        while ($row = oci_fetch_assoc($resultado)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+        // Echo $query;
+    }
+
+
+
     //pdv
 
     public function buscaFuncEHorarioDeTrabalhoManha($oracle, $lojaDaPessoaLogada, $diaDeHojeComAspas, $mesSelecionadoDaEscalaMensal, $departamento, $diaMesEAnoAtual)
@@ -354,7 +381,7 @@ class Funcionarios
         a.horaentrada,
         a.horasaida,
         a.horaintervalo
-        FROM WEB_ESCALA_MENSAL a
+        FROM webmartminas.WEB_ESCALA_MENSAL a
         WHERE a.loja = $lojaDaPessoaLogada
         AND a.$diaDeHojeComAspas IS NULL
         AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
@@ -363,7 +390,7 @@ class Funcionarios
         AND a.cargo BETWEEN 'OPERADOR DE CAIXA' AND 'OPERADOR DE LOJA'
         and a.matricula not in
         (SELECT b.matricula
-        FROM WEB_ESCALA_DIARIA_HR_INTERMED b
+        FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
         WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
         AND b.loja = $lojaDaPessoaLogada)
         UNION
@@ -374,7 +401,7 @@ class Funcionarios
         b.horaentrada,
         b.horasaida,
         b.horaintervalo
-        FROM WEB_ESCALA_DIARIA_HR_INTERMED b
+        FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
         WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
         AND b.loja = $lojaDaPessoaLogada 
         AND b.horaentrada BETWEEN '05:00' AND '11:59'
@@ -399,7 +426,7 @@ class Funcionarios
         a.horaentrada,
         a.horasaida,
         a.horaintervalo
-        FROM WEB_ESCALA_MENSAL a
+        FROM webmartminas.WEB_ESCALA_MENSAL a
         WHERE a.loja = $lojaDaPessoaLogada
         AND a.$diaDeHojeComAspas IS NULL
         AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
@@ -408,7 +435,7 @@ class Funcionarios
         AND a.cargo BETWEEN 'OPERADOR DE CAIXA' AND 'OPERADOR DE LOJA'
         and a.matricula not in
         (SELECT b.matricula
-        FROM WEB_ESCALA_DIARIA_HR_INTERMED b
+        FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
         WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
         AND b.loja = $lojaDaPessoaLogada)
         UNION
@@ -419,7 +446,7 @@ class Funcionarios
         b.horaentrada,
         b.horasaida,
         b.horaintervalo
-        FROM WEB_ESCALA_DIARIA_HR_INTERMED b
+        FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
         WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
         AND b.loja = $lojaDaPessoaLogada 
         AND b.horaentrada BETWEEN '12:00' AND '14:00'
@@ -448,7 +475,7 @@ class Funcionarios
         a.usuinclusao,
         a.diaselecionado,
         a.numpdv
-            FROM ESCALA_PDV_Manha a
+            FROM webmartminas.ESCALA_PDV_Manha a
             where a.numpdv = $i
             and to_char(a.diaselecionado,'YYYY-MM-DD') = '$dia'
             and  status = 'A'
@@ -478,7 +505,7 @@ class Funcionarios
         a.usuinclusao,
         a.diaselecionado,
         a.numpdv
-            FROM ESCALA_PDV_TARDE a
+            FROM webmartminas.ESCALA_PDV_TARDE a
             where a.numpdv = $i
             and to_char(a.diaselecionado,'YYYY-MM-DD') = '$dia'
             and  status = 'A'
@@ -507,7 +534,7 @@ class Funcionarios
         a.horaentrada,
         a.horasaida,
         a.horaintervalo
-        FROM WEB_ESCALA_MENSAL a
+        FROM webmartminas.WEB_ESCALA_MENSAL a
         WHERE a.loja = $loja
         AND a.$diaComAspas IS NULL
         AND a.messelecionado = TO_DATE('$mesSelecionado', 'YYYY-MM')
@@ -516,7 +543,7 @@ class Funcionarios
         AND a.cargo BETWEEN 'OPERADOR DE CAIXA' AND 'OPERADOR DE LOJA'
         and a.matricula not in
         (SELECT b.matricula
-        FROM WEB_ESCALA_DIARIA_HR_INTERMED b
+        FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
         WHERE b.diaselecionado = TO_DATE('$dataPesquisada', 'YYYY-MM-DD')
         AND b.loja = $loja)
         UNION
@@ -527,7 +554,7 @@ class Funcionarios
         b.horaentrada,
         b.horasaida,
         b.horaintervalo
-        FROM WEB_ESCALA_DIARIA_HR_INTERMED b
+        FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
         WHERE b.diaselecionado = TO_DATE('$dataPesquisada', 'YYYY-MM-DD')
         AND b.loja = $loja
 
@@ -557,7 +584,7 @@ class Funcionarios
                     a.diaselecionado,
                     a.numpdv,
                     a.status
-                    FROM ESCALA_PDV_Manha a
+                    FROM webmartminas.ESCALA_PDV_Manha a
                     where  to_char(a.diaselecionado, 'YYYY-MM-DD') = '$diaSelecionado'
                     and status = 'A'
                     and loja ='$lojaDaPessoaLogada'
@@ -587,7 +614,7 @@ class Funcionarios
                     a.diaselecionado,
                     a.numpdv,
                     a.status
-                    FROM ESCALA_PDV_TARDE a
+                    FROM webmartminas.ESCALA_PDV_TARDE a
                     where  to_char(a.diaselecionado, 'YYYY-MM-DD') = '$diaSelecionado'
                     and status = 'A'
                     and loja ='$lojaDaPessoaLogada'
@@ -614,7 +641,7 @@ class Verifica
     {
         $lista = array();
         global  $retorno;
-        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
+        $query = "SELECT * FROM webmartminas.WEB_ESCALA_MENSAL a
         WHERE a.matricula = '$matricula'
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
         AND a.loja = $loja ";
@@ -647,7 +674,7 @@ class Verifica
     {
         $lista = array();
         global  $retorno;
-        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
+        $query = "SELECT * FROM webmartminas.WEB_ESCALA_MENSAL a
         WHERE a.matricula = '$matricula'
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
         AND a.loja = $loja
@@ -678,7 +705,7 @@ class Verifica
     {
         $lista = array();
         global  $retorno;
-        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
+        $query = "SELECT * FROM webmartminas.WEB_ESCALA_MENSAL a
         WHERE a.matricula = $matricula
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') ";
 
@@ -697,7 +724,7 @@ class Verifica
     {
         $lista = array();
         global  $retorno1;
-        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
+        $query = "SELECT * FROM webmartminas.WEB_ESCALA_MENSAL a
         WHERE a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
         and a.departamento like '%$departamento%'
         and a.loja = '$loja'
@@ -724,79 +751,15 @@ class Verifica
         return $lista;
         echo "</br>" + $retorno1;
     }
-    public function verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $mesPesquisado, $loja, $matricula)
-    {
-        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
-        WHERE a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
-        and a.loja = $loja
-        and a.matricula = $matricula";
-        $parse = oci_parse($oracle, $query);
-        $resultado = array();
-
-        if (oci_execute($parse)) {
-            while ($row = oci_fetch_assoc($parse)) {
-                foreach ($row as $coluna => $valor) {
-                    if ($valor === 'F') {
-
-                        $resultado['MATRICULA'] = $row['MATRICULA'];
-                        $resultado['NOME'] = $row['NOME'];
-                        $resultado['LOJA'] = $row['LOJA'];
-                        $resultado['nome_coluna'] = $coluna; // Exemplo: Pode adicionar outros valores que queira retornar
-                        return $resultado;
-                    }
-                }
-            }
-        } else {
-            // Erro na consulta
-            echo "Erro na consulta.";
-        }
-
-        return null; // Retorna null se não encontrar 'F' em nenhuma coluna
-    }
-
-    public function verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $mesPesquisado, $loja, $matricula)
-    {
-        $lista = array();
-        global  $retornoVerificacaoSeOFFoiInseridoNoMesAnterior;
-        $query = "SELECT * FROM WEB_ESCALA_MENSAL a
-        WHERE a.matricula = '$matricula'
-        AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
-        AND a.loja = $loja 
-        and a.inclusaodomesanterior = 'SIM'";
-
-
-
-
-        $parse = oci_parse($oracle, $query);
-
-        oci_execute($parse);
-        oci_fetch_assoc($parse);
-
-        if (oci_num_rows($parse) >= 1) {
-
-            $retornoVerificacaoSeOFFoiInseridoNoMesAnterior = 1;
-        }
-        if (oci_num_rows($parse) < 1) {
-
-            $retornoVerificacaoSeOFFoiInseridoNoMesAnterior = 0;
-        }
-        // echo $retornoVerificacaoSeOFFoiInseridoNoMesAnterior."<br><br>";
-        // echo "verificaSeALinhaFFoiInseridaNoMesAnterior   " . $query;
-    }
-
-
-
-
-
 
     //verificacao bloqueio da escala mensal
 
-    public function verificaSeAEscalaMensalEstaFinalizada($oracle, $mesPesquisado, $loja,$departamento)
+    public function verificaSeAEscalaMensalEstaFinalizada($oracle, $mesPesquisado, $loja, $departamento)
     {
 
         $lista = array();
         global  $retorno;
-        $query = "SELECT * from WEB_ESCALA_MENSAL a
+        $query = "SELECT * from webmartminas.WEB_ESCALA_MENSAL a
         where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
         and a.departamento = '$departamento'
         and a.loja = $loja
@@ -824,8 +787,6 @@ class Verifica
             array_push($lista, $row);
         }
         return $lista;
-
-        
     }
 
     //diaria
@@ -833,7 +794,7 @@ class Verifica
     public function verificaAlteracaoNoHorarioDiario($oracle, $matricula, $diaselecionado, $nome, $loja)
     {
         global  $retorno;
-        $query = "Select * from WEB_ESCALA_DIARIA_HR_INTERMED a 
+        $query = "SELECT * from webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED a 
         WHERE a.matricula = '$matricula'
         and trim(a.nome) = '$nome'
         and a.loja = $loja      
@@ -864,7 +825,7 @@ class Verifica
     public function verificaExistenciaNumPDV($oracle, $tabela, $dataPesquisa, $numPDV, $loja)
     {
         global  $retorno;
-        $query = "SELECT * FROM $tabela a
+        $query = "SELECT * FROM webmartminas.$tabela a
                  WHERE a.NUMPDV = '$numPDV'
                  AND a.DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')
                  and a.loja = $loja
@@ -891,10 +852,26 @@ class Verifica
 class Insert
 {
     // mensal
-    public function insertEscalaMensal($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado, $departamentoFunc)
-    {
+    public function insertEscalaMensal(
+        $oracle,
+        $tabela,
+        $dia,
+        $matricula,
+        $nome,
+        $loja,
+        $cargoFunc,
+        $mesPesquisado,
+        $horarioEntradaFunc,
+        $horarioSaidaFunc,
+        $horarioIntervaloFunc,
+        $opcaoSelect,
+        $usuarioLogado,
+        $departamentoFunc,
+        $DATAINICIOFERIASPROGRAMADAS,
+        $DATAFIMFERIASPROGRAMADAS
+    ) {
 
-        $query = "INSERT INTO $tabela (
+        $query = "INSERT INTO webmartminas.$tabela (
              matricula,
              nome,
              LOJA,
@@ -906,7 +883,9 @@ class Insert
              $dia,
           datainclusao, 
            usuinclusao,
-           Departamento
+           Departamento,
+           datainicioferiasprogramadas,
+           datafimferiasprogramadas
          ) VALUES (
          '$matricula',
           '$nome',
@@ -919,7 +898,9 @@ class Insert
           '$opcaoSelect',
            SYSDATE,
            '$usuarioLogado',
-          '$departamentoFunc'
+          '$departamentoFunc',
+          TO_DATE('$DATAINICIOFERIASPROGRAMADAS', 'YYYY-MM-DD'),
+          TO_DATE('$DATAFIMFERIASPROGRAMADAS', 'YYYY-MM-DD')        
         )";
         echo $query;
         $parse = oci_parse($oracle, $query);
@@ -940,7 +921,7 @@ class Insert
     public function insertEscalaMensalProximoMes($oracle, $tabela, $dia,  $matricula, $nome, $loja, $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado, $inclusaodomesanterior, $departamentoFunc)
     {
 
-        $query = "INSERT INTO $tabela (
+        $query = "INSERT INTO webmartminas.$tabela (
              matricula,
              nome,
              LOJA,
@@ -988,7 +969,7 @@ class Insert
 
     public function insertNaTblIntermediariaEscalaDiaria($oracle, $matricula, $nome, $loja, $diaSelecionado, $horaEntrada, $horaSaida, $horaIntervalo, $usuInclusao)
     {
-        $query = "INSERT INTO WEB_ESCALA_DIARIA_HR_INTERMED
+        $query = "INSERT INTO webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED
      (matricula,
         nome,
      loja,
@@ -1031,7 +1012,7 @@ class Insert
     //escala pdv
     public function insertTabelaFuncManha($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja, $status)
     {
-        $query = "INSERT INTO  ESCALA_PDV_MANHA (
+        $query = "INSERT INTO  webmartminas.ESCALA_PDV_MANHA (
         MATRICULA,
         NOME,
         HORAENTRADA,
@@ -1073,7 +1054,7 @@ class Insert
 
     public function insertTabelaFuncTarde($oracle, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja, $status)
     {
-        $query = "INSERT INTO  ESCALA_PDV_TARDE (
+        $query = "INSERT INTO  webmartminas.ESCALA_PDV_TARDE (
         MATRICULA,
         NOME,
         HORAENTRADA,
@@ -1118,7 +1099,7 @@ class Insert
     public function insertMontagemEscalaPDV($oracle, $periodoDeHoras,  $numPDV, $dataPesquisa, $usuarioLogado, $nome, $loja, $status)
     {
         global  $retorno;
-        $query = "INSERT INTO Web_Montagem_Escala_Diaria_PDV (
+        $query = "INSERT INTO webmartminas.Web_Montagem_Escala_Diaria_PDV (
             NUMPDV,
             DIASELECIONADO,
             DATAINCLUSAO,
@@ -1161,7 +1142,7 @@ class Update
     //mensal
     public function updateDeFuncionariosNaEscalaMensal($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $matricula, $loja)
     {
-        $query = "UPDATE WEB_ESCALA_MENSAL a
+        $query = "UPDATE webmartminas.WEB_ESCALA_MENSAL a
          SET
             datainclusao = SYSDATE,
             usuinclusao = '$usuarioLogado',
@@ -1178,18 +1159,19 @@ class Update
         oci_execute($parse);
     }
 
-    public function updateDeFuncionariosNaEscalaMensalProximoMes($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $inclusaodomesanterior, $matricula, $loja,)
+    public function updateDeFuncionariosNaEscalaMensalFerias($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $matricula, $loja, $DATAINICIOFERIASPROGRAMADAS, $DATAFIMFERIASPROGRAMADAS)
     {
-        $query = "UPDATE WEB_ESCALA_MENSAL a
+        $query = "UPDATE webmartminas.WEB_ESCALA_MENSAL a
          SET
             datainclusao = SYSDATE,
             usuinclusao = '$usuarioLogado',
             mesSelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM'),
             nome = '$nome',
             $dia = '$opcaoSelect',
-            LOJA = '$loja', 
-            inclusaodomesanterior = '$inclusaodomesanterior'
-         WHERE a.matricula = '$matricula'
+            LOJA = '$loja',
+            DATAINICIOFERIASPROGRAMADAS =   TO_DATE('$DATAINICIOFERIASPROGRAMADAS', 'YYYY-MM-DD'),
+            DATAFIMFERIASPROGRAMADAS =     TO_DATE('$DATAFIMFERIASPROGRAMADAS', 'YYYY-MM-DD')       
+               WHERE a.matricula = '$matricula'
           and messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
           and loja = $loja";
         echo $query;
@@ -1201,7 +1183,7 @@ class Update
     public function bloqueiaEscalaMensal($oracle,  $status,  $usuarioQueFinalizou, $mesPesquisado, $loja)
     {
 
-        $query = "UPDATE WEB_ESCALA_MENSAL a
+        $query = "UPDATE webmartminas.WEB_ESCALA_MENSAL a
         SET 
         status = '$status', 
         usufinalizacaoescala = ' $usuarioQueFinalizou'
@@ -1225,13 +1207,13 @@ class Update
             return false;
         }
 
-       // echo $query;
+        // echo $query;
     }
 
-    public function liberaEscalaMensal($oracle, $status, $usuarioQueliberouNovamenteAEscala, $mesPesquisado, $loja,$Departamento)
+    public function liberaEscalaMensal($oracle, $status, $usuarioQueliberouNovamenteAEscala, $mesPesquisado, $loja, $Departamento)
     {
 
-        $query = "UPDATE WEB_ESCALA_MENSAL a
+        $query = "UPDATE webmartminas.WEB_ESCALA_MENSAL a
         SET 
         status = '$status', 
         usuNovaLiberacaoEscala = '$usuarioQueliberouNovamenteAEscala'
@@ -1260,7 +1242,7 @@ class Update
     //diaria
     public function updateDeFuncionariosNaEscalaIntermediaria($oracle, $horaEntrada, $horaSaida, $horaIntervalo, $usuInclusao, $matricula, $nome, $loja, $diaSelecionado)
     {
-        $query = "UPDATE WEB_ESCALA_DIARIA_HR_INTERMED
+        $query = "UPDATE webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED
         SET 
           horaentrada = '$horaEntrada',
           horasaida = '$horaSaida',
@@ -1292,7 +1274,7 @@ class Update
     //pdv
     public function updateDeFuncionariosNoPDV($oracle, $tabela, $matricula, $nome, $entrada, $saida, $intervalo, $usuarioLogado, $dataPesquisa, $numPDV, $loja,)
     {
-        $query = "UPDATE $tabela SET
+        $query = "UPDATE webmartminas.$tabela SET
         MATRICULA = '$matricula',
         NOME = '$nome',
         HORAENTRADA = '$entrada',
@@ -1321,7 +1303,7 @@ class Update
     public function updateMontagemEscalaPDV($oracle, $numPDV, $dataPesquisa, $usuarioLogado,  $periodoDeHoras, $nome, $loja)
     {
         global  $retorno;
-        $query = "UPDATE Web_Montagem_Escala_Diaria_PDV SET  
+        $query = "UPDATE webmartminas.Web_Montagem_Escala_Diaria_PDV SET  
             
              DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD'),
             DATAINCLUSAO = sysdate,
@@ -1356,7 +1338,7 @@ class Update
     public function updateRemocaoEscalaPDV($oracle, $tabela, $numPDV, $dataPesquisa, $loja)
     {
         global  $retorno;
-        $query = " UPDATE $tabela
+        $query = " UPDATE webmartminas.$tabela
          SET status = 'R' 
          WHERE NUMPDV = '$numPDV'
          AND diaselecionado = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')
@@ -1415,10 +1397,10 @@ class Porcentagem
 class log_escala_mensal
 {
 
-    public function log_liberacao_escala_mensal($oracle, $loja, $mesSelecionadoParaLiberacao, $usuariologado,$MotivoLiberacaoEscala)
+    public function log_liberacao_escala_mensal($oracle, $loja, $mesSelecionadoParaLiberacao, $usuariologado, $MotivoLiberacaoEscala)
     {
 
-        $sql2 = 'select S_Log_escala_mensal.Nextval from dual';
+        $sql2 = 'SELECT webmartminas.S_Log_escala_mensal.Nextval from dual';
         $parse = oci_parse($oracle, $sql2);
         oci_execute($parse);
         while (($row = oci_fetch_assoc($parse)) != false) {
@@ -1428,7 +1410,7 @@ class log_escala_mensal
 
 
 
-        $query = "INSERT INTO WEB_ESCALA_MENSAL_log (
+        $query = "INSERT INTO webmartminas.WEB_ESCALA_MENSAL_log (
             id, 
             loja, 
             messelecionado, 

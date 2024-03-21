@@ -1,5 +1,5 @@
 <?php
-include "../../base/Conexao_teste.php";
+include "../../base/conexao_martdb.php";
 include "../../base/conexao_TotvzOracle.php";
 include "../config/php/CRUD_geral.php";
 $verificacaoDeDados = new Verifica();
@@ -127,7 +127,7 @@ if ($retorno == "Já existem dados.") {
 
 
 while (($row = oci_fetch_assoc($parse)) != false) {
-    $array_valor = array(
+   $array_valor = array(
         'MATRICULA' => $row['MATRICULA'],
         'HORAENTRADA' => $row['HORAENTRADA'],
         'HORASAIDA' => $row['HORASAIDA'],

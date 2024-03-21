@@ -1,5 +1,5 @@
 <?php
-include "../base/Conexao_teste.php";
+include "../base/conexao_martdb.php";
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
 include "../base/conexao_TotvzOracle.php";
@@ -20,6 +20,7 @@ include "../base/conexao_TotvzOracle.php";
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
     </link>
     <link rel="stylesheet" href="../BASE/cssGeral.css" type="text/css">
+    <link rel="icon" type="../base/image/png" href="../base/img/martband.png">
     <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.dataTables.min.css"> -->
 </head>
 <?php
@@ -30,7 +31,9 @@ $mesEAnoAtual = date("Y-m");
 
 $diaDeHojeComAspas = '"' . $diaDeHoje . '"';
 
-
+$dadosDeQuemEstaLogadoNome = '';
+$dadosDeQuemEstaLogadoFuncao = '';
+$dadosDeQuemEstaLogadoSetor = '';
 
 $InformacaoDosDias = new Dias();
 $InformacaoFuncionarios = new Funcionarios();

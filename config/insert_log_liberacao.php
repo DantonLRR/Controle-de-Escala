@@ -1,5 +1,5 @@
 <?php
-include "../../base/Conexao_teste.php";
+include "../../base/conexao_martdb.php";
 include "php/CRUD_geral.php";
 $loja = $_POST['loja'];
 $mesPesquisado = $_POST['mesPesquisa'];

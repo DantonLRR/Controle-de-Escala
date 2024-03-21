@@ -1,5 +1,5 @@
 <?php
-include "../base/Conexao_teste.php";
+include "../base/conexao_martdb.php";
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
 include "../base/conexao_TotvzOracle.php";
@@ -22,6 +22,7 @@ include "../base/conexao_TotvzOracle.php";
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="../../BASE/DataTables/FixedColumns 4.3.0/FixedColumns-4.3.0/css/fixedColumns.dataTables.min.css" type="text/css">
     <link rel="stylesheet" href="../BASE/cssGeral.css" type="text/css">
+    <link rel="icon" type="../base/image/png" href="../base/img/martband.png">
     </link>
 </head>
 <?php

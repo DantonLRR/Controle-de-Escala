@@ -1,5 +1,5 @@
 <?php
-include "../../base/Conexao_teste.php";
+include "../../base/conexao_martdb.php";
 include "../../base/conexao_TotvzOracle.php";
 include "php/CRUD_geral.php";
 session_start();
@@ -136,32 +136,11 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
                             } else {
                                 $d = $i;
                             }
-                            $recuperaAPrimeiraColunaComF = $verifica->verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
-                            $verficaSeAInserçãoDeFFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
-                            // echo ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior);
-
-                            $primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
-                            $primeiroDiaEncontrado = false;
-
                             $isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
-
-                            // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
-                            if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
-                                // Se a inserção de 'F' foi feita no mês anterior, desabilitar todos os 'FA'
-                                if ($isF) {
-                                    $disabled = ' disabled  name="desabilitarEsteSelect"';
-                                } else {
-                                    $disabled = '';
-                                }
+                            if ($isF) {
+                                $disabled = ' disabled  name="desabilitarEsteSelect"';
                             } else {
-                                if ($isF && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoF) {
-                                    $disabled = ' disabled  name="desabilitarEsteSelect"';
-                                } else {
-                                    $disabled = '';
-                                    if ($d === $primeiroDiaNaoF) {
-                                        $primeiroDiaEncontrado = true;
-                                    }
-                                }
+                                $disabled = '';
                             }
                             // echo $disabled;
                             $DadoDoDiaSalVoNoBancoDeDados = $recuperacaoDedados[0]["$d"] ?? '';
@@ -293,15 +272,14 @@ endforeach;
 
                     var periodoParaEdicaoDeEscala = parseInt(thDoProximoSelectPreenchido) - thDoUltimoSelectPreenchido
                     var opcaoSelecionada = $(this).val();
-                    if (opcaoSelecionada == 'T') {
-                        opcaoSelecionada = ''
-                    }
+
                     // alert(valorINICIAL)
                     // alert(opcaoSelecionada)
                     if (valorINICIAL != 'F' && opcaoSelecionada == 'F' || valorINICIAL == '' && opcaoSelecionada == 'F') {
                         // console.log('Valor inicial : ' + valorINICIAL);
                         // console.log('opcao Escolhida :' + opcaoSelecionada)
                         // console.log("caiu na primeira");
+                        var opcaoSelecionada = 'F';
                         if (PeriodoMaximoDeDiasTrabalhados) {
                             $(this).val(' ');
                             Toasty("Atenção", "Funcionario escalado sem folga mais de SEIS dias", "#E20914");
@@ -467,7 +445,10 @@ endforeach;
                         // console.log('Valor INICIAL: ' + valorINICIAL);
                         // console.log('opcao Escolhida :' + opcaoSelecionada)
                         // console.log("caiu na segunda");
-                        //var opcaoSelecionada = $(this).val();
+                        var opcaoSelecionada = $(this).val();
+                        if (opcaoSelecionada == 'T') {
+                            opcaoSelecionada = ''
+                        }
                         var $tr = $(this).closest('tr');
                         var funcionario = $tr.find('td.funcionario').text();
                         var matriculaFunc = $tr.find('td.matriculaFunc').text();
@@ -492,11 +473,13 @@ endforeach;
                         if (PeriodoMaximoDeDiasTrabalhados) {
                             $(this).val(' ');
                             Toasty("Atenção", "Funcionario escalado sem folga mais de SEIS dias", "#E20914");
-
+                            //  alert("(PeriodoMaximoDeDiasTrabalhados >=7")
                         } else if (opcaoSelecionada == '' && periodoParaEdicaoDeEscala >= 7) {
                             $(this).val(opcaoSelecionadaAux);
                             Toasty("Atenção", "Funcionario escalado sem folga mais de SEIS dias", "#E20914");
+                            //  alert("opcaoSelecionada == '' && periodoParaEdicaoDeEscala >= 7")
                         } else {
+                            //  alert("caiu no ajax")
                             $.ajax({
                                 url: "config/insertEUpdate_EscalaMensal.php",
                                 method: 'get',
@@ -949,6 +932,29 @@ endforeach;
 
                     }
 
+
+                },
+                {
+                    text: '<i class="fa-solid fa-calendar" style="color: #ffffff;"></i> Lançamento De Ferias ',
+                    className: 'btnverde',
+                    action: function() {
+                        criandoHtmlmensagemCarregamento("exibir");
+                        $('#exampleModal').modal('show');
+                        var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
+                        var loja = $('#loja').val();
+                        $.ajax({
+                            url: "modal/modalFerias.php",
+                            method: 'POST',
+                            data: 'Departamento=' +
+                                Departamento +
+                                "&loja=" +
+                                loja,
+                            success: function(modalFerias) {
+                                $('.modal-content').empty().html(modalFerias);
+                                criandoHtmlmensagemCarregamento("ocultar");
+                            }
+                        });
+                    }
                 }
                 // {
                 //     extend: 'excel',
