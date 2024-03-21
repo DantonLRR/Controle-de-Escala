@@ -18,24 +18,26 @@ $usuarioLogado = $_SESSION['nome'];
         </button>
     </div>
 </div>
-<label for="validationCustom02" class="form-label">Funcionário: </label>
-<select class="form-control margin-bottom" name="" id="funcionarioFerias">
-    <option value="" disabled selected></option>
-    <?php
-    foreach ($buscaNomeFuncionario as $nomeFunc) : ?>
+<div style="border:15px  solid transparent">
+    <label for="validationCustom02" class="form-label">Funcionário: </label>
+    <select class="form-control margin-bottom" name="" id="funcionarioFerias">
+        <option value="" disabled selected></option>
+        <?php
+        foreach ($buscaNomeFuncionario as $nomeFunc) : ?>
 
-        <option value="<?= $nomeFunc['MATRICULA'] ?>"><?= $nomeFunc['NOME'] ?></option>
+            <option value="<?= $nomeFunc['MATRICULA'] ?>"><?= $nomeFunc['NOME'] ?></option>
 
-    <?php endforeach;
-    ?>
-</select>
+        <?php endforeach;
+        ?>
+    </select>
+</div>
 <input type="hidden" value="" id="cargo">
 <input type="hidden" value="" id="horarioEntradaFunc">
 <input type="hidden" value="" id="horarioSaidaFunc">
 <input type="hidden" value="" id="horarioIntervaloFunc">
 <input type="hidden" value="<?= $Departamento ?>" id="departamento">
 <input type="hidden" value="<?= $usuarioLogado ?>" id="usuarioLogado">
-<div class="row">
+<div style="border:15px  solid transparent" class="row">
     <div class="col-lg-6">
         <div class="mb-6">
             <label for="validationCustom02" class="form-label">Data inicial: </label>
@@ -48,7 +50,7 @@ $usuarioLogado = $_SESSION['nome'];
             <input type="date" class="form-control dataPesquisa margin-bottom" value="" id="dataFinalFerias">
         </div>
     </div>
-</div>
+</style=>
 
 
 <div class="modal-footer d-flex justify-content-between">
@@ -244,7 +246,7 @@ $usuarioLogado = $_SESSION['nome'];
         var horarioSaidaFunc = horarioSaidaFuncPARAMETRO;
         var horarioIntervaloFunc = horarioIntervaloFuncPARAMETRO;
         var Departamento = DepartamentoPARAMETRO;
-var remocaoDeFeriasProgramadas =''
+        var remocaoDeFeriasProgramadas = ''
         var loja = $('#lojaDaPessoaLogada').val();
         var cargo = $("#cargo").val();
         var usuarioLogado = $('#usuarioLogado').val();
@@ -299,7 +301,7 @@ var remocaoDeFeriasProgramadas =''
         if (opcaoSelecionada == '') {
             dataInicialFerias = '';
             dataFinalFerias = '';
-            remocaoDeFeriasProgramadas ='sim';
+            remocaoDeFeriasProgramadas = 'sim';
         }
 
 
@@ -343,10 +345,10 @@ var remocaoDeFeriasProgramadas =''
                     "&dataInicialFerias=" +
                     dataInicialFerias +
                     "&dataFinalFerias=" +
-                    dataFinalFerias+
+                    dataFinalFerias +
                     "&remocaoDeFeriasProgramadas=" +
                     remocaoDeFeriasProgramadas,
-                    
+
 
 
                 success: function(retorno) {
@@ -394,9 +396,9 @@ var remocaoDeFeriasProgramadas =''
                         "&dataInicialFerias=" +
                         dataInicialFerias +
                         "&dataFinalFerias=" +
-                        dataFinalFerias+
-                    "&remocaoDeFeriasProgramadas=" +
-                    remocaoDeFeriasProgramadas,
+                        dataFinalFerias +
+                        "&remocaoDeFeriasProgramadas=" +
+                        remocaoDeFeriasProgramadas,
                     success: function(retorno) {
                         // alert("sucesso do ajax")
                     }
@@ -441,7 +443,7 @@ var remocaoDeFeriasProgramadas =''
                     "&dataInicialFerias=" +
                     dataInicialFerias +
                     "&dataFinalFerias=" +
-                    dataFinalFerias+
+                    dataFinalFerias +
                     "&remocaoDeFeriasProgramadas=" +
                     remocaoDeFeriasProgramadas,
                 success: function(retorno) {
