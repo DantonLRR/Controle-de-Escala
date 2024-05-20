@@ -70,3 +70,10 @@ td {
 .ocultarBotao {
     display: none !important;
 }
+
+.btnModal{
+    background-color:#00a550 !important;
+     color:white !important;
+      font-weight:bold !important;
+}
+

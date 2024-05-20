@@ -810,7 +810,7 @@ endforeach;
             "info": true,
             "ordering": false,
             "lengthMenu": [
-                [40],
+                [100],
             ],
             fixedColumns: {
                 left: 4,

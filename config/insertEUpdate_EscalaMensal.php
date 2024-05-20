@@ -24,6 +24,8 @@ $cargoFunc = trim($_GET['cargoFunc']);
 $DATAINICIOFERIASPROGRAMADAS = isset($_GET['dataInicialFerias']) ? $_GET['dataInicialFerias'] : '';
 $DATAFIMFERIASPROGRAMADAS = isset($_GET['dataFinalFerias']) ? $_GET['dataFinalFerias'] : '';
 $remocaoDeFeriasProgramadas = isset($_GET['remocaoDeFeriasProgramadas']) ? $_GET['remocaoDeFeriasProgramadas'] : '';
+$programaFerias = isset($_GET['programaFerias']) ? $_GET['programaFerias'] : '';
+
 $InsertDeDados = new Insert();
 
 $verifica = new Verifica();
@@ -37,9 +39,11 @@ foreach ($arrayDia as $diaSelecionado) :
     if ($retorno == '1') {
         echo $retorno . " update <br>";
 
-        if ($remocaoDeFeriasProgramadas == 'sim'){
+        if ($remocaoDeFeriasProgramadas == 'sim'|| $programaFerias == 'sim'){
+            echo "caiu no if <br> ";
             $updateDeDados = $update->updateDeFuncionariosNaEscalaMensalFerias($oracle, $usuarioLogado, $mesPesquisado, $nome, $diaSelecionado, $opcaoSelect, $matricula, $loja, $DATAINICIOFERIASPROGRAMADAS, $DATAFIMFERIASPROGRAMADAS);
         }else{
+            echo "caiu no else <br> ";
             $updateDeDados = $update->updateDeFuncionariosNaEscalaMensal($oracle, $usuarioLogado, $mesPesquisado, $nome, $diaSelecionado, $opcaoSelect, $matricula, $loja);
         }        
     } else if ($retorno == '0') {

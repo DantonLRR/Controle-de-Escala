@@ -64,7 +64,10 @@ th, td {
     text-align: center;
     border: 1px solid #000;
 }
-
+#table2 td{
+    font-size: 12px !important;
+    /* Ou qualquer tamanho que você preferir */
+}
 
 
 .informacoesEsquerda1Card {

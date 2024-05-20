@@ -107,7 +107,11 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 
 ?>
 
-<script>
+<script type="module">
+    import {
+        criandoHtmlmensagemCarregamento,
+        Toasty
+    } from "../../../base/jsGeral.js";
     $('#table2').DataTable({
         scrollY: 400,
         scrollCollapse: true,
@@ -120,6 +124,45 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
             [50],
             [50]
         ],
+        buttons: [{
+            text: '<i class="fa-solid fa-file-pdf"  style="color: #ffffff;"></i> PDF ',
+            className: 'btnverde btn ',
+            action: function() {
+                criandoHtmlmensagemCarregamento("exibir");
+                var dataPesquisa = $("#dataPesquisa").val();
+                var dataAtual = $("#dataAtual").val();
+
+                if (dataPesquisa == "") {
+                    dataPesquisa = dataAtual
+                }
+                var diretorioDoPdf = "PDFrelatorio.php";
+                $.ajax({
+                    url: "config/gerarPdf.php",
+                    method: 'POST',
+                    data: 'dataPesquisa=' +
+                        dataPesquisa +
+                        "&loja=" +
+                        loja +
+                        "&diretorioDoPdf=" +
+                        diretorioDoPdf,
+                    xhrFields: {
+                        responseType: "blob",
+                    },
+                    success: function(response) {
+                        // Loading("ocultar");
+                        criandoHtmlmensagemCarregamento("ocultar");
+                        let blobUrl = URL.createObjectURL(response);
+                        window.open(blobUrl, "_blank");
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                        // Loading("ocultar");
+                    },
+                });
+
+            }
+
+        }],
         language: {
             "sEmptyTable": "Nenhum registro encontrado",
 
@@ -155,6 +198,5 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 
             },
         },
-
     });
 </script>

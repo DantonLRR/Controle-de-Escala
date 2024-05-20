@@ -356,6 +356,7 @@ class Funcionarios
         where a.loja= '$loja'
         and a.departamento= '$DEPARTAMENTO'
         and a.datainicioferiasprogramadas || a.datafimferiasprogramadas is not null
+        order by a.nome asc
         ";
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
@@ -1144,7 +1145,7 @@ class Update
     {
         $query = "UPDATE webmartminas.WEB_ESCALA_MENSAL a
          SET
-            datainclusao = SYSDATE,
+            -- datainclusao = SYSDATE,
             usuinclusao = '$usuarioLogado',
             mesSelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM'),
             nome = '$nome',
@@ -1163,7 +1164,7 @@ class Update
     {
         $query = "UPDATE webmartminas.WEB_ESCALA_MENSAL a
          SET
-            datainclusao = SYSDATE,
+            -- datainclusao = SYSDATE,
             usuinclusao = '$usuarioLogado',
             mesSelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM'),
             nome = '$nome',
@@ -1281,7 +1282,7 @@ class Update
         HORASAIDA = '$saida',
         HORAINTERVALO = '$intervalo',
         USUINCLUSAO = '$usuarioLogado',
-        DATAINCLUSAO = sysdate,
+        -- DATAINCLUSAO = sysdate,
         DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD'),
         NUMPDV = '$numPDV',
         LOJA = '$loja'
@@ -1306,13 +1307,14 @@ class Update
         $query = "UPDATE webmartminas.Web_Montagem_Escala_Diaria_PDV SET  
             
              DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD'),
-            DATAINCLUSAO = sysdate,
+            -- DATAINCLUSAO = sysdate,
             USUINCLUSAO = '$usuarioLogado',
             $periodoDeHoras =  '$nome'
 
             WHERE NUMPDV = '$numPDV'
             and loja = '$loja'
             and status = 'A'
+           and DIASELECIONADO = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')
             ";
 
 
@@ -1332,7 +1334,7 @@ class Update
             return false;
         }
 
-        // echo $query;
+        echo $query;
     }
 
     public function updateRemocaoEscalaPDV($oracle, $tabela, $numPDV, $dataPesquisa, $loja)

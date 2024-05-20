@@ -37,15 +37,6 @@ $verifica = new verifica();
 
 $verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $loja, $Departamento);
 
-
-$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja, $Departamento);
-foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
-?>
-	<input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['NOME'] ?>">
-	<input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['FUNCAO'] ?>">
-	<input class="" type="hidden" id="" value="<?= $rowVerificaEncarregado['DEPARTAMENTO2'] ?>">
-<?php
-endforeach
 ?>
 <style>
     @page {
@@ -67,6 +58,10 @@ endforeach
 </style>
 
 <body>
+<?php
+$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja, $Departamento);
+foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+?>
 	<span style="text-transform: capitalize !important;">
 	<b>Escala Mensal setor
 	 <?= ucfirst(strtolower($rowVerificaEncarregado['DEPARTAMENTO2'])) ?>
@@ -85,6 +80,9 @@ endforeach
 		Assinatura : __________________________
 	</span>
 	<hr>
+	<?php
+endforeach
+?>
 	<table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
 		<thead>
 			<tr class="trr">

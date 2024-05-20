@@ -1,6 +1,8 @@
 <?php
 include "../../base/conexao_TotvzOracle.php";
 include "../config/php/CRUD_geral.php";
+include "../../base/conexao_martdb.php";
+
 session_start();
 $dadosFunc = new Funcionarios();
 $loja = $_POST['loja'];
@@ -9,10 +11,11 @@ $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $
 $usuarioLogado = $_SESSION['nome'];
 
 ?>
+
 <input type="hidden" id="lojaDaPessoaLogada" value="<?= $loja ?>">
 <div class="modal-content">
     <div style="background: linear-gradient(to right, #00a451, #052846 85%); color: white;font-weight:bold" class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel ">Agendamento de Ferias</h5>
+        <h5 class="modal-title" id="modalFeriasLabel ">Agendamento de Ferias</h5>
         <button style="color:white" type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -50,19 +53,7 @@ $usuarioLogado = $_SESSION['nome'];
             <input type="date" class="form-control dataPesquisa margin-bottom" value="" id="dataFinalFerias">
         </div>
     </div>
-</style=>
-
-
-<div class="modal-footer d-flex justify-content-between">
-    <button id="CancelarFerias" style="background-color:#00a550;; color:white; font-weight:bold" type="button" class="btn">
-        Ferias Agendadas
-    </button>
-    <button id="salvarFerias" style="background-color:#00a550; color:white; font-weight:bold" type="button" class="btn">
-        Salvar
-    </button>
 </div>
-
-
 <script type="module">
     import {
         criandoHtmlmensagemCarregamento,
@@ -76,7 +67,7 @@ $usuarioLogado = $_SESSION['nome'];
     function primeiroDiaDoMes(ano, mes) {
         return new Date(ano, mes - 1, 1).getDate();
     }
-    $('#exampleModal').on('change', '#funcionarioFerias', function() {
+    $('#modalFerias').on('change', '#funcionarioFerias', function() {
         let funcionarioFeriasMatricula = $('#funcionarioFerias').val();
         let loja = $('#lojaDaPessoaLogada').val();
         let Departamento = $('#departamento').val();
@@ -102,7 +93,7 @@ $usuarioLogado = $_SESSION['nome'];
             },
         });
     })
-    $('#exampleModal').on('click', '#salvarFerias', function() {
+    $('#modalFerias').on('click', '#salvarFerias', function() {
         let opcaoSelecionada = 'F';
         var dataInicialFerias = $('#dataInicialFerias').val();
         var dataFinalFerias = $('#dataFinalFerias').val();
@@ -114,21 +105,47 @@ $usuarioLogado = $_SESSION['nome'];
         var Departamento = $('#departamento').val();
 
 
-        console.log(" correto dataInicialFerias :" + dataInicialFerias);
-        console.log(" correto dataFinalFerias :" + dataFinalFerias);
+        // console.log(" correto dataInicialFerias :" + dataInicialFerias);
+        // console.log(" correto dataFinalFerias :" + dataFinalFerias);
         if (dataFinalFerias == '' || dataInicialFerias == '' || funcionarioFerias == '') {
             Toasty("Atenção", "Preencha todos os campos", "#E20914");
         } else if (dataInicialFerias >= dataFinalFerias) {
             Toasty("Atenção", "Data final das ferias nao pode ser menor que a data inicial", "#E20914");
         } else {
+            criandoHtmlmensagemCarregamento("exibir");
             InsereNoBanco(
                 opcaoSelecionada, dataInicialFerias,
                 dataFinalFerias, funcionarioFerias, NomefuncionarioFerias, horarioEntradaFunc, horarioSaidaFunc,
-                horarioIntervaloFunc, Departamento
+                horarioIntervaloFunc, Departamento,
+                function() {
+                    $('#modalFerias').modal('show');
+                    criandoHtmlmensagemCarregamento("exibir");
+                    let loja = $('#lojaDaPessoaLogada').val();
+                    let Departamento = $('#departamento').val();
+                    $.ajax({
+                        url: "modal/modalFerias.php",
+                        method: 'POST',
+                        data: 'Departamento=' +
+                            Departamento +
+                            "&loja=" +
+                            loja,
+                        success: function(modalFerias) {
+                            $('.modal-content').empty().html(modalFerias);
+                            criandoHtmlmensagemCarregamento("ocultar");
+                            Toasty("Sucesso", "Férias do colaborador: " + NomefuncionarioFerias + " foram agendadas", "#00a550")
+                        }
+                    });
+                }
             );
         }
     });
-    $('#exampleModal').on('click', '#CancelarFerias', function() {
+    $('#modalFerias').on('click', '#feriasAgendadas', function() {
+
+
+        $('#AgendamentoFerias').addClass('ocultarBotao');
+        $('#feriasAgendadas').addClass('ocultarBotao');
+        $('#AgendamentoFerias').removeClass('ocultarBotao');
+
         criandoHtmlmensagemCarregamento("exibir");
         let loja = $('#lojaDaPessoaLogada').val();
         let Departamento = $('#departamento').val();
@@ -140,13 +157,15 @@ $usuarioLogado = $_SESSION['nome'];
                 "&loja=" +
                 loja,
             success: function(modalFerias) {
-                $('.modal-content').empty().html(modalFerias);
+                $('.tabelaCancelamentoFerias').empty().html(modalFerias);
                 criandoHtmlmensagemCarregamento("ocultar");
             }
         });
 
     })
-    $('#exampleModal').on('click', '#AgendamentoFerias', function() {
+    $('#modalFerias').on('click', '#AgendamentoFerias', function() {
+        $('#AgendamentoFerias').addClass('ocultarBotao');
+        $('#feriasAgendadas').removeClass('ocultarBotao');
         criandoHtmlmensagemCarregamento("exibir");
         let loja = $('#lojaDaPessoaLogada').val();
         let Departamento = $('#departamento').val();
@@ -163,80 +182,49 @@ $usuarioLogado = $_SESSION['nome'];
             }
         });
     })
-    $('#exampleModal').on('click', '.fa-trash', function() {
+    $('#modalFerias').on('click', '.fa-trash', function() {
+        criandoHtmlmensagemCarregamento("exibir");
         let opcaoSelecionada = '';
         var $tr = $(this).closest('tr');
         // add trim
-        var funcionarioFerias = $tr.find('td.matricula').text();
-        var NomefuncionarioFerias = $tr.find('td.funcionario').text();
+        var funcionarioFerias = $tr.find('td.matricula').text().trim();
+        var NomefuncionarioFerias = $tr.find('td.funcionario').text().trim();
 
         var Departamento = $('#departamento').val();
 
-        var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text();
-        var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
-        var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
+        var horarioEntradaFunc = $tr.find('td.horarioEntradaFunc').text().trim();
+        var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text().trim();
+        var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text().trim();
 
-        var dataInicialFerias = $tr.find('td.dataInicialFerias').text();
-        var dataFinalFerias = $tr.find('td.dataFinalFerias').text();
-        console.log(" errado dataInicialFerias :" + dataInicialFerias);
-        console.log(" errado dataFinalFerias :" + dataFinalFerias);
+        var dataInicialFerias = $tr.find('td.dataInicialFerias').text().trim();
+        var dataFinalFerias = $tr.find('td.dataFinalFerias').text().trim();
         InsereNoBanco(
             opcaoSelecionada, dataInicialFerias,
             dataFinalFerias, funcionarioFerias, NomefuncionarioFerias, horarioEntradaFunc, horarioSaidaFunc,
-            horarioIntervaloFunc, Departamento
+            horarioIntervaloFunc, Departamento,
+            function() {
+                let loja = $('#lojaDaPessoaLogada').val();
+                let Departamento = $('#departamento').val();
+                $.ajax({
+                    url: "modal/modalCancelarFerias.php",
+                    method: 'POST',
+                    data: 'Departamento=' +
+                        Departamento +
+                        "&loja=" +
+                        loja,
+                    success: function(modalFerias) {
+                        $('.modal-content').empty().html(modalFerias);
+                        criandoHtmlmensagemCarregamento("ocultar");
+                        Toasty("Sucesso", "Férias do colaborador: " + NomefuncionarioFerias + " foram canceladas", "#00a550")
+
+                    }
+                });
+            }
         );
     });
-    // $('#tabelaCancelamentoDeFerias').DataTable({
-    //     scrollY: 400,
-    //     scrollX: 250,
-    //     searching: true,
-    //     dom: 'frtip',
-    //     "paging": true,
-    //     "info": false,
-    //     "ordering": false,
-    //     "lengthMenu": [
-    //         [15],
 
-    //     ],
-    //     language: {
-    //         "sEmptyTable": "Nenhum registro encontrado",
-
-    //         "sInfo": " _START_ até _END_ de _TOTAL_ registros...  ",
-
-    //         "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
-
-    //         "sInfoFiltered": "(Filtrados de _MAX_ registros)",
-
-    //         "sInfoPostFix": "",
-
-    //         "sInfoThousands": ".",
-
-    //         "sLengthMenu": "_MENU_ resultados por página",
-
-    //         "sLoadingRecords": "Carregando...",
-
-    //         "sProcessing": "Processando...",
-
-    //         "sZeroRecords": "Nenhum registro encontrado",
-
-    //         "sSearch": "Pesquisar",
-
-    //         "oPaginate": {
-
-    //             "sNext": "Próximo",
-
-    //             "sPrevious": "Anterior",
-
-    //             "sFirst": "Primeiro",
-
-    //             "sLast": "Último"
-
-    //         },
-    //     },
-
-    // });
     function InsereNoBanco(opcaoSelecionadaPARAMETRO, dataInicialFeriasPARAMETRO, dataFinalFeriasPARAMETRO, funcionarioFeriasPARAMETRO, NomefuncionarioFeriasPARAMETRO, horarioEntradaFuncPARAMETRO, horarioSaidaFuncPARAMETRO,
-        horarioIntervaloFuncPARAMETRO, DepartamentoPARAMETRO) {
+        horarioIntervaloFuncPARAMETRO, DepartamentoPARAMETRO, sucessoCallback) {
         var opcaoSelecionada = opcaoSelecionadaPARAMETRO
         var dataInicialFerias = dataInicialFeriasPARAMETRO;
         var dataFinalFerias = dataFinalFeriasPARAMETRO;
@@ -261,14 +249,14 @@ $usuarioLogado = $_SESSION['nome'];
         let numeroDiaDaSemanaArrayParaInserirFerias = [];
         let numeroDiaDaSemanaArrayInsereNosDiasFaltantesDoProximoMes = [];
 
-
+        let programaFerias = 'sim'
         let ultimoDiaDoMesInicial = ultimoDiaDoMes(anoInicial, mesInicial);
         let DataFinalDoMesInicial = mesAnoInicial + "-" + ultimoDiaDoMesInicial;
 
 
         let primeiroDiaDoMesFinal = mesAnoFinal + "-01";
-        // console.log("dataInicialFerias: " + dataInicialFerias);
-        // console.log("dataFinalFerias: " + dataFinalFerias);
+        console.log("dataInicialFerias: " + dataInicialFerias);
+        console.log("dataFinalFerias: " + dataFinalFerias);
         // console.log("DataFinalDoMesInicial: " + DataFinalDoMesInicial);
         // console.log("primeiroDiaDoMesFinal: " + primeiroDiaDoMesFinal);
         // Convertendo as strings em objetos de data
@@ -294,10 +282,10 @@ $usuarioLogado = $_SESSION['nome'];
             parseInt(primeiroDiaDoMesFinal.substring(8, 10)) // dia
         );
 
-        // console.log("dataInicialFerias: " + dataInicialFeriasObj);
-        // console.log("dataFinalFerias: " + dataFinalFeriasObj);
-        // console.log("DiaFinalDoMesInicial: " + DiaFinalDoMesInicialObj);
-        // console.log("primeiroDiaDoMesFinal: " + primeiroDiaDoMesFinalObj);
+        console.log("dataInicialFerias OBJ: " + dataInicialFeriasObj);
+        console.log("dataFinalFerias OBJ: " + dataFinalFeriasObj);
+        // console.log("DiaFinalDoMesInicial OBJ: " + DiaFinalDoMesInicialObj);
+        // console.log("primeiroDiaDoMesFinal OBJ: " + primeiroDiaDoMesFinalObj);
         if (opcaoSelecionada == '') {
             dataInicialFerias = '';
             dataFinalFerias = '';
@@ -347,12 +335,11 @@ $usuarioLogado = $_SESSION['nome'];
                     "&dataFinalFerias=" +
                     dataFinalFerias +
                     "&remocaoDeFeriasProgramadas=" +
-                    remocaoDeFeriasProgramadas,
-
-
-
+                    remocaoDeFeriasProgramadas +
+                    "&programaFerias=" +
+                    programaFerias,
                 success: function(retorno) {
-                    // alert("sucesso do ajax")
+                    criandoHtmlmensagemCarregamento("ocultar");
                 }
             });
 
@@ -398,19 +385,34 @@ $usuarioLogado = $_SESSION['nome'];
                         "&dataFinalFerias=" +
                         dataFinalFerias +
                         "&remocaoDeFeriasProgramadas=" +
-                        remocaoDeFeriasProgramadas,
+                        remocaoDeFeriasProgramadas +
+                        "&programaFerias=" +
+                        programaFerias,
                     success: function(retorno) {
-                        // alert("sucesso do ajax")
+                        criandoHtmlmensagemCarregamento("ocultar");
                     }
                 });
             }
+            $.ajax({
+                url: "config/pesquisar_escalaMensal.php",
+                method: 'POST',
+                data: 'mesPesquisa=' +
+                    mesAnoInicial +
+                    "&loja=" +
+                    loja +
+                    "&usuarioLogado=" +
+                    usuarioLogado,
+                success: function(mes_Pesquisado) {
+                    $('.atualizaTabela').empty().html(mes_Pesquisado);
+                    criandoHtmlmensagemCarregamento("ocultar");
+                }
+            });
         } else {
             for (let i = diaInicial; i <= diaFinal; i++) {
                 let aux = i < 10 ? "0" + i : i.toString();
                 numeroDiaDaSemanaArrayParaInserirFerias.push('"' + aux + '"');
                 // console.log("Dia inserido : " + numeroDiaDaSemanaArrayParaInserirFerias);
             }
-
             $.ajax({
                 url: "Config/insertEUpdate_EscalaMensal.php",
                 method: 'get',
@@ -445,11 +447,28 @@ $usuarioLogado = $_SESSION['nome'];
                     "&dataFinalFerias=" +
                     dataFinalFerias +
                     "&remocaoDeFeriasProgramadas=" +
-                    remocaoDeFeriasProgramadas,
+                    remocaoDeFeriasProgramadas +
+                    "&programaFerias=" +
+                    programaFerias,
                 success: function(retorno) {
-                    // alert("sucesso do ajax")
+                    criandoHtmlmensagemCarregamento("ocultar");
+                }
+            });
+            $.ajax({
+                url: "config/pesquisar_escalaMensal.php",
+                method: 'POST',
+                data: 'mesPesquisa=' +
+                    mesAnoInicial +
+                    "&loja=" +
+                    loja +
+                    "&usuarioLogado=" +
+                    usuarioLogado,
+                success: function(mes_Pesquisado) {
+                    $('.atualizaTabela').empty().html(mes_Pesquisado);
+                    criandoHtmlmensagemCarregamento("ocultar");
                 }
             });
         }
+        sucessoCallback();
     }
 </script>

@@ -24,7 +24,7 @@ include "../base/conexao_TotvzOracle.php";
 
 
 
-    
+
     <link rel="stylesheet" href="../../BASE/DataTables/FixedColumns 4.3.0/FixedColumns-4.3.0/css/fixedColumns.dataTables.min.css" type="text/css">
 
 
@@ -218,11 +218,90 @@ if ($retorno === "NÃO FINALIZADA.") {
                                 </table>
 
                             </div>
-                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-lg"  role="document">
+                            <div class="modal fade" id="modalFerias" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
+                                        <div class="cadastroFerias"></div>
+                                        <table id="tabelaCancelamentoDeFerias" class=" tabelaCancelamentoDeFerias stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100% !important">
+                                            <thead>
+                                                <tr class="trr ">
+                                                    <th class="text-center">
+                                                        Funcionario
+                                                    </th>
 
+                                                    <th class="text-center">
+                                                        Data Inicial
+                                                    </th>
+                                                    <th class="text-center">
+                                                        Data Final
+                                                    </th>
+                                                    <th class="text-center">
+                                                        Excluir:
+                                                    </th>
+                                                    <th style="display:none" class="text-center">
+                                                        Cargo
+                                                    </th>
+                                                    <th style="display:none" class="text-center">
+                                                        matricula
+                                                    </th>
+                                                    <th class="text-center " style="display:none">
+                                                        Entrada
+                                                    </th>
+                                                    <th class="text-center " style="display:none">
+                                                        Saida
+                                                    </th>
+                                                    <th class="text-center " style="display:none">
+                                                        Intervalo
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="tabelaCancelamentoFerias">
+                                                    <td class="text-center funcionario nowrap" scope="row">
+                                                    </td>
+                                                    <td style="display:none" class="text-center cargo" scope="row">
+
+                                                    </td>
+                                                    <td style="display:none" class="text-center matricula" scope="row">
+
+                                                    </td>
+                                                    <td class="text-center horarioEntradaFunc" style="display:none" scope="row">
+
+                                                    </td>
+                                                    <td class="text-center horarioSaidaFunc" style="display:none" scope="row">
+
+                                                    </td>
+                                                    <td class="text-center horarioIntervaloFunc" style="display:none" scope="row">
+
+                                                    </td>
+                                                    <td class="text-center dataInicialFerias" scope="row">
+
+                                                    </td>
+                                                    <td class="text-center dataFinalFerias" scope="row">
+
+                                                    </td>
+                                                    <td scope="row" class="btnExcluir">
+                                                        <i style="color:red; cursor:pointer" class="fa-solid fa-trash"></i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+                                        </table>
+
+
+                                        <div class="modal-footer d-flex justify-content-between" style="background-color:white;">
+                                            <button id="AgendamentoFerias" type="button" style="display:none" class="btn btnModal">
+                                                Agendar férias
+                                            </button>
+                                            <button id="feriasAgendadas" type="button" class="btn btnModal">
+                                                Ferias Agendadas
+                                            </button>
+                                            <button id="salvarFerias" type="button" class="btn btnModal">
+                                                Salvar
+                                            </button>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         <?php
@@ -244,7 +323,7 @@ if ($retorno === "NÃO FINALIZADA.") {
         <?php
         // echo $statusDaTabela;
         ?>
-       
+
         <script src="../base/dist/sidenav.js"></script>
         <script type="module" src="js/Script_escalaMensal.js" defer></script>
 
@@ -275,7 +354,58 @@ if ($retorno === "NÃO FINALIZADA.") {
         <script src="../BASE/formulario7/formulario/js/out/jquery.idealforms.js"></script>
 
         <script type="text/javascript" src="../../base/DataTables//FixedColumns 4.3.0//FixedColumns-4.3.0/js/dataTables.fixedColumns.min.js"></script>
+<!-- <script>
+    $('#tabelaCancelamentoDeFerias').DataTable({
+    dom: 'frtip',
+    scrollY: false,
+    scrollX: false,
+    searching: true,
 
+    "paging": false,
+    "info": true,
+    "ordering": false,
+    "lengthMenu": [
+        [15],
+
+    ],
+    language: {
+        "sEmptyTable": "Nenhum registro encontrado",
+
+        "sInfo": " _START_ até _END_ de _TOTAL_ registros...  ",
+
+        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+
+        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+
+        "sInfoPostFix": "",
+
+        "sInfoThousands": ".",
+
+        "sLengthMenu": "_MENU_ resultados por página",
+
+        "sLoadingRecords": "Carregando...",
+
+        "sProcessing": "Processando...",
+
+        "sZeroRecords": "Nenhum registro encontrado",
+
+        "sSearch": "Pesquisar",
+
+        "oPaginate": {
+
+            "sNext": "Próximo",
+
+            "sPrevious": "Anterior",
+
+            "sFirst": "Primeiro",
+
+            "sLast": "Último"
+
+        },
+    },
+
+});
+</script> -->
     </div>
 </body>
 
