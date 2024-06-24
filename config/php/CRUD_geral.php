@@ -167,8 +167,14 @@ class Funcionarios
         $query = "SELECT * from webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED a 
         WHERE a.matricula = '$matricula'
         and trim(a.nome) = '$nome'
-        and a.loja = $loja      
-        and a.diaselecionado = TO_DATE('$diaselecionado', 'YYYY-MM-DD')";
+        and a.loja = $loja   
+         --and a.diaselecionado = TO_DATE('$diaselecionado', 'YYYY-MM-DD')   
+        AND a.dataInclusao = (SELECT MAX(dataInclusao)
+                                from webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED a 
+                                WHERE a.matricula = '$matricula'
+                                and trim(a.nome) = '$nome'
+                                and a.loja = $loja 
+                            )";
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
 
@@ -190,6 +196,7 @@ class Funcionarios
         F.NOME,
         F.CODPESSOA,
         SUBSTR(PF.NOME, 0, 11) AS FUNCAO,
+        SUBSTR(PF.NOME, 0, 8) AS FUNCAOLIDER,
         SUBSTR(S.DESCRICAO, 1, 3) AS LOJA,
         P.CPF,
         SUBSTR(S.DESCRICAO,7) AS SETOR,
@@ -221,7 +228,6 @@ class Funcionarios
                 F.CODCOLIGADA = 1 
                 and f.CODCOLIGADA = 1 AND f.CODSITUACAO = 'A'
                 and P.CPF = $cpf
-                and SUBSTR(S.DESCRICAO, 1, 3) = '$lojaDaPessoaLogada'
             ORDER BY   F.NOME
             ";
         $resultado = oci_parse($TotvsOracle, $query);
@@ -327,12 +333,13 @@ class Funcionarios
                         ) SAIDA2 ON
                 SAIDA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA2.CODIGO = PFUNC.CODHORARIO
                     
-                WHERE   PFUNC.CODCOLIGADA = 1 AND PFUNC.CODSITUACAO <>'D' 
+                WHERE   PFUNC.CODCOLIGADA = 1  
+                AND PFUNC.CODSITUACAO IN ('A','F') 
                         AND SUBSTR(PSECAO.DESCRICAO,1,3) =  '$lojaDaPessoaLogada'
                         and  SUBSTR(PSECAO.DESCRICAO, 6, 99) like '%$setorDaPessoaLogada%'
-                
-                ORDER BY PFUNC.NOME
-        ";
+                        and  SUBSTR(PFUNCAO.NOME, 1, 99) NOT LIKE '%APRENDIZ%'
+                        and  SUBSTR(PFUNCAO.NOME, 1, 99) NOT LIKE '%ENCARREGADO%'
+                ORDER BY PFUNC.NOME ";
         $resultado = oci_parse($TotvsOracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
@@ -754,6 +761,357 @@ class Verifica
     }
 
     //verificacao bloqueio da escala mensal
+
+    public function verificaPessoaNaEscalaMensal($oracle, $matricula, $mesPesquisado, $loja, $departamento)
+    {
+        $lista = array();
+        global  $retorno;
+        $query =
+            <<<SQL
+                        WITH FOLGA AS
+                        (SELECT E.MATRICULA,
+                                E.NOME,
+                                E.LOJA,
+                                E.CARGO,
+                                E.MESSELECIONADO,
+                                E.STATUS,
+                                E.HORAENTRADA,
+                                E.HORASAIDA,
+                                E.HORAINTERVALO,
+                                E."01",
+                                E."02",
+                                E."03",
+                                E."04",
+                                E."05",
+                                E."06",
+                                E."07",
+                                E."08",
+                                E."09",
+                                E."10",
+                                E."11",
+                                E."12",
+                                E."13",
+                                E."14",
+                                E."15",
+                                E."16",
+                                E."17",
+                                E."18",
+                                E."19",
+                                E."20",
+                                E."21",
+                                E."22",
+                                E."23",
+                                E."24",
+                                E."25",
+                                E."26",
+                                E."27",
+                                E."28",
+                                E."29",
+                                E."30",
+                                E."31",
+                                E.DATAINCLUSAO,
+                                E.USUINCLUSAO,
+                                E.USUFINALIZACAOESCALA,
+                                E.USUNOVALIBERACAOESCALA,
+                                E.INCLUSAODOMESANTERIOR,
+                                E.DEPARTAMENTO,
+                                E.DATAINICIOFERIASPROGRAMADAS,
+                                E.DATAFIMFERIASPROGRAMADAS,
+                                TRIM(REPLACE(CASE
+                                                WHEN E."01" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                '1/'
+                                            END || ' / ' || CASE
+                                                WHEN E."02" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                2
+                                            END || '/ ' || CASE
+                                                WHEN E."03" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                3
+                                            END || '/ ' || CASE
+                                                WHEN E."04" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                4
+                                            END || '/ ' || CASE
+                                                WHEN E."05" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                5
+                                            END || '/ ' || CASE
+                                                WHEN E."06" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                6
+                                            END || '/ ' || CASE
+                                                WHEN E."07" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                7
+                                            END || '/ ' || CASE
+                                                WHEN E."08" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                8
+                                            END || '/ ' || CASE
+                                                WHEN E."09" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                9
+                                            END || '/ ' || CASE
+                                                WHEN E."10" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                10
+                                            END || '/ ' || CASE
+                                                WHEN E."11" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                11
+                                            END || '/ ' || CASE
+                                                WHEN E."12" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                12
+                                            END || '/ ' || CASE
+                                                WHEN E."13" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                13
+                                            END || '/ ' || CASE
+                                                WHEN E."14" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                14
+                                            END || '/ ' || CASE
+                                                WHEN E."15" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                15
+                                            END || '/ ' || CASE
+                                                WHEN E."16" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                16
+                                            END || '/ ' || CASE
+                                                WHEN E."17" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                17
+                                            END || '/ ' || CASE
+                                                WHEN E."18" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                18
+                                            END || '/ ' || CASE
+                                                WHEN E."19" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                19
+                                            END || '/ ' || CASE
+                                                WHEN E."20" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                20
+                                            END || '/ ' || CASE
+                                                WHEN E."21" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                21
+                                            END || '/ ' || CASE
+                                                WHEN E."22" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                22
+                                            END || '/ ' || CASE
+                                                WHEN E."23" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                23
+                                            END || '/ ' || CASE
+                                                WHEN E."24" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                24
+                                            END || '/ ' || CASE
+                                                WHEN E."25" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                25
+                                            END || '/ ' || CASE
+                                                WHEN E."26" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                26
+                                            END || '/ ' || CASE
+                                                WHEN E."27" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                27
+                                            END || '/ ' || CASE
+                                                WHEN E."28" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                28
+                                            END || '/ ' || CASE
+                                                WHEN E."29" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                CASE WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO),'DD') AS INTEGER) >= 29 THEN 29 ELSE NULL END
+                                            END || '/ ' || CASE
+                                                WHEN E."30" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                CASE WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO),'DD') AS INTEGER) >= 30 THEN 30 ELSE NULL END
+                                            END || '/ ' || CASE
+                                                WHEN E."31" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                                                CASE WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO),'DD') AS INTEGER) >= 31 THEN 31 ELSE NULL END
+                                            END,
+                                            ' /',
+                                            '')) DIAS,
+                                            CAST(TO_CHAR(LAST_DAY(MESSELECIONADO),'DD') AS INTEGER) DIA_FINAL
+                                            FROM WEBMARTMINAS.WEB_ESCALA_MENSAL E
+                                                where  E.Matricula = '{$matricula}'
+                                                AND TO_CHAR(E.MESSELECIONADO,'YYYY-MM')= '{$mesPesquisado}'
+                                                and E.departamento = '{$departamento}'
+                                                and E.loja = '{$loja}' 
+                            
+                            
+                            )
+                        SELECT E.MATRICULA,
+                            E.NOME,
+                            E.LOJA,
+                            E.CARGO,
+                            E.MESSELECIONADO,
+                            E.STATUS,
+                            E.HORAENTRADA,
+                            E.HORASAIDA,
+                            E.HORAINTERVALO,
+                            E."01",
+                            E."02",
+                            E."03",
+                            E."04",
+                            E."05",
+                            E."06",
+                            E."07",
+                            E."08",
+                            E."09",
+                            E."10",
+                            E."11",
+                            E."12",
+                            E."13",
+                            E."14",
+                            E."15",
+                            E."16",
+                            E."17",
+                            E."18",
+                            E."19",
+                            E."20",
+                            E."21",
+                            E."22",
+                            E."23",
+                            E."24",
+                            E."25",
+                            E."26",
+                            E."27",
+                            E."28",
+                            E."29",
+                            E."30",
+                            E."31",
+                            E.DATAINCLUSAO,
+                            E.USUINCLUSAO,
+                            E.USUFINALIZACAOESCALA,
+                            E.USUNOVALIBERACAOESCALA,
+                            E.INCLUSAODOMESANTERIOR,
+                            E.DEPARTAMENTO,
+                            E.DATAINICIOFERIASPROGRAMADAS,
+                            E.DATAFIMFERIASPROGRAMADAS,
+                            CASE
+                                WHEN DIAS2 - DIAS1 > 7 THEN
+                                'ALERTA'
+                                WHEN DIAS3 - DIAS2 > 7 THEN
+                                'ALERTA'
+                                WHEN DIAS4 - DIAS3 > 7 THEN
+                                'ALERTA'
+                                WHEN DIAS5 - DIAS4 > 7 THEN
+                                'ALERTA'
+                                WHEN DIAS6 - DIAS5 > 7 THEN
+                                'ALERTA'
+                                ELSE
+                                ''
+                            END AS VALIDA
+                        FROM (SELECT F.DIAS,
+                                    F.*,
+                                    NVL(CAST(REPLACE(SUBSTR(DIAS, 1, 3), '/') AS INTEGER), 1) AS DIAS1,
+                                    NVL(CAST(REPLACE(SUBSTR(DIAS, 4, 3), '/') AS INTEGER),
+                                        CAST(REPLACE(SUBSTR(DIAS, 1, 3), '/') AS INTEGER) + 8) AS DIAS2,
+                                    NVL(CAST(REPLACE(SUBSTR(DIAS, 7, 3), '/') AS INTEGER),
+                                        CAST(REPLACE(SUBSTR(DIAS, 4, 3), '/') AS INTEGER) + 8) AS DIAS3,
+                                    NVL(CAST(REPLACE(SUBSTR(DIAS, 10, 4), '/') AS INTEGER),
+                                        CAST(REPLACE(SUBSTR(DIAS, 7, 3), '/') AS INTEGER) + 8) AS DIAS4,
+                                    CASE WHEN NVL(CAST(REPLACE(SUBSTR(DIAS, 14, 4), '/') AS INTEGER),
+                                                    CAST(REPLACE(SUBSTR(DIAS, 10, 4), '/') AS INTEGER) + 8) <= DIA_FINAL THEN
+                                    NVL(CAST(REPLACE(SUBSTR(DIAS, 14, 4), '/') AS INTEGER),
+                                        CAST(REPLACE(SUBSTR(DIAS, 10, 4), '/') AS INTEGER) + 8) ELSE DIA_FINAL END AS DIAS5,
+                                    
+                                    CASE WHEN NVL(CAST(REPLACE(SUBSTR(DIAS, 14, 4), '/') AS INTEGER),
+                                                    CAST(REPLACE(SUBSTR(DIAS, 10, 4), '/') AS INTEGER) + 8) > DIA_FINAL THEN                    
+                                            NVL(CAST(REPLACE(SUBSTR(DIAS, 18, 4), '/') AS INTEGER),
+                                                CAST(REPLACE(SUBSTR(DIAS, 14, 4), '/') AS INTEGER) + 8) ELSE
+                                    DIA_FINAL END AS DIAS6,
+                                    DIA_FINAL AS DIAS7
+                                FROM FOLGA F
+                                WHERE CARGO NOT LIKE '%APRENDIZ%'
+                                AND DIAS IS NOT NULL) E                 
+                                            
+    
+SQL;
+        // echo "<br><br><br><br><br><br><br>" . $query;
+
+        $parse = oci_parse($oracle, $query);
+        $retorno = oci_execute($parse);
+        while ($row = oci_fetch_assoc($parse)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+    }
+    public function verificaNomeDaPessoaComBaseNaMatricula($TotvsOracle, $matricula)
+    {
+
+        $lista = array();
+        global  $retorno;
+        $query =
+<<<SQL
+                SELECT DISTINCT PFUNC.CHAPA,
+                PFUNC.NOME AS NOME,
+                SUBSTR(PFUNCAO.NOME, 0, 11) AS NOME2,
+                PFUNCAO.NOME AS CARGO,
+                PCCUSTO.NOME AS DESCRICAO,
+                PCCUSTO.NOME AS CENTROCUSTO,
+                SUBSTR(PCCUSTO.NOME, 0, 8) AS TESTE,
+                PCCUSTO.CODCCUSTO,
+                PSECAO.CODIGO AS NROEMPRESA,
+                PPESSOA.CPF,
+                PFUNC.CODSITUACAO AS CODSITUACAO,
+                PFUNC.DATAADMISSAO AS DATA_ADMISSAO,
+                SUBSTR(PSECAO.DESCRICAO, 1, 3) AS LOJA,
+                SUBSTR(PSECAO.DESCRICAO, 6) AS SETOR1,
+                TRIM(SUBSTR(PSECAO.DESCRICAO, 6)) AS SETORSEMESPACO,
+                TO_CHAR(PFUNC.DATAADMISSAO, 'YYYY-MM-DD') AS DATA_ADMISSAO_CONVERTIDA,
+                PSECAO.DESCRICAO AS SETOR,
+                PFUNCAO.CODIGO AS CODFUNCAO,
+                TRUNC(MONTHS_BETWEEN(SYSDATE, PFUNC.DATAADMISSAO) / 12) AS ANOS_TEMPO_CASA,
+                TRUNC(MONTHS_BETWEEN(SYSDATE, PFUNC.DATAADMISSAO)) - CASE
+                WHEN TO_NUMBER(TO_CHAR(SYSDATE, 'DD')) <
+                    TO_NUMBER(TO_CHAR(PFUNC.DATAADMISSAO, 'DD')) THEN
+                1
+                ELSE
+                0
+                END - 12 *
+                TRUNC(MONTHS_BETWEEN(SYSDATE, PFUNC.DATAADMISSAO) / 12) AS MESES_TEMPO_CASA,
+                ABS(EXTRACT(DAY FROM PFUNC.DATAADMISSAO) -
+                    EXTRACT(DAY FROM SYSDATE)) AS DIAS_TEMPO_CASA,
+                TRUNC(MONTHS_BETWEEN(SYSDATE, FUNCAO.DATAMUDANCA) / 12) AS ANOS_TEMPO_FUNCAO,
+                TRUNC(MONTHS_BETWEEN(SYSDATE, FUNCAO.DATAMUDANCA)) - CASE
+                WHEN TO_NUMBER(TO_CHAR(SYSDATE, 'DD')) <
+                    TO_NUMBER(TO_CHAR(FUNCAO.DATAMUDANCA, 'DD')) THEN
+                1
+                ELSE
+                0
+                END - 12 *
+                TRUNC(MONTHS_BETWEEN(SYSDATE, FUNCAO.DATAMUDANCA) / 12) AS MESES_TEMPO_FUNCAO,
+                ABS(EXTRACT(DAY FROM FUNCAO.DATAMUDANCA) -
+                    EXTRACT(DAY FROM SYSDATE)) AS DIAS_TEMPO_FUNCAO
+
+            FROM PFUNC
+
+            INNER JOIN PPESSOA
+            ON PFUNC.CODPESSOA = PPESSOA.CODIGO
+
+            INNER JOIN PFRATEIOFIXO
+            ON PFUNC.CODCOLIGADA = PFRATEIOFIXO.CODCOLIGADA
+            AND PFUNC.CHAPA = PFRATEIOFIXO.CHAPA
+
+            INNER JOIN PCCUSTO
+            ON PFRATEIOFIXO.CODCOLIGADA = PCCUSTO.CODCOLIGADA
+            AND PFRATEIOFIXO.CODCCUSTO = PCCUSTO.CODCCUSTO
+
+            INNER JOIN PFUNCAO
+            ON PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA
+            AND PFUNC.CODFUNCAO = PFUNCAO.CODIGO
+
+            INNER JOIN PSECAO
+            ON PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA
+            AND PFUNC.CODSECAO = PSECAO.CODIGO
+
+            LEFT JOIN (SELECT PFHSTFCO.CODCOLIGADA,
+                    PFHSTFCO.CHAPA,
+                    MAX(PFHSTFCO.DTMUDANCA) AS DATAMUDANCA
+            FROM PFHSTFCO
+            WHERE PFHSTFCO.CODCOLIGADA = 1
+            GROUP BY PFHSTFCO.CODCOLIGADA, PFHSTFCO.CHAPA) FUNCAO
+            ON PFUNC.CODCOLIGADA = FUNCAO.CODCOLIGADA
+            AND PFUNC.CHAPA = FUNCAO.CHAPA
+
+            WHERE PFUNC.CODCOLIGADA = 1
+            AND PFUNC.CHAPA LIKE ('{$matricula}')
+
+
+SQL;
+      //  echo "<br><br><br><br><br><br><br>" . $query;
+
+        $parse = oci_parse($TotvsOracle, $query);
+        $retorno = oci_execute($parse);
+        while ($row = oci_fetch_assoc($parse)) {
+            array_push($lista, $row);
+        }
+        return $lista;
+    }
+
 
     public function verificaSeAEscalaMensalEstaFinalizada($oracle, $mesPesquisado, $loja, $departamento)
     {

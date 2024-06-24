@@ -37,52 +37,76 @@ $verifica = new verifica();
 
 $verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $loja, $Departamento);
 
+$dataFormatadaMesReferencia = $dataAtual->format('d/m/Y');
 ?>
 <style>
-    @page {
-        footer: page-footer;
-    }
+	td {
+		font-size: 10px !important;
+		/* Ou qualquer tamanho que você preferir */
+		font-family: Arial, sans-serif !important;
+	}
 
-    #page-footer {
-        position: fixed;
-        bottom: -50px;
-        left: 0;
-        right: 0;
-        height: 50px;
-        text-align: center;
-    }
+	@page {
+		footer: page-footer;
+		margin-left: 5mm;
+		/* Define a margem esquerda para 10mm */
+		margin-right: 5mm;
+		/* Define a margem direita para 15mm */
+		margin-top: 5mm;
+		/* Define a margem superior para 20mm */
+		margin-bottom: 5mm;
+		/* Define a margem inferior para 20mm */
+	}
+	#page-footer {
+		position: fixed;
+		bottom: -38px;
+		left: 0;
+		right: 34px;
+		height: 50px;
+		text-align: center;
+	}
 
-    .page-number:before {
-        content: counter(page);
-    }
+	.page-number:before {
+		content: counter(page);
+	}
+
+	body {
+		font-family: Arial, sans-serif;
+		font-size: 12px;
+	}
 </style>
 
+
+
 <body>
-<?php
-$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja, $Departamento);
-foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
-?>
-	<span style="text-transform: capitalize !important;">
-	<b>Escala Mensal setor
-	 <?= ucfirst(strtolower($rowVerificaEncarregado['DEPARTAMENTO2'])) ?>
-	  Referente ao mês de
-	   <?= $mesAtualformatado ?>.
-</b>
-	</span>
-	<br>
-	<span style="text-transform: capitalize !important;">
-		Expedido dia <?= $dataFormatada ?> por:
-		<b>
-			<?= ucfirst(strtolower($rowVerificaEncarregado['NOME'])) ?>,
-			<?= ucfirst(strtolower($rowVerificaEncarregado['FUNCAO'])) ?> de
-			<?= ucfirst(strtolower($rowVerificaEncarregado['DEPARTAMENTO2'])) ?>
-		</b>
-		Assinatura : __________________________
-	</span>
-	<hr>
 	<?php
-endforeach
-?>
+	$buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja, $Departamento);
+	?>
+	<div id="page-footer">
+		<span class="page-number1">
+			<?php
+			foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+			?>
+				<b>Escala Referente ao dia: <?= $dataFormatadaMesReferencia ?>.
+				</b>
+				Expedido dia <?= $dataFormatada ?> por:
+				<b>
+					<?php
+					foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+					?>
+						<?= ucfirst(strtolower($rowVerificaEncarregado['NOME'])) ?>,
+						<?= ucfirst(strtolower($rowVerificaEncarregado['FUNCAO'])) ?> de
+						<?= ucfirst(strtolower($rowVerificaEncarregado['DEPARTAMENTO2'])) ?>
+					<?php
+					endforeach
+					?>
+				</b>
+				Assinatura :__________________________
+			<?php
+			endforeach;
+			?>
+		</span>
+	</div>
 	<table id="table1" class="stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100%">
 		<thead>
 			<tr class="trr">
@@ -120,12 +144,11 @@ endforeach
 				}
 			?>
 				<tr class="trr">
-					<td style="border-bottom:1px solid black !important; border-right:1px solid black !important;"class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
+					<td style="border-bottom:1px solid black !important; border-right:1px solid black !important;" class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
 					<?php
 					$i = 1;
 					foreach ($buscandoMesAno as $row) :
 					?>
-
 						<?php
 						$recuperaDadosVerificacao = new verifica();
 						$recuperacaoDedados = $recuperaDadosVerificacao->verificaCadastroNaEscalaMensa1($oracle,  $nomeFunc['MATRICULA'], $dataSelecionadaNoFiltro);
@@ -134,38 +157,18 @@ endforeach
 						} else {
 							$d = $i;
 						}
-						$recuperaAPrimeiraColunaComF = $verifica->verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
-						$verficaSeAInserçãoDeFFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
 						// echo ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior);
-
-						$primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
-						// echo "<br>" . $primeiroDiaNaoF;
-						$primeiroDiaEncontrado = false;
-
-						$isF = ($recuperacaoDedados[0][$d] ?? '') === 'F';
-
-
-						if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
-							// Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
-							if ($isF) {
-								$disabled = ' disabled  name="desabilitarEsteSelect"';
-								// echo $disabled;
-							} else {
-								$disabled = '';
-							}
+						//    echo $retornoVerificacaoSeOFFoiInseridoNoMesAnterior;
+						$isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
+						if ($isF) {
+							$disabled = ' disabled  name="desabilitarEsteSelect"';
 						} else {
-							// Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
-							if ($isF && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoF) {
-								$disabled = ' disabled name="desabilitarEsteSelect"';
-							} else {
-								$disabled = '';
-								if ($d === $primeiroDiaNaoF) {
-									$primeiroDiaEncontrado = true;
-								}
-							}
+							$disabled = '';
 						}
+						// echo $disabled;
+						$DadoDoDiaSalVoNoBancoDeDados = $recuperacaoDedados[0]["$d"] ?? '';
 						?>
-						<td style="border-bottom:1px solid black !important; border-right:1px solid black !important; text-align: center; !important"  scope="row" id=""> <?= $recuperacaoDedados[0][$d] ?? 'T' ?> </td>
+						<td style="border-bottom:1px solid black !important; border-right:1px solid black !important; text-align: center; !important" scope="row" id=""> <?= $recuperacaoDedados[0][$d] ?? 'T' ?> </td>
 					<?php
 						$i++;
 					endforeach
@@ -174,7 +177,6 @@ endforeach
 				</tr>
 			<?php
 			endforeach;
-
 			?>
 		</tbody>
 
@@ -185,7 +187,4 @@ endforeach
 		?>
 
 	</table>
-<div id="page-footer">
-    <span class="page-number"></span>
-</div>
 </body>

@@ -22,6 +22,7 @@ include "../base/conexao_TotvzOracle.php";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 
+    <link rel="stylesheet" href="../BASE/cssGeral.css" type="text/css">
 
 
 
@@ -51,9 +52,13 @@ $dadosDeQuemEstaLogadoSetor = '';
 foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
     $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
     $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
+    $dadosDeQuemEstaLogadoFuncaoSeLider = $rowVerificaEncarregado['FUNCAOLIDER'];
+
     $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['DEPARTAMENTO2'];
 endforeach;
-
+if($dadosDeQuemEstaLogadoFuncaoSeLider =="LIDER DE"){
+    $dadosDeQuemEstaLogadoSetor = str_replace("LIDER DE ", "", $dadosDeQuemEstaLogadoSetor);
+}
 $verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor);
 
 if ($retorno === "NÃO FINALIZADA.") {
@@ -81,8 +86,7 @@ if ($retorno === "NÃO FINALIZADA.") {
                         <input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
                         <input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
                         <?php
-
-                        if ($dadosDeQuemEstaLogadoFuncao === "ENCARREGADO") {
+                        if ($dadosDeQuemEstaLogadoFuncao === "ENCARREGADO" || $dadosDeQuemEstaLogadoFuncaoSeLider =="LIDER DE") {
                             $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor); ?>
 
                             <div class="mb-4">
@@ -100,12 +104,12 @@ if ($retorno === "NÃO FINALIZADA.") {
                                         <tr class="trr ">
                                             <th class="text-center theadColor" scope="row" style="width:150px">Funcionario</th>
                                             <th class="text-center theadColor">Cargo</th>
-                                            <th class="text-center theadColor">Situação</th>
+                                            <th class="text-center theadColor" style="display:none">Situação</th>
                                             <th class="text-center " style="display:none">Departamento</th>
                                             <th class="text-center " style="display:none">Entrada</th>
                                             <th class="text-center " style="display:none">Saida</th>
                                             <th class="text-center " style="display:none">Intervalo</th>
-                                            <th class="text-center " scope="row" style="width:150px ;display:none">matricula</th>
+                                            <th class="text-center " style="display:none" scope="row" style="width:150px ;">matricula</th>
 
 
                                             <?php
@@ -127,10 +131,10 @@ if ($retorno === "NÃO FINALIZADA.") {
 
 
 
-                                        <tr class="trr" id="quantDias">
+                                        <tr class="trr fixed-row" id="quantDias">
                                             <td></td>
                                             <td></td>
-                                            <td></td>
+                                            <td style="display:none"></td>
                                             <td style="display:none"></td>
                                             <td style="display:none"></td>
                                             <td style="display:none"></td>
@@ -139,10 +143,9 @@ if ($retorno === "NÃO FINALIZADA.") {
                                             <?php
                                             foreach ($buscandoMesAno as $row) :
                                             ?>
-                                                <td class="text-center diaDaSemana" scope="row" style="font-weight:bold"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
-
+                                                <td class="text-center diaDaSemana" scope="row" style="font-weight: bold;"><?= $row['DIA_SEMANA_ABREVIADO'] ?></td>
                                             <?php
-                                            endforeach
+                                            endforeach;
                                             ?>
                                         </tr>
 
@@ -161,8 +164,8 @@ if ($retorno === "NÃO FINALIZADA.") {
                                             <tr class="trr">
                                                 <td class="text-center funcionario" scope="row"><?= $nomeFunc['NOME'] ?></td>
                                                 <td class="text-center cargo" scope="row"><?= $nomeFunc['FUNCAO'] ?></td>
-                                                <td class="text-center situacao" scope="row"><?= $nomeFunc['SITUACAO'] ?></td>
-                                                <td class="text-center departamento" style="display:none" scope="row"><?= $dadosDeQuemEstaLogadoSetor ?></td>
+                                                <td class="text-center situacao" scope="row" style="display:none"><?= $nomeFunc['SITUACAO'] ?></td>
+                                                <td class="text-center departamento" id="departamento" style="display:none" scope="row"><?= $dadosDeQuemEstaLogadoSetor ?></td>
                                                 <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
                                                 <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
                                                 <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
@@ -193,13 +196,13 @@ if ($retorno === "NÃO FINALIZADA.") {
                                                         $DadoDoDiaSalVoNoBancoDeDados = $recuperacaoDedados[0]["$d"] ?? '';
                                                         ?>
 
-                                                        <select <?= $disabled ?> class="estilezaSelect" name="" id="">
+                                                        <select <?= $disabled ?> class="estilezaSelect" name="" id="";">
                                                             <option value="<?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?>"> <?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?></option>
                                                             <!-- Se o dado -->
-                                                            <option value="DSR" <?= $DadoDoDiaSalVoNoBancoDeDados == 'DSR' ? "style='display: none'" : "" ?>>DSR</option>
-                                                            <option value="FA" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FA' ? "style='display: none'" : "" ?>>FA</option>
-                                                            <option value="FD" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FD' ? "style='display: none'" : "" ?>>FD</option>
-                                                            <option value="FF" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FF' ? "style='display: none'" : "" ?>>FF</option>
+                                                            <option value="DSR" <?= $DadoDoDiaSalVoNoBancoDeDados == 'DSR' ? "style='display: none'" : "" ?>>DSR - DESCANSO SEMANAL REMUNERADO </option>
+                                                            <option value="FA" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FA' ? "style='display: none'" : "" ?>>FA - FOLGA ABONADA</option>
+                                                            <!-- <option value="FD" <//?= $DadoDoDiaSalVoNoBancoDeDados == 'FD' ? "style='display: none'" : "" ?>>FD – FOLGA DOMINGO </option> -->
+                                                            <option value="FF" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FF' ? "style='display: none'" : "" ?>>FF - FOLGA FERIADO</option>
                                                             <option value="T" <?= $DadoDoDiaSalVoNoBancoDeDados == '' ? "style='display: none'" : "" ?>></option>
 
                                                         </select>
@@ -218,79 +221,12 @@ if ($retorno === "NÃO FINALIZADA.") {
                                 </table>
 
                             </div>
-                            <div class="modal fade" id="modalFerias" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade custom-modal" id="modalFerias" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="cadastroFerias"></div>
-                                        <table id="tabelaCancelamentoDeFerias" class=" tabelaCancelamentoDeFerias stripe row-border order-column table table-bordered table-striped text-center row-border" style="width:100% !important">
-                                            <thead>
-                                                <tr class="trr ">
-                                                    <th class="text-center">
-                                                        Funcionario
-                                                    </th>
-
-                                                    <th class="text-center">
-                                                        Data Inicial
-                                                    </th>
-                                                    <th class="text-center">
-                                                        Data Final
-                                                    </th>
-                                                    <th class="text-center">
-                                                        Excluir:
-                                                    </th>
-                                                    <th style="display:none" class="text-center">
-                                                        Cargo
-                                                    </th>
-                                                    <th style="display:none" class="text-center">
-                                                        matricula
-                                                    </th>
-                                                    <th class="text-center " style="display:none">
-                                                        Entrada
-                                                    </th>
-                                                    <th class="text-center " style="display:none">
-                                                        Saida
-                                                    </th>
-                                                    <th class="text-center " style="display:none">
-                                                        Intervalo
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr class="tabelaCancelamentoFerias">
-                                                    <td class="text-center funcionario nowrap" scope="row">
-                                                    </td>
-                                                    <td style="display:none" class="text-center cargo" scope="row">
-
-                                                    </td>
-                                                    <td style="display:none" class="text-center matricula" scope="row">
-
-                                                    </td>
-                                                    <td class="text-center horarioEntradaFunc" style="display:none" scope="row">
-
-                                                    </td>
-                                                    <td class="text-center horarioSaidaFunc" style="display:none" scope="row">
-
-                                                    </td>
-                                                    <td class="text-center horarioIntervaloFunc" style="display:none" scope="row">
-
-                                                    </td>
-                                                    <td class="text-center dataInicialFerias" scope="row">
-
-                                                    </td>
-                                                    <td class="text-center dataFinalFerias" scope="row">
-
-                                                    </td>
-                                                    <td scope="row" class="btnExcluir">
-                                                        <i style="color:red; cursor:pointer" class="fa-solid fa-trash"></i>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-
-                                        </table>
-
-
                                         <div class="modal-footer d-flex justify-content-between" style="background-color:white;">
-                                            <button id="AgendamentoFerias" type="button" style="display:none" class="btn btnModal">
+                                            <button id="AgendamentoFerias" type="button" class=" ocultarBotao btn btnModal">
                                                 Agendar férias
                                             </button>
                                             <button id="feriasAgendadas" type="button" class="btn btnModal">
@@ -301,14 +237,14 @@ if ($retorno === "NÃO FINALIZADA.") {
                                             </button>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
+
                         <?php
                         } else {
                         ?>
                             <p style="color:red">Acesso negado!</p>
-                            <p>Apenas Encarregados podem realizar a escala mensal.</p>
+                            <p>Apenas Encarregados ou Lideres podem realizar a escala mensal.</p>
                         <?php
                         }
 
@@ -324,89 +260,38 @@ if ($retorno === "NÃO FINALIZADA.") {
         // echo $statusDaTabela;
         ?>
 
-        <script src="../base/dist/sidenav.js"></script>
-        <script type="module" src="js/Script_escalaMensal.js" defer></script>
-
-
-        <script type="text/javascript" src="../base/mdb/js/jquery.min.js"></script>
-
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="../BASE/mdb/js/bootstrap.min.js"></script>
-
-
-        <script type="text/javascript" src="../base/DataTables/datatables.min.js"></script>
-
-
-        <script type="text/javascript" src="../BASE/Buttons/js/dataTables.buttons.min.js"></script>
-
-        <script type="text/javascript" src="../BASE/JSZip/jszip.min.js"></script>
-
-        <script type="text/javascript" src="../BASE/Buttons/js/buttons.html5.min.js"></script>
-
-        <script type="text/javascript" src="../BASE/Buttons/js/buttons.print.min.js"></script>
-        <script type="text/javascript" src="../BASE/bootstrap-multiselect/bootstrap-select-1.13.14/dist/js/bootstrap-select.js"></script>
-
-        <script type="text/javascript" src="../base/jquery_ui/jquery/jquery-ui.js"></script>
-
-        <script src="../base/dist/sidenav.js"></script>
-
-        <script src="../BASE/formulario7/formulario/js/out/jquery.idealforms.js"></script>
-
-        <script type="text/javascript" src="../../base/DataTables//FixedColumns 4.3.0//FixedColumns-4.3.0/js/dataTables.fixedColumns.min.js"></script>
-<!-- <script>
-    $('#tabelaCancelamentoDeFerias').DataTable({
-    dom: 'frtip',
-    scrollY: false,
-    scrollX: false,
-    searching: true,
-
-    "paging": false,
-    "info": true,
-    "ordering": false,
-    "lengthMenu": [
-        [15],
-
-    ],
-    language: {
-        "sEmptyTable": "Nenhum registro encontrado",
-
-        "sInfo": " _START_ até _END_ de _TOTAL_ registros...  ",
-
-        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
-
-        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
-
-        "sInfoPostFix": "",
-
-        "sInfoThousands": ".",
-
-        "sLengthMenu": "_MENU_ resultados por página",
-
-        "sLoadingRecords": "Carregando...",
-
-        "sProcessing": "Processando...",
-
-        "sZeroRecords": "Nenhum registro encontrado",
-
-        "sSearch": "Pesquisar",
-
-        "oPaginate": {
-
-            "sNext": "Próximo",
-
-            "sPrevious": "Anterior",
-
-            "sFirst": "Primeiro",
-
-            "sLast": "Último"
-
-        },
-    },
-
-});
-</script> -->
     </div>
+    <script src="../base/dist/sidenav.js"></script>
+    <script type="module" src="js/Script_escalaMensal.js" defer></script>
+
+
+    <script type="text/javascript" src="../base/mdb/js/jquery.min.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="../BASE/mdb/js/bootstrap.min.js"></script>
+
+
+    <script type="text/javascript" src="../base/DataTables/datatables.min.js"></script>
+
+
+    <script type="text/javascript" src="../BASE/Buttons/js/dataTables.buttons.min.js"></script>
+
+    <script type="text/javascript" src="../BASE/JSZip/jszip.min.js"></script>
+
+    <script type="text/javascript" src="../BASE/Buttons/js/buttons.html5.min.js"></script>
+
+    <script type="text/javascript" src="../BASE/Buttons/js/buttons.print.min.js"></script>
+    <script type="text/javascript" src="../BASE/bootstrap-multiselect/bootstrap-select-1.13.14/dist/js/bootstrap-select.js"></script>
+
+    <script type="text/javascript" src="../base/jquery_ui/jquery/jquery-ui.js"></script>
+
+    <script src="../base/dist/sidenav.js"></script>
+
+    <script src="../BASE/formulario7/formulario/js/out/jquery.idealforms.js"></script>
+
+    <script type="text/javascript" src="../../base/DataTables//FixedColumns 4.3.0//FixedColumns-4.3.0/js/dataTables.fixedColumns.min.js"></script>
+
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 thead,
 .theadColor {
-    background-color:  #197a4a !important;
+    background-color: #197a4a !important;
     color: white;
     font-weight: bold;
 
@@ -22,7 +22,9 @@ td {
 .card {
     box-shadow: 5px 10px 18px
 }
-
+.cadastroFerias{
+    height: 300px !important; /* Ajuste a altura conforme necessário */
+}
 .estilezaSelect {
     -webkit-appearance: none;
     /* Para navegadores baseados em WebKit, como Chrome e Safari */
@@ -32,7 +34,6 @@ td {
     /* Para navegadores modernos */
     background-image: none;
     /* Remove qualquer imagem de fundo */
-    padding-right: 20px;
     /* Adiciona um espaço para um ícone personalizado, se desejar */
     background-color: white;
     /* Defina a cor de fundo desejada */
@@ -40,6 +41,9 @@ td {
     /* Adicione uma borda para indicar a área clicável */
     border-radius: 5px;
     /* Adicione um raio de borda para suavizar a aparência */
+
+  width: 4ch; /* width of 3 characters */
+
 }
 
 .dt-button {
@@ -62,6 +66,7 @@ td {
 .btnverde {
     background-color: #00a550 !important;
 }
+
 .btnverdeEXCEL {
     background-color: #00a550 !important;
 }
@@ -71,9 +76,32 @@ td {
     display: none !important;
 }
 
-.btnModal{
-    background-color:#00a550 !important;
-     color:white !important;
-      font-weight:bold !important;
+.btnModal {
+    background-color: #00a550 !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.fixed-row {
+    position: sticky !important;
+    top: 0 !important;
+    /* Adjust the top position as needed */
+    background-color: #fff !important;
+    /* Optional: Set the background color */
+    z-index: 1 !important;
+    /* Optional: Ensure the fixed row stays on top */
+}
+
+/* Estilo para a td.domingo */
+.domingo {
+    background-color: grey !important;
+}
+
+/* Manter o select com estilo padrão dentro da td.domingo */
+.domingo select {
+    background-color: #fff !important;
+}
+.cargo ,.funcionario{
+    font-size: 12px !important;
 }
 

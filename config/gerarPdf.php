@@ -17,5 +17,4 @@ $dompdf->render();
 
 header('Content-Type: application/pdf');
 echo $dompdf->output();
-
 ?>

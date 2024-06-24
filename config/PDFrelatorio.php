@@ -57,7 +57,6 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
     $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
     $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
 endforeach;
-$dadosDeQuemEstaLogadoSetor = "FRENTE DE CAIXA";
 $quantidadePorDiaDeFuncionarios = $InformacaoFuncionarios->funcionariosDisponiveisNoDia($oracle, $diaDaPesquisaComAspas, $mesEAnoDaPesquisa, $dadosDeQuemEstaLogadoSetor, $dataPesquisada, $loja);
 
 if (empty($quantidadePorDiaDeFuncionarios)) {
@@ -96,13 +95,10 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
             left: 0;
             right: 0;
             height: 50px;
-            text-align: center;
+            text-align: left;
         }
 
-        .page-number:before {
-            content: counter(page);
-        }
-
+        .page-number1:before {}
 
         /* Ajuste de outras partes do layout, se necessário */
         body {
@@ -121,15 +117,6 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
             text-align: center;
         }
 
-        #page-footer {
-            position: fixed;
-            bottom: -50px;
-            left: 0;
-            right: 0;
-            height: 50px;
-            text-align: center;
-        }
-
         .assinatura {
             height: 35px !important;
             /* Ajuste o valor conforme necessário */
@@ -142,40 +129,34 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
         $dadosDeQuemEstaLogadoNome =  $rowVerificaEncarregado['NOME'];
         $dadosDeQuemEstaLogadoFuncao = $rowVerificaEncarregado['FUNCAO'];
         $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['SETOR'];
-    ?>
-
-
-
-
-        <span style="text-transform: capitalize !important;">
-            <b>Escala de PDV setor
-                <?= ucfirst(strtolower($rowVerificaEncarregado['DEPARTAMENTO2'])) ?>
-                Referente ao dia: <?= $dataFormatadaMesReferencia ?>.
-            </b>
-        </span>
-        <br>
-        <span style="text-transform: capitalize !important;">
-            Expedido dia <?= $dataFormatada ?> por:
-            <b>
-                <?php
-                foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
-                ?>
-                    <?= ucfirst(strtolower($rowVerificaEncarregado['NOME'])) ?>,
-                    <?= ucfirst(strtolower($rowVerificaEncarregado['FUNCAO'])) ?> de
-                    <?= ucfirst(strtolower($rowVerificaEncarregado['DEPARTAMENTO2'])) ?>
-                <?php
-                endforeach
-                ?>
-            </b>
-            Assinatura : __________________________
-        </span>
-        <hr>
-
-    <?php
     endforeach;
     ?>
+    <div id="page-footer">
+        <span class="page-number1">
+            <?php
+            foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+            ?>
+                <b>Escala de PDV Referente ao dia: <?= $dataFormatadaMesReferencia ?>.
+                </b>
+                Expedido dia <?= $dataFormatada ?> por:
+                <b>
+                    <?php
+                    foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
+                    ?>
+                        <?= ucfirst(strtolower($dadosDeQuemEstaLogadoNome)) ?>,
+                        <?= ucfirst(strtolower($dadosDeQuemEstaLogadoFuncao)) ?>
+                        <?= ucfirst(strtolower($rowVerificaEncarregado['DEPARTAMENTO2'])) ?>
+                    <?php
+                    endforeach
+                    ?>
+                </b>
+                Assinatura :__________________________
+            <?php
+            endforeach;
+            ?>
+        </span>
+    </div>
     <table id="table2" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
-
         <thead>
             <tr class="trr">
                 <th> PDV </th>
@@ -250,9 +231,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
             ?>
         </tbody>
     </table>
-    <div id="page-footer">
-        <span class="page-number"></span>
-    </div>
+
 <?php
 }
 

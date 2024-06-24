@@ -1,6 +1,9 @@
 import { criandoHtmlmensagemCarregamento, Toasty } from "../../base/jsGeral.js";
 var usuarioLogado = $("#usuarioLogado").val();
-
+var loja = $("#loja").val();
+if(loja!= 203){
+    $("#loja").attr('disabled', 'disabled');
+}
 $('#PesquisarEscalaMensal').on('click', function () {
 
 

@@ -28,7 +28,6 @@ $verifica = $verificacaoDeDados->verificaAlteracaoNoHorarioDiario($oracle,$matri
 
 if ($retorno == "Já existem dados.") {
     echo "<br><br> update <br><br>";
-    
      $atualizaDados = $updateDeDados->updateDeFuncionariosNaEscalaIntermediaria($oracle, $horaEntrada,$horaSaida,$horaIntervalo,$usuInclusao,$matricula,$nome,$loja,$diaSelecionado);
 } else if ($retorno == "Não existem dados.") {
     // echo "<br><br> Não existem dados. 02 INSERT";

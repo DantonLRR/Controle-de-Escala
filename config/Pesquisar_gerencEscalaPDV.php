@@ -19,7 +19,7 @@ $verificaSeAPessoaLogadaEEncarregada = $dadosFunc->informacaoPessoaLogada($Totvs
 $verifica = new verifica();
 // echo $dataSelecionadaNoFiltro;
 // echo"<br>".$loja;
-$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $loja,$Departamento);
+$verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $loja, $Departamento);
 // echo $retorno;
 if ($retorno === "NÃO FINALIZADA.") {
     $statusDaTabelaPosPesquisa = "NÃO FINALIZADA.";
@@ -137,45 +137,25 @@ endforeach;
                         } else {
                             $d = $i;
                         }
-                        $recuperaAPrimeiraColunaComF = $verifica->verificaSeALinhaDoBancoTemFESETiverRetornaAPrimeiraColunaComF($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
-                        $verficaSeAInserçãoDeFFoiFeitaNoMesAnterior = $verifica->verificaSeALinhaFFoiInseridaNoMesAnterior($oracle, $dataSelecionadaNoFiltro,  $loja, $nomeFunc['MATRICULA']);
-                        // echo ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior);
-
-                        $primeiroDiaNaoF = $recuperaAPrimeiraColunaComF['nome_coluna'] ?? $d;
-                        // echo "<br>" . $primeiroDiaNaoF;
-                        $primeiroDiaEncontrado = false;
-
+                        //    echo $retornoVerificacaoSeOFFoiInseridoNoMesAnterior;
                         $isF = ($recuperacaoDedados[0]["$d"] ?? '') === 'F';
-
-
-                        if ($retornoVerificacaoSeOFFoiInseridoNoMesAnterior == 1) {
-                            // Se a inserção de 'FA' foi feita no mês anterior, desabilitar todos os 'FA'
-                            if ($isF) {
-                                $disabled = ' disabled  name="desabilitarEsteSelect"';
-                                // echo $disabled;
-                            } else {
-                                $disabled = '';
-                            }
+                        if ($isF) {
+                            $disabled = ' disabled  name="desabilitarEsteSelect"';
                         } else {
-                            // Desabilitar "FA" exceto pelo primeiro dia não FA encontrado
-                            if ($isF && !$primeiroDiaEncontrado && $d !== $primeiroDiaNaoF) {
-                                $disabled = ' disabled name="desabilitarEsteSelect"';
-                            } else {
-                                $disabled = '';
-                                if ($d === $primeiroDiaNaoF) {
-                                    $primeiroDiaEncontrado = true;
-                                }
-                            }
+                            $disabled = '';
                         }
                         // echo $disabled;
+                        $DadoDoDiaSalVoNoBancoDeDados = $recuperacaoDedados[0]["$d"] ?? '';
                         ?>
-                        <select class="estilezaSelect" id="" <?= $disabled ?>>
-                            <option value="<?= $recuperacaoDedados[0]["$d"] ?? '' ?>"><?= $recuperacaoDedados[0]["$d"] ?? '' ?></option>
-                            <option value="FA">FA</option>
-                            <option value="FD">FD</option>
-                            <option value="FF">FF</option>
-                            <option value="F">F</option>
-                            <option value=""></option>
+
+                        <select <?= $disabled ?> class="estilezaSelect" name="" id="">
+                            <option value="<?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?>"> <?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?></option>
+                            <!-- Se o dado -->
+                            <option value="DSR" <?= $DadoDoDiaSalVoNoBancoDeDados == 'DSR' ? "style='display: none'" : "" ?>>DSR</option>
+                            <option value="FA" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FA' ? "style='display: none'" : "" ?>>FA</option>
+                            <option value="FD" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FD' ? "style='display: none'" : "" ?>>FD</option>
+                            <option value="FF" <?= $DadoDoDiaSalVoNoBancoDeDados == 'FF' ? "style='display: none'" : "" ?>>FF</option>
+                            <option value="T" <?= $DadoDoDiaSalVoNoBancoDeDados == '' ? "style='display: none'" : "" ?>></option>
 
                         </select>
                     </td>

@@ -30,6 +30,8 @@ $hoje = date("Y-m-d");
 $diaDeHoje = date("d");
 $mesEAnoAtual = date("Y-m");
 $informacoesDaslojas = new lojas;
+$loja = $_SESSION['LOJA'];
+
 ?>
 
 <body>
@@ -58,12 +60,11 @@ $informacoesDaslojas = new lojas;
                                     Loja
                                 </label>
                                 <select required id="loja" class="form-control ">
-                                    <option></option>
+                                    <option value="<?= $loja ?>"> <?= $loja ?></option>
                                     <?php
                                     $recuperacaoDosNumerosDeLoja = $informacoesDaslojas->recuperacaoDasLojas($oracle);
                                     //print_r($recuperacaoDosNumerosDeLoja);
                                     foreach ($recuperacaoDosNumerosDeLoja as $rowLojas) :
-
                                     ?>
                                         <option value="<?= $rowLojas['NROEMPRESA'] ?>"><?= $rowLojas['NROEMPRESA'] ?></option>
                                     <?php

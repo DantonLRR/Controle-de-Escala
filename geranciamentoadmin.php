@@ -3,6 +3,8 @@ include "../base/conexao_martdb.php";
 include "../MobileNav/docs/index_menucomlogin.php";
 include "config/php/CRUD_geral.php";
 include "../base/conexao_TotvzOracle.php";
+$loja = $_SESSION['LOJA'];
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -50,7 +52,7 @@ $informacoesDaslojas = new lojas;
                                     Loja
                                 </label>
                                 <select required id="loja" class="form-control selectloja">
-                                    <option></option>
+                                <option value="<?= $loja ?>"> <?= $loja ?></option>
                                     <?php
                                     $recuperacaoDosNumerosDeLoja = $informacoesDaslojas->recuperacaoDasLojas($oracle);
                                     print_r($recuperacaoDosNumerosDeLoja);
@@ -110,7 +112,10 @@ $informacoesDaslojas = new lojas;
         criandoHtmlmensagemCarregamento,
         Toasty
     } from "../../../../base/jsGeral.js";
-
+    var loja = $("#loja").val();
+    if (loja != 203) {
+        $("#loja").attr('disabled', 'disabled');
+    }
     $('#PesquisarEscaladiaria').on('click', function() {
         var dataPesquisaInicial = $('#dataPesquisaInicial').val();
         var dataPesquisaFinal = $('#dataPesquisaFinal').val();
