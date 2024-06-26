@@ -1703,7 +1703,8 @@ class Update
          WHERE NUMPDV = '$numPDV'
          AND diaselecionado = TO_DATE('$dataPesquisa', 'YYYY-MM-DD')
          AND loja = '$loja'
-         AND status = 'A'";
+         AND status = 'A'
+         ";
 
         $parse = oci_parse($oracle, $query);
 
@@ -1719,7 +1720,7 @@ class Update
             //  echo "<br>" . $query;
             return false;
         }
-        // echo $retorno;
+        echo $retorno;
         // echo $query;
     }
 }

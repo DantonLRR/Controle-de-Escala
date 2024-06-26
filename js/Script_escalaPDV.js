@@ -64,7 +64,7 @@ $('#table1').DataTable({
                 criandoHtmlmensagemCarregamento("exibir");
                 var dataPesquisa = $("#dataPesquisa").val();
                 var dataAtual = $("#dataAtual").val();
-            
+
                 if (dataPesquisa == "") {
                     dataPesquisa = dataAtual
                 }
@@ -123,7 +123,7 @@ var tabela2 = $('#table2').DataTable({
                 criandoHtmlmensagemCarregamento("exibir");
                 var dataPesquisa = $("#dataPesquisa").val();
                 var dataAtual = $("#dataAtual").val();
-            
+
                 if (dataPesquisa == "") {
                     dataPesquisa = dataAtual
                 }
@@ -654,56 +654,103 @@ $('#dataPesquisa').on('change', function () {
 
 });
 
-$('#table1').on('click', '.fa-trash',function () {
+$('#table1').on('click', '.fa-trash', function () {
+    var $row = $(this).closest('tr'); // Captura a linha atual
+    var opcaoDeExclusao = $(this).closest('td').attr('value');
+
     var dataPesquisa = $("#dataPesquisa").val();
     var dataAtual = $("#dataAtual").val();
 
     if (dataPesquisa == "") {
-        dataPesquisa = dataAtual
+        dataPesquisa = dataAtual;
     }
-    var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
-
+    var numPDV = $row.find(".numerosPDVS").text().trim();
     $.ajax({
         url: "config/remove_linha_relatorio_pdv.php",
         method: 'get',
-        data:
-            "dataPesquisa=" +
-            dataPesquisa +
-            "&numPDV=" +
-            numPDV +
-            "&loja=" +
-            loja,
-
-        // dataType: 'json',
+        data: {
+            dataPesquisa: dataPesquisa,
+            numPDV: numPDV,
+            opcaoDeExclusao: opcaoDeExclusao,
+            loja: loja
+        },
         success: function (atualizaTabela) {
+            if (opcaoDeExclusao == "ExcluirManha") {
+                var matricula = $row.find('.Matricula1').text().trim();
+                var nome = $row.find('.NomeFunc select option:selected').text().trim();
+                var entrada = $row.find('.horaEntrada1').text().trim();
+                var saida = $row.find('.horaSaida1').text().trim();
+                var intervalo = $row.find('.horaIntervalo1').text().trim();
+            } else if (opcaoDeExclusao == "ExcluirTarde") {
+                var matricula = $row.find('.Matricula2').text().trim();
+                var nome = $row.find('.NomeFunc select option:selected').text().trim();
+                var entrada = $row.find('.horaEntrada2').text().trim();
+                var saida = $row.find('.horaSaida2').text().trim();
+                var intervalo = $row.find('.horaIntervalo2').text().trim();
+            }
+            if (matricula == '' || nome == '' || entrada == '' || saida == '' || intervalo == '') {
+                Toasty("Atenção", "não há funcionarios cadastrado neste PDV", "#E20914");
 
-            $.ajax({
-                url: "config/pesquisar_relatorio_pdv.php",
-                method: 'POST',
-                data: 'dataPesquisa=' +
-                    dataPesquisa +
-                    "&loja=" +
-                    loja,
-                success: function (relatorio_atualizado2) {
+            } else {
+                console.log('Matricula: ' + matricula + '\nNome: ' + nome + '\nEntrada: ' + entrada + '\nSaída: ' + saida + '\nIntervalo: ' + intervalo);
+                var horasIntermediarias = calcularHorasIntermediarias(entrada, saida, intervalo);
+                nome = '';
+                $.ajax({
+                    url: "config/exibicao_escala_diaria_pdv.php",
+                    method: 'get',
+                    data: 'DadosMatricula=' +
+                        matricula +
+                        "&nomeSelecionado=" +
+                        nome +
+                        "&DadosEntrada=" +
+                        entrada +
+                        "&DadosSaida=" +
+                        saida +
+                        "&DadosIntervalo=" +
+                        intervalo +
+                        "&usuarioLogado=" +
+                        usuarioLogado +
+                        "&dataPesquisa=" +
+                        dataPesquisa +
+                        "&numPDV=" +
+                        numPDV +
+                        "&horasIntermediarias=" +
+                        horasIntermediarias +
+                        "&loja=" +
+                        loja,
+                    success: function (atualizaTabela) {
 
-                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                    criandoHtmlmensagemCarregamento("ocultar");
-                }
-            });
+                        $.ajax({
+                            url: "config/pesquisar_relatorio_pdv.php",
+                            method: 'POST',
+                            data: 'dataPesquisa=' +
+                                dataPesquisa +
+                                "&loja=" +
+                                loja,
+                            success: function (relatorio_atualizado2) {
 
-            $.ajax({
-                url: "config/pesquisar_escalaPDV.php",
-                method: 'POST',
-                data: 'dataPesquisa=' +
-                    dataPesquisa +
-                    "&loja=" +
-                    loja,
-                success: function (data_pesquisada2) {
+                                $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                                criandoHtmlmensagemCarregamento("ocultar");
+                            }
+                        });
 
-                    $('.dadosEscalaPDV').empty().html(data_pesquisada2);
+                        $.ajax({
+                            url: "config/pesquisar_escalaPDV.php",
+                            method: 'POST',
+                            data: 'dataPesquisa=' +
+                                dataPesquisa +
+                                "&loja=" +
+                                loja,
+                            success: function (data_pesquisada2) {
 
-                }
-            });
+                                $('.dadosEscalaPDV').empty().html(data_pesquisada2);
+
+                            }
+                        });
+
+                    }
+                });
+            }
 
         }
     });

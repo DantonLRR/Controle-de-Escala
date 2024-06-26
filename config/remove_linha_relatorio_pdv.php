@@ -13,27 +13,18 @@ $updateDeDados = new Update();
 $dataPesquisa = $_GET['dataPesquisa'];
 $numPDV = $_GET['numPDV'];
 $loja = $_GET['loja'];
-
-
-//manha
-$verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabelaPdvManha, $dataPesquisa, $numPDV, $loja);
-if ($retorno == "Já existem dados.") {
-    $RemocaoDeLinhaDoRelatorio2 = $updateDeDados -> updateRemocaoEscalaPDV($oracle,$tabelaPdvManha, $numPDV, $dataPesquisa, $loja);
-}
-
-
-
-//tarde
-$verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle,$tabelaPdvtarde, $dataPesquisa, $numPDV, $loja);
-if ($retorno == "Já existem dados.") {
-    $RemocaoDeLinhaDoRelatorio3 = $updateDeDados -> updateRemocaoEscalaPDV($oracle,$tabelaPdvtarde, $numPDV, $dataPesquisa, $loja);
-
-}
-
-
-
-//relatorio
-$verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabela_relatorio, $dataPesquisa, $numPDV, $loja);
-if ($retorno == "Já existem dados.") {
-    $RemocaoDeLinhaDoRelatorio1 = $updateDeDados -> updateRemocaoEscalaPDV($oracle,$tabela_relatorio, $numPDV, $dataPesquisa, $loja);
+$opcaoDeExclusao = $_GET['opcaoDeExclusao'];
+// echo $opcaoDeExclusao;
+if ($opcaoDeExclusao === "ExcluirManha") {
+    //manha
+    $verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabelaPdvManha, $dataPesquisa, $numPDV, $loja);
+    if ($retorno == "Já existem dados.") {
+        $RemocaoDeLinhaDoRelatorio2 = $updateDeDados->updateRemocaoEscalaPDV($oracle, $tabelaPdvManha, $numPDV, $dataPesquisa, $loja);
+    }
+} else if ($opcaoDeExclusao == "ExcluirTarde") {
+    //tarde
+    $verifica = $verificacaoDeDados->verificaExistenciaNumPDV($oracle, $tabelaPdvtarde, $dataPesquisa, $numPDV, $loja);
+    if ($retorno == "Já existem dados.") {
+        $RemocaoDeLinhaDoRelatorio3 = $updateDeDados->updateRemocaoEscalaPDV($oracle, $tabelaPdvtarde, $numPDV, $dataPesquisa, $loja);
+    }
 }

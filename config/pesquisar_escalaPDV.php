@@ -97,9 +97,9 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
         <input class="usu" type="hidden" value="<?= $_SESSION['nome'] ?>">
         <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
             <tr class="trr">
-                <th class="text-center" colspan="6">Manhã</th>
+                <th class="text-center" colspan="7">Manhã</th>
 
-                <th class="vertical-line text-center" style=" border-left: 1px solid #000;" colspan="6">Tarde</th>
+                <th class="vertical-line text-center" style=" border-left: 1px solid #000;" colspan="7">Tarde</th>
             </tr>
             <tr class="trr">
                 <th>pdv</th>
@@ -108,6 +108,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                 <th class="text-center">ENTRADA:</th>
                 <th class="text-center">SAIDA</th>
                 <th class="text-center">INTERVALO</th>
+                <th class="text-center">EXCLUSÃO</th>
                 <th class="vertical-line text-center" style=" border-left: 1px solid #000;">MATRICULA</th>
                 <th class="text-center">NOME</th>
                 <th class="text-center">ENTRADA:</th>
@@ -151,6 +152,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                         <td scope="row" class="text-center horaEntrada1"></td>
                         <td scope="row" class="horaSaida1"></td>
                         <td scope="row" class="horaIntervalo1"></td>
+                        <td scope="row" value="ExcluirManha" class="btnExcluirManha"> <i class="fa-solid fa-trash fa-2xl"></i></td>
                         <?php
                     } else {
                         foreach ($horariosFuncManha as $row2Manha) :
@@ -164,6 +166,8 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                             <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?? '' ?></td>
                             <td scope="row" class="horaSaida1"><?= $row2Manha['HORASAIDA'] ?? '' ?></td>
                             <td scope="row" class="horaIntervalo1"><?= $row2Manha['HORAINTERVALO'] ?? '' ?></td>
+                            <td scope="row" value="ExcluirManha" class="btnExcluirManha"> <i class="fa-solid fa-trash fa-2xl"></i></td>
+
                     <?php
                         endforeach;
                     } ?>
@@ -188,7 +192,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                         <td scope="row" class="horaEntrada2"></td>
                         <td scope="row" class="horaSaida2"></td>
                         <td scope="row" class="horaIntervalo2"></td>
-                        <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
+                        <td scope="row" value="ExcluirTarde" class="btnExcluirTarde"> <i class="fa-solid fa-trash fa-2xl"></i></td>
                         <?php
                     } else {
                         foreach ($horariosFuncTarde as $row3Tarde) :
@@ -202,7 +206,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                             <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>
                             <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?? '' ?></td>
                             <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?? '' ?></td>
-                            <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl" style="color:red"></i></td>
+                            <td scope="row" value="ExcluirTarde" class="btnExcluirTarde"> <i class="fa-solid fa-trash fa-2xl"></i></td>
                     <?php
                         endforeach;
                     } ?>
@@ -235,7 +239,11 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 </script>
 
 
-<script>
+<script type="module">
+    import {
+        criandoHtmlmensagemCarregamento,
+        Toasty
+    } from "../../../base/jsGeral.js";
     $('#table1').DataTable({
 
         scrollY: 400,
@@ -451,7 +459,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                             success: function(relatorio_atualizado2) {
 
                                 $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                             //   criandoHtmlmensagemCarregamento("ocultar");
+                                //   criandoHtmlmensagemCarregamento("ocultar");
 
                             }
                         });
@@ -598,7 +606,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                             success: function(relatorio_atualizado2) {
 
                                 $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                               // criandoHtmlmensagemCarregamento("ocultar");
+                                // criandoHtmlmensagemCarregamento("ocultar");
 
                             }
                         });
@@ -616,56 +624,103 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 
 
 
-    $('#table1').on('click', '.fa-trash',function () {
+    $('#table1').on('click', '.fa-trash', function() {
+        var $row = $(this).closest('tr'); // Captura a linha atual
+        var opcaoDeExclusao = $(this).closest('td').attr('value');
 
         var dataPesquisa = $("#dataPesquisa").val();
         var dataAtual = $("#dataAtual").val();
 
         if (dataPesquisa == "") {
-            dataPesquisa = dataAtual
+            dataPesquisa = dataAtual;
         }
-        var numPDV = $(this).parent().parent().find(".numerosPDVS").closest(".numerosPDVS").text().trim();
-
+        var numPDV = $row.find(".numerosPDVS").text().trim();
         $.ajax({
             url: "config/remove_linha_relatorio_pdv.php",
             method: 'get',
-            data: "dataPesquisa=" +
-                dataPesquisa +
-                "&numPDV=" +
-                numPDV +
-                "&loja=" +
-                loja,
-
-            // dataType: 'json',
+            data: {
+                dataPesquisa: dataPesquisa,
+                numPDV: numPDV,
+                opcaoDeExclusao: opcaoDeExclusao,
+                loja: loja
+            },
             success: function(atualizaTabela) {
+                if (opcaoDeExclusao == "ExcluirManha") {
+                    var matricula = $row.find('.Matricula1').text().trim();
+                    var nome = $row.find('.NomeFunc select option:selected').text().trim();
+                    var entrada = $row.find('.horaEntrada1').text().trim();
+                    var saida = $row.find('.horaSaida1').text().trim();
+                    var intervalo = $row.find('.horaIntervalo1').text().trim();
+                } else if (opcaoDeExclusao == "ExcluirTarde") {
+                    var matricula = $row.find('.matricula2').text().trim();
+                    var nome = $row.find('.nome2 select option:selected').text().trim();
+                    var entrada = $row.find('.horaEntrada2').text().trim();
+                    var saida = $row.find('.horaSaida2').text().trim();
+                    var intervalo = $row.find('.horaIntervalo2').text().trim();
+                }
+                if (matricula == '' || nome == '' || entrada == '' || saida == '' || intervalo == '') {
+                    Toasty("Atenção", "não há funcionarios cadastrado neste PDV", "#E20914");
 
-                $.ajax({
-                    url: "config/pesquisar_relatorio_pdv.php",
-                    method: 'POST',
-                    data: 'dataPesquisa=' +
-                        dataPesquisa +
-                        "&loja=" +
-                        loja,
-                    success: function(relatorio_atualizado2) {
+                } else {
+                    console.log('Matricula: ' + matricula + '\nNome: ' + nome + '\nEntrada: ' + entrada + '\nSaída: ' + saida + '\nIntervalo: ' + intervalo);
+                    var horasIntermediarias = calcularHorasIntermediarias(entrada, saida, intervalo);
+                    nome = '';
+                    $.ajax({
+                        url: "config/exibicao_escala_diaria_pdv.php",
+                        method: 'get',
+                        data: 'DadosMatricula=' +
+                            matricula +
+                            "&nomeSelecionado=" +
+                            nome +
+                            "&DadosEntrada=" +
+                            entrada +
+                            "&DadosSaida=" +
+                            saida +
+                            "&DadosIntervalo=" +
+                            intervalo +
+                            "&usuarioLogado=" +
+                            usuarioLogado +
+                            "&dataPesquisa=" +
+                            dataPesquisa +
+                            "&numPDV=" +
+                            numPDV +
+                            "&horasIntermediarias=" +
+                            horasIntermediarias +
+                            "&loja=" +
+                            loja,
+                        success: function(atualizaTabela) {
 
-                        $('#relatorioPDV').empty().html(relatorio_atualizado2);
-                      //  criandoHtmlmensagemCarregamento("ocultar");
-                    }
-                });
+                            $.ajax({
+                                url: "config/pesquisar_relatorio_pdv.php",
+                                method: 'POST',
+                                data: 'dataPesquisa=' +
+                                    dataPesquisa +
+                                    "&loja=" +
+                                    loja,
+                                success: function(relatorio_atualizado2) {
 
-                $.ajax({
-                    url: "config/pesquisar_escalaPDV.php",
-                    method: 'POST',
-                    data: 'dataPesquisa=' +
-                        dataPesquisa +
-                        "&loja=" +
-                        loja,
-                    success: function(data_pesquisada2) {
+                                    $('#relatorioPDV').empty().html(relatorio_atualizado2);
+                                    criandoHtmlmensagemCarregamento("ocultar");
+                                }
+                            });
 
-                        $('.dadosEscalaPDV').empty().html(data_pesquisada2);
+                            $.ajax({
+                                url: "config/pesquisar_escalaPDV.php",
+                                method: 'POST',
+                                data: 'dataPesquisa=' +
+                                    dataPesquisa +
+                                    "&loja=" +
+                                    loja,
+                                success: function(data_pesquisada2) {
 
-                    }
-                });
+                                    $('.dadosEscalaPDV').empty().html(data_pesquisada2);
+
+                                }
+                            });
+
+                        }
+                    });
+                }
 
             }
         });
