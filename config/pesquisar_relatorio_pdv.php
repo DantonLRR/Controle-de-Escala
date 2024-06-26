@@ -12,7 +12,7 @@ $loja = $_POST['loja'];
 
 $horarios = array();
 for ($i = 7; $i <= 21; $i++) {
-    $horarios[] = sprintf("%02d:00", $i);
+    $horarios[] =  $i;
 }
 
 $InformacaoFuncionarios = new Funcionarios();
@@ -43,15 +43,14 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
         <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
             <tr class="trr">
                 <th> PDV </th>
-                <?php
-                foreach ($horarios as $row) :
-                ?>
-                    <th class="text-center" scope="row" id=""><?= $row ?></th>
-                <?php
-
-                endforeach
-                ?>
+                <?php foreach ($horarios as $row) :
+                    $proximaHora = $row + 1; ?>
+                    <th class="text-center" scope="row" id="">
+                        <?= "DE " . $row . "h ÀS " . $proximaHora . "h" ?>
+                    </th>
+                <?php endforeach; ?>
             </tr>
+        </thead>
 
         </thead>
         <tbody style="background-color: #DCDCDC;">
