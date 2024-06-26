@@ -1025,7 +1025,7 @@ SQL;
         $lista = array();
         global  $retorno;
         $query =
-<<<SQL
+            <<<SQL
                 SELECT DISTINCT PFUNC.CHAPA,
                 PFUNC.NOME AS NOME,
                 SUBSTR(PFUNCAO.NOME, 0, 11) AS NOME2,
@@ -1102,7 +1102,7 @@ SQL;
 
 
 SQL;
-      //  echo "<br><br><br><br><br><br><br>" . $query;
+        //  echo "<br><br><br><br><br><br><br>" . $query;
 
         $parse = oci_parse($TotvsOracle, $query);
         $retorno = oci_execute($parse);
@@ -1153,12 +1153,27 @@ SQL;
     public function verificaAlteracaoNoHorarioDiario($oracle, $matricula, $diaselecionado, $nome, $loja)
     {
         global  $retorno;
-        $query = "SELECT * from webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED a 
+        $query = "SELECT a.matricula,
+       a.nome,
+       a.loja,
+       a.diaselecionado,
+       a.status,
+       a.horaentrada,
+       a.horasaida,
+       a.horaintervalo,
+       a.datainclusao,
+       a.usuinclusao
+  FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED a
         WHERE a.matricula = '$matricula'
         and trim(a.nome) = '$nome'
         and a.loja = $loja      
-        and a.diaselecionado = TO_DATE('$diaselecionado', 'YYYY-MM-DD')
-    
+   AND a.diaselecionado = (
+       SELECT MAX(b.diaselecionado)
+         FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
+        WHERE b.matricula = a.matricula
+          AND TRIM(b.nome) = TRIM(a.nome)
+          AND b.loja = a.loja
+   )
         ";
         $parse = oci_parse($oracle, $query);
 
