@@ -98,7 +98,7 @@ foreach ($FuncTarde as $funcTarde2) {
 
 $horarios = array();
 for ($i = 7; $i <= 21; $i++) {
-    $horarios[] = sprintf("%02d:00", $i);
+    $horarios[] =  $i;
 }
 
 
@@ -207,20 +207,21 @@ for ($i = 7; $i <= 21; $i++) {
 
                                 <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
                                     <tr class="trr">
-                                        <th class="text-center" colspan="6">Manhã</th>
+                                        <th class="text-center" colspan="7">Manhã</th>
 
-                                        <th class="vertical-line text-center" style=" border-left: 1px solid #000;" colspan="6">Tarde</th>
+                                        <th class="vertical-line text-center" style=" border-left: 1px solid #000;" colspan="7">Tarde</th>
                                     </tr>
                                     <tr class="trr">
                                         <th>pdv</th>
                                         <th class="text-center">MATRICULA</th>
                                         <th class="text-center">NOME</th>
-                                        <th class="text-center">ENTRADA:</th>
+                                        <th class="text-center">ENTRADA</th>
                                         <th class="text-center">SAIDA</th>
                                         <th class="text-center">INTERVALO</th>
+                                        <th class="text-center">EXCLUSÃO</th>
                                         <th class="vertical-line text-center" style=" border-left: 1px solid #000;">MATRICULA</th>
                                         <th class="text-center">NOME</th>
-                                        <th class="text-center">ENTRADA:</th>
+                                        <th class="text-center">ENTRADA</th>
                                         <th class="text-center">SAIDA</th>
                                         <th class="text-center">INTERVALO</th>
                                         <th class="text-center">EXCLUSÃO</th>
@@ -262,6 +263,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <td scope="row" class="text-center horaEntrada1"></td>
                                                 <td scope="row" class="horaSaida1"></td>
                                                 <td scope="row" class="horaIntervalo1"></td>
+                                                <td scope="row" value="ExcluirManha" class="btnExcluirManha"> <i class="fa-solid fa-trash fa-2xl"></i></td>
 
                                                 <?php
                                             } else {
@@ -269,7 +271,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                     // print_r($horariosFuncManha);  
                                                 ?>
                                                     <!-- RETORNO DE DADOS EXISTENTE NO BANCO MOSTRA APENAS O FUNCIONARIO SELECIONADO -->
-                                                    <td scope="row" class="Matricula1"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
+                                                    <td scope="row" class="Matricula1" value="<?= $row2Manha['MATRICULA'] ?? '' ?>"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
                                                     <td scope="row" class="NomeFunc">
                                                         <select class="estilezaSelect form-control" id="selectFuncionario">
                                                             <option value="<?= $row2Manha['NOME'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
@@ -278,7 +280,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?? '' ?></td>
                                                     <td scope="row" class="horaSaida1"><?= $row2Manha['HORASAIDA'] ?? '' ?></td>
                                                     <td scope="row" class="horaIntervalo1"><?= $row2Manha['HORAINTERVALO'] ?? '' ?></td>
-
+                                                    <td scope="row" value="ExcluirManha" class="btnExcluirManha"> <i class="fa-solid fa-trash fa-2xl"></i></td>
                                             <?php
                                                 endforeach;
                                             } ?>
@@ -304,7 +306,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                 <td scope="row" class="horaEntrada2"></td>
                                                 <td scope="row" class="horaSaida2"></td>
                                                 <td scope="row" class="horaIntervalo2"></td>
-                                                <td scope="row" class="btnExcluir"> <i class="fa-solid fa-trash fa-2xl"></i></td>
+                                                <td scope="row" value="ExcluirTarde" class="btnExcluirTarde"> <i class="fa-solid fa-trash fa-2xl"></i></td>
                                                 <?php
                                             } else {
                                                 foreach ($horariosFuncTarde as $row3Tarde) :
@@ -320,7 +322,7 @@ for ($i = 7; $i <= 21; $i++) {
                                                     <td scope="row" class="horaEntrada2"><?= $row3Tarde['HORAENTRADA'] ?? '' ?></td>
                                                     <td scope="row" class="horaSaida2"><?= $row3Tarde['HORASAIDA'] ?? '' ?></td>
                                                     <td scope="row" class="horaIntervalo2"><?= $row3Tarde['HORAINTERVALO'] ?? '' ?></td>
-                                                    <td scope="row" class="btnExcluir"><i class="fa-solid fa-trash fa-2xl"></i></td>
+                                                    <td scope="row" value="ExcluirTarde" class="btnExcluirTarde"><i class="fa-solid fa-trash fa-2xl"></i></td>
                                             <?php
                                                 endforeach;
                                             } ?>
@@ -354,17 +356,16 @@ for ($i = 7; $i <= 21; $i++) {
                             <thead style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">
                                 <tr class="trr">
                                     <th> PDV </th>
-                                    <?php
-                                    foreach ($horarios as $row) :
-                                    ?>
-                                        <th class="text-center" scope="row" id=""><?= $row ?></th>
-                                    <?php
-
-                                    endforeach
-                                    ?>
+                                    <?php foreach ($horarios as $row) :
+                                        $proximaHora = $row + 1; ?>
+                                        <th class="text-center" scope="row" id="">
+                                            <?= "DE " . $row ."h ÀS " . $proximaHora . "h" ?>
+                                        </th>
+                                    <?php endforeach; ?>
                                 </tr>
-
                             </thead>
+
+
                             <tbody style="background-color: #DCDCDC;">
                                 <td></td>
                                 <?php
