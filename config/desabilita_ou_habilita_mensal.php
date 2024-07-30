@@ -22,7 +22,7 @@ $update = new Update();
 $verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $mesPesquisado, $loja, $Departamento);
 // print_r($verificaSeJaExistemDados);
 if ($retorno === "NÃO FINALIZADA.") {
-    $updateDadosNaTabela = $update->bloqueiaEscalaMensal($oracle,  $status,  $usuarioLogado, $mesPesquisado, $loja);
+    $updateDadosNaTabela = $update->bloqueiaEscalaMensal($oracle,  $status,  $usuarioLogado, $mesPesquisado, $loja,$Departamento);
 } else if ($retorno === "JÁ FINALIZADA.") {
     $updateDadosNaTabela2 = $update->liberaEscalaMensal($oracle, $status,  $usuarioLogado, $mesPesquisado, $loja, $Departamento);
     // print_r($updateDadosNaTabela2);

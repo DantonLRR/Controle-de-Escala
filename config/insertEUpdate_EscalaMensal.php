@@ -31,24 +31,35 @@ $InsertDeDados = new Insert();
 $verifica = new Verifica();
 
 $update = new Update();
+$verificaSeJaaescalaEstaFinalizada = $verifica->verificaSeAEscalaMensalEstaFinalizadaParaInsercaoDeDados($oracle,  $mesPesquisado, $loja,  $departamentoFunc);
+// print_r($verificaSeJaaescalaEstaFinalizada);
+if ($retorno === "NÃO FINALIZADA.") {
+    $statusDaTabela = "NÃO FINALIZADA.";
+} else if ($retorno === "JÁ FINALIZADA.") {
+    $statusDaTabela = "JÁ FINALIZADA.";
+}
+echo $statusDaTabela ;
+if ($statusDaTabela === "NÃO FINALIZADA.") {
+    foreach ($arrayDia as $diaSelecionado) :
 
-foreach ($arrayDia as $diaSelecionado) :
+        $verificaSeJaExistemDados = $verifica->verificaCadastroNaEscalaMensaL2($oracle, $matricula, $mesPesquisado, $loja, $departamentoFunc);
 
-    $verificaSeJaExistemDados = $verifica->verificaCadastroNaEscalaMensaL2($oracle, $matricula, $mesPesquisado, $loja, $departamentoFunc);
+        if ($retorno == '1') {
+            // echo $retorno . " update <br>";
 
-    if ($retorno == '1') {
-        echo $retorno . " update <br>";
+            if ($remocaoDeFeriasProgramadas == 'sim' || $programaFerias == 'sim') {
+                // echo "caiu no if <br> ";
+                $updateDeDados = $update->updateDeFuncionariosNaEscalaMensalFerias($oracle, $usuarioLogado, $mesPesquisado, $nome, $diaSelecionado, $opcaoSelect, $matricula, $loja, $DATAINICIOFERIASPROGRAMADAS, $DATAFIMFERIASPROGRAMADAS,$departamentoFunc);
+            } else {
+                // echo "caiu no else <br> ";
+                $updateDeDados = $update->updateDeFuncionariosNaEscalaMensal($oracle, $usuarioLogado, $mesPesquisado, $nome, $diaSelecionado, $opcaoSelect, $matricula, $loja,$departamentoFunc);
+            }
+        } else if ($retorno == '0') {
+            // echo $retorno . " insert <br>";
+            $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle, $tabela, $diaSelecionado,  $matricula, $nome, $loja,  $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado, $departamentoFunc, $DATAINICIOFERIASPROGRAMADAS, $DATAFIMFERIASPROGRAMADAS);
+        }
 
-        if ($remocaoDeFeriasProgramadas == 'sim'|| $programaFerias == 'sim'){
-            echo "caiu no if <br> ";
-            $updateDeDados = $update->updateDeFuncionariosNaEscalaMensalFerias($oracle, $usuarioLogado, $mesPesquisado, $nome, $diaSelecionado, $opcaoSelect, $matricula, $loja, $DATAINICIOFERIASPROGRAMADAS, $DATAFIMFERIASPROGRAMADAS);
-        }else{
-            echo "caiu no else <br> ";
-            $updateDeDados = $update->updateDeFuncionariosNaEscalaMensal($oracle, $usuarioLogado, $mesPesquisado, $nome, $diaSelecionado, $opcaoSelect, $matricula, $loja);
-        }        
-    } else if ($retorno == '0') {
-        echo $retorno . " insert <br>";
-        $insertDadosNaTabela = $InsertDeDados->insertEscalaMensal($oracle, $tabela, $diaSelecionado,  $matricula, $nome, $loja,  $cargoFunc, $mesPesquisado, $horarioEntradaFunc, $horarioSaidaFunc,  $horarioIntervaloFunc, $opcaoSelect, $usuarioLogado, $departamentoFunc, $DATAINICIOFERIASPROGRAMADAS, $DATAFIMFERIASPROGRAMADAS);
-    }
-
-endforeach;
+    endforeach;
+}else{
+    echo json_encode(false);
+}

@@ -29,9 +29,9 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
 
     $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['DEPARTAMENTO2'];
 
-if($dadosDeQuemEstaLogadoFuncaoSeLider =="LIDER DE"){
-    $dadosDeQuemEstaLogadoSetor = str_replace("LIDER DE ", "", $dadosDeQuemEstaLogadoSetor);
-}
+    if ($dadosDeQuemEstaLogadoFuncaoSeLider == "LIDER DE") {
+        $dadosDeQuemEstaLogadoSetor = str_replace("LIDER DE ", "", $dadosDeQuemEstaLogadoSetor);
+    }
     $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $loja, $dadosDeQuemEstaLogadoSetor);
 
 
@@ -121,7 +121,7 @@ if($dadosDeQuemEstaLogadoFuncaoSeLider =="LIDER DE"){
                     <td class="text-center horarioEntradaFunc" style="display:none" scope="row"><?= $nomeFunc['HORAENTRADA'] ?></td>
                     <td class="text-center horarioSaidaFunc" style="display:none" scope="row"><?= $nomeFunc['HORASAIDA'] ?></td>
                     <td class="text-center horarioIntervaloFunc" style="display:none" scope="row"><?= $nomeFunc['SAIDAPARAALMOCO'] ?></td>
-                    <td class="text-center matriculaFunc"  scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
+                    <td class="text-center matriculaFunc" scope="row"><?= $nomeFunc['MATRICULA'] ?></td>
 
 
                     <?php
@@ -178,6 +178,8 @@ endforeach;
 
     </table>
     <script type="module" defer>
+        var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
+        var mesAtual = $("#mesAtual").val();
         $(document).ready(function() {
             var colunas = document.querySelectorAll('.diaDaSemana');
             colunas.forEach(function(coluna) {
@@ -304,7 +306,7 @@ endforeach;
                         var horarioSaidaFunc = $tr.find('td.horarioSaidaFunc').text();
                         var horarioIntervaloFunc = $tr.find('td.horarioIntervaloFunc').text();
                         var cargoFunc = $tr.find('td.cargo').text();
-                        var departamentoFunc = $tr.find('td.departamento').text();
+                        //var departamentoFunc = $tr.find('td.departamento').text();
                         //
                         var colIndex = $(this).closest('td').index();
                         var mesPesquisa = $("#dataPesquisa").val();
@@ -356,7 +358,7 @@ endforeach;
                                     "&cargoFunc=" +
                                     cargoFunc +
                                     "&departamentoFunc=" +
-                                    departamentoFunc,
+                                    Departamento,
                                 // dataType: 'json',
                                 success: function(retorno) {
                                     // console.log(retorno)
@@ -435,7 +437,7 @@ endforeach;
                 //     }
                 // },
                 {
-                    text: 'Escala Diaria',
+                    text: 'Escala De Horários',
                     className: 'btnverde',
                     action: function() {
                         window.location.href = "escalaDiaria.php";
@@ -445,10 +447,15 @@ endforeach;
                     text: 'Finalizar Escala',
                     className: 'btnVermelho btnverde',
                     action: function() {
-
+                        criandoHtmlmensagemCarregamento("exibir");
                         var alteraStatusEscala = "F";
+
+                        var loja = $("#loja").val();
+
                         var mesPesquisa = $("#dataPesquisa").val();
-                        var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
+
+
+
                         if (mesPesquisa == "") {
                             mesPesquisa = mesAtual
                         };
@@ -494,12 +501,28 @@ endforeach;
                                 // alert(retornoVerificacao.MENSAGEM); // Exibe a mensagem retornada
                                 // alert(retornoVerificacao.MENSAGEM);
                                 if (retornoVerificacao.ESCALALIBERADAPARAFINALIZACAO == false) {
-                                    Toasty("Atenção", retornoVerificacao.MENSAGEM, "#E20914");
-                                    // alert();
-                                } else {
-                                    criandoHtmlmensagemCarregamento("exibir");
+                                    // Toasty("Atenção", retornoVerificacao.MENSAGEM, "#E20914");
+                                    criandoHtmlmensagemCarregamento("ocultar");
+                                    // alert()
+
+                                    $('#modalFerias').modal('show')
+                                    $('#feriasAgendadas').addClass('ocultarBotao');
+                                    $('#salvarFerias').addClass('ocultarBotao');
+                                    $('#AgendamentoFerias').addClass('ocultarBotao');
                                     $.ajax({
-                                        url: "desabilita_ou_habilita_mensal.php",
+                                        url: "modal/modalFinalizacaoEscala.php",
+                                        method: 'POST',
+                                        data: 'Mensagem=' +
+                                            retornoVerificacao.MENSAGEM,
+                                        success: function(modalFerias) {
+                                            $('.cadastroFerias').empty()
+                                            $('.cadastroFerias').empty().html(modalFerias);
+                                            criandoHtmlmensagemCarregamento("ocultar");
+                                        }
+                                    });
+                                } else {
+                                    $.ajax({
+                                        url: "config/desabilita_ou_habilita_mensal.php",
                                         method: 'POST',
                                         data: "mesPesquisa=" +
                                             mesPesquisa +
@@ -518,7 +541,7 @@ endforeach;
                                         success: function(atualizaTabela1) {
 
                                             $.ajax({
-                                                url: "pesquisar_escalaMensal.php",
+                                                url: "config/pesquisar_escalaMensal.php",
                                                 method: 'POST',
                                                 data: 'mesPesquisa=' +
                                                     mesPesquisa +
@@ -552,7 +575,7 @@ endforeach;
                     className: ' btnverdeEXCEL',
                     action: function() {
                         criandoHtmlmensagemCarregamento("exibir");
-                        var usuarioLogado = $("#usuarioLogado").val();
+
                         var loja = $("#loja").val();
 
                         var mesPesquisa = $("#dataPesquisa").val();
@@ -562,7 +585,7 @@ endforeach;
                         if (mesPesquisa == "") {
                             mesPesquisa = mesAtual
                         };
-                        var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
+
                         $.ajax({
                             url: "config/gerarPdf.php",
                             method: "POST",
@@ -600,8 +623,8 @@ endforeach;
                     className: 'btnVermelho btnverde',
                     action: function() {
                         criandoHtmlmensagemCarregamento("exibir");
-                        $('#exampleModal').modal('show');
-                        var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
+                        $('#modalFerias').modal('show');
+
                         var loja = $('#loja').val();
                         $.ajax({
                             url: "modal/modalFerias.php",
@@ -611,7 +634,7 @@ endforeach;
                                 "&loja=" +
                                 loja,
                             success: function(modalFerias) {
-                                $('.modal-content').empty().html(modalFerias);
+                                $('.cadastroFerias').empty().html(modalFerias);
                                 criandoHtmlmensagemCarregamento("ocultar");
                             }
                         });

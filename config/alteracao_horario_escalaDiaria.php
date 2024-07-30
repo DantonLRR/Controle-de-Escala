@@ -15,8 +15,8 @@ $horaSaida = trim($_POST['horarioSaidaFunc']);
 $horaIntervalo = trim($_POST['horarioIntervaloFunc']);
 $usuInclusao = trim($_POST['usuInclusao']);
 
-echo $horaEntrada;
-echo $horaSaida;
+// echo $horaEntrada;
+// echo $horaSaida;
 
 
 $verificacaoDeDados = new Verifica();

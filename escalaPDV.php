@@ -215,13 +215,13 @@ for ($i = 7; $i <= 21; $i++) {
                                         <th>pdv</th>
                                         <th class="text-center">MATRICULA</th>
                                         <th class="text-center">NOME</th>
-                                        <th class="text-center">ENTRADA:</th>
+                                        <th class="text-center">ENTRADA</th>
                                         <th class="text-center">SAIDA</th>
                                         <th class="text-center">INTERVALO</th>
                                         <th class="text-center">EXCLUSÃO</th>
                                         <th class="vertical-line text-center" style=" border-left: 1px solid #000;">MATRICULA</th>
                                         <th class="text-center">NOME</th>
-                                        <th class="text-center">ENTRADA:</th>
+                                        <th class="text-center">ENTRADA</th>
                                         <th class="text-center">SAIDA</th>
                                         <th class="text-center">INTERVALO</th>
                                         <th class="text-center">EXCLUSÃO</th>

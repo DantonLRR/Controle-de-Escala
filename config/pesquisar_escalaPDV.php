@@ -105,13 +105,13 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                 <th>pdv</th>
                 <th class="text-center">MATRICULA</th>
                 <th class="text-center">NOME</th>
-                <th class="text-center">ENTRADA:</th>
+                <th class="text-center">ENTRADA</th>
                 <th class="text-center">SAIDA</th>
                 <th class="text-center">INTERVALO</th>
                 <th class="text-center">EXCLUSÃO</th>
                 <th class="vertical-line text-center" style=" border-left: 1px solid #000;">MATRICULA</th>
                 <th class="text-center">NOME</th>
-                <th class="text-center">ENTRADA:</th>
+                <th class="text-center">ENTRADA</th>
                 <th class="text-center">SAIDA</th>
                 <th class="text-center">INTERVALO</th>
                 <th class="text-center">EXCLUSÃO</th>
@@ -134,7 +134,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                     <?php
                     if (empty($horariosFuncManha)) {
                     ?>
-                        <td scope="row" class="Matricula1" contenteditable="true"></td>
+                        <td scope="row" class="Matricula1" ></td>
                         <td scope="row" class="NomeFunc">
                             <select class="estilezaSelect form-control" id="selectFuncionario">
                                 <option value=""></option>
@@ -157,10 +157,10 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                     } else {
                         foreach ($horariosFuncManha as $row2Manha) :
                         ?>
-                            <td scope="row" class="Matricula1" contenteditable="true"><?= $row2Manha['MATRICULA'] ?? '' ?></td>
+                            <td scope="row" class="Matricula1" ><?= $row2Manha['MATRICULA'] ?? '' ?></td>
                             <td scope="row" class="NomeFunc">
                                 <select class="estilezaSelect form-control" id="selectFuncionario">
-                                    <option value="<?= $rowManha['MATRICULA'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
+                                    <option value="<?= $row2Manha['MATRICULA'] ?>"><?= $row2Manha['NOME'] ?? '' ?></option>
                                 </select>
                             </td>
                             <td scope="row" class="text-center horaEntrada1"><?= $row2Manha['HORAENTRADA'] ?? '' ?></td>
@@ -174,7 +174,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                     <?php
                     if (empty($horariosFuncTarde)) {
                     ?>
-                        <td scope="row" class="matricula2" contenteditable="true"></td>
+                        <td scope="row" class="matricula2" ></td>
                         <td scope="row" class="text-center nome2">
                             <select class="estilizaSelect2 form-control">
                                 <option value=""></option>
@@ -197,7 +197,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
                     } else {
                         foreach ($horariosFuncTarde as $row3Tarde) :
                         ?>
-                            <td scope="row" class="matricula2" contenteditable="true"><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
+                            <td scope="row" class="matricula2" ><?= $row3Tarde['MATRICULA'] ?? '' ?></td>
                             <td scope="row" class="text-center nome2">
                                 <select class="estilizaSelect2 form-control">
                                     <option value="<?= $row3Tarde['MATRICULA'] ?>"><?= $row3Tarde['NOME'] ?? '' ?></option>
@@ -258,14 +258,47 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
             [15],
 
         ],
-        buttons: [{
-            text: 'Imprimir',
-            className: 'estilizaBotao btn btnverde',
-            extend: 'print',
-            exportOptions: {
+        buttons: [
+        {
+            text: '<i class="fa-solid fa-file-pdf"  style="color: #ffffff;"></i> PDF ',
+            className: 'btnverde btn ',
+            action: function () {
+                criandoHtmlmensagemCarregamento("exibir");
+                var dataPesquisa = $("#dataPesquisa").val();
+                var dataAtual = $("#dataAtual").val();
+
+                if (dataPesquisa == "") {
+                    dataPesquisa = dataAtual
+                }
+                var diretorioDoPdf = "PdfMontagemPDV.php";
+                $.ajax({
+                    url: "config/gerarPdf.php",
+                    method: 'POST',
+                    data: 'dataPesquisa=' +
+                        dataPesquisa +
+                        "&loja=" +
+                        loja +
+                        "&diretorioDoPdf=" +
+                        diretorioDoPdf,
+                    xhrFields: {
+                        responseType: "blob",
+                    },
+                    success: function (response) {
+                        // Loading("ocultar");
+                        criandoHtmlmensagemCarregamento("ocultar");
+                        let blobUrl = URL.createObjectURL(response);
+                        window.open(blobUrl, "_blank");
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                        // Loading("ocultar");
+                    },
+                });
 
             }
-        }, ],
+
+        }
+    ],
         language: {
             "sEmptyTable": "Nenhum registro encontrado",
 

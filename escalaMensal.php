@@ -56,7 +56,7 @@ foreach ($verificaSeAPessoaLogadaEEncarregada as $rowVerificaEncarregado) :
 
     $dadosDeQuemEstaLogadoSetor =  $rowVerificaEncarregado['DEPARTAMENTO2'];
 endforeach;
-if($dadosDeQuemEstaLogadoFuncaoSeLider =="LIDER DE"){
+if ($dadosDeQuemEstaLogadoFuncaoSeLider == "LIDER DE") {
     $dadosDeQuemEstaLogadoSetor = str_replace("LIDER DE ", "", $dadosDeQuemEstaLogadoSetor);
 }
 $verificaSeJaExistemDados = $verifica->verificaSeAEscalaMensalEstaFinalizada($oracle, $dataSelecionadaNoFiltro, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor);
@@ -80,13 +80,13 @@ if ($retorno === "NÃO FINALIZADA.") {
         <div class="row">
             <div class="col-lg-12  ">
                 <div class="card " style="border-color:#00a550;  ">
-                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">Escala Mensal</h6>
+                    <h6 class="card-header text-center font-weight-bold text-uppercase " style="background: linear-gradient(to right, #00a451, #052846 85%); color:white;">Escala Mensal - <?= $dadosDeQuemEstaLogadoSetor ?></h6>
                     <div class="card-body">
                         <input class="" type="hidden" id="dadosDeQuemEstaLogadoNome" value="<?= $dadosDeQuemEstaLogadoNome ?>">
                         <input class="" type="hidden" id="dadosDeQuemEstaLogadoFuncao" value="<?= $dadosDeQuemEstaLogadoFuncao ?>">
                         <input class="" type="hidden" id="dadosDeQuemEstaLogadoSetor" value="<?= $dadosDeQuemEstaLogadoSetor ?>">
                         <?php
-                        if ($dadosDeQuemEstaLogadoFuncao === "ENCARREGADO" || $dadosDeQuemEstaLogadoFuncaoSeLider =="LIDER DE") {
+                        if ($dadosDeQuemEstaLogadoFuncao === "ENCARREGADO" || $dadosDeQuemEstaLogadoFuncaoSeLider == "LIDER DE") {
                             $buscaNomeFuncionario = $dadosFunc->informacoesOperadoresDeCaixa($TotvsOracle, $_SESSION['LOJA'], $dadosDeQuemEstaLogadoSetor); ?>
 
                             <div class="mb-4">
@@ -196,7 +196,7 @@ if ($retorno === "NÃO FINALIZADA.") {
                                                         $DadoDoDiaSalVoNoBancoDeDados = $recuperacaoDedados[0]["$d"] ?? '';
                                                         ?>
 
-                                                        <select <?= $disabled ?> class="estilezaSelect" name="" id="";">
+                                                        <select <?= $disabled ?> class="estilezaSelect" name="" id="" ;">
                                                             <option value="<?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?>"> <?= $DadoDoDiaSalVoNoBancoDeDados ?? '' ?></option>
                                                             <!-- Se o dado -->
                                                             <option value="DSR" <?= $DadoDoDiaSalVoNoBancoDeDados == 'DSR' ? "style='display: none'" : "" ?>>DSR - DESCANSO SEMANAL REMUNERADO </option>
@@ -221,24 +221,7 @@ if ($retorno === "NÃO FINALIZADA.") {
                                 </table>
 
                             </div>
-                            <div class="modal fade custom-modal" id="modalFerias" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="cadastroFerias"></div>
-                                        <div class="modal-footer d-flex justify-content-between" style="background-color:white;">
-                                            <button id="AgendamentoFerias" type="button" class=" ocultarBotao btn btnModal">
-                                                Agendar férias
-                                            </button>
-                                            <button id="feriasAgendadas" type="button" class="btn btnModal">
-                                                Ferias Agendadas
-                                            </button>
-                                            <button id="salvarFerias" type="button" class="btn btnModal">
-                                                Salvar
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
 
                         <?php
                         } else {
@@ -256,6 +239,24 @@ if ($retorno === "NÃO FINALIZADA.") {
 
 
         <input class="statusDaTabela" type="hidden" id="statusDaTabela" value="<?= $statusDaTabela ?>">
+        <div class="modal fade custom-modal" id="modalFerias" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="cadastroFerias"></div>
+                    <div class="modal-footer d-flex justify-content-between" style="background-color:white;">
+                        <button id="AgendamentoFerias" type="button" class=" ocultarBotao btn btnModal">
+                            Agendar férias
+                        </button>
+                        <button id="feriasAgendadas" type="button" class="btn btnModal">
+                            Ferias Agendadas
+                        </button>
+                        <button id="salvarFerias" type="button" class="btn btnModal">
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <?php
         // echo $statusDaTabela;
         ?>

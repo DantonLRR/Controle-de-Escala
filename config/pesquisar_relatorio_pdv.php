@@ -36,7 +36,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 
 
 ?>
-
+<input type="hidden" value<?=$loja?> id="loja">
 
     <table id="table2" class="table table-bordered table-striped text-center row-border order-colum" style="width: 100%;">
 
@@ -107,6 +107,7 @@ if ($quantidadePorDiaDeFuncionariosImpressao == "Nenhum funcionario escalado par
 ?>
 
 <script type="module">
+    var loja = $("#loja").val();
     import {
         criandoHtmlmensagemCarregamento,
         Toasty

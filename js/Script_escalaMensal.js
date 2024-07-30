@@ -8,7 +8,6 @@ var statusDaTabela = $("#statusDaTabela").val();
 var Departamento = $('#dadosDeQuemEstaLogadoSetor').val();
 var mesAtual = $("#mesAtual").val();
 
-
 window.onload = function () {
     $(document).ready(function () {
         var colunas = document.querySelectorAll('.diaDaSemana');
@@ -86,7 +85,7 @@ $('#table1').DataTable({
         //     }
         // },
         {
-            text: 'Escala Diaria',
+            text: 'Escala de Horários',
             className: 'btnverde',
             action: function () {
                 window.location.href = "escalaDiaria.php";
@@ -98,7 +97,7 @@ $('#table1').DataTable({
             action: function () {
                 criandoHtmlmensagemCarregamento("exibir");
                 var alteraStatusEscala = "F";
-                var usuarioLogado = $("#usuarioLogado").val();
+               
                 var loja = $("#loja").val();
 
                 var mesPesquisa = $("#dataPesquisa").val();
@@ -150,9 +149,25 @@ $('#table1').DataTable({
                         // alert(retornoVerificacao.MENSAGEM); // Exibe a mensagem retornada
                         // alert(retornoVerificacao.MENSAGEM);
                         if (retornoVerificacao.ESCALALIBERADAPARAFINALIZACAO == false) {
-                            Toasty("Atenção", retornoVerificacao.MENSAGEM, "#E20914");
+                            // Toasty("Atenção", retornoVerificacao.MENSAGEM, "#E20914");
                             criandoHtmlmensagemCarregamento("ocultar");
-                            // alert();
+                            // alert()
+                            
+                            $('#modalFerias').modal('show')
+                            $('#feriasAgendadas').addClass('ocultarBotao');
+                            $('#salvarFerias').addClass('ocultarBotao');
+                            $('#AgendamentoFerias').addClass('ocultarBotao');
+                            $.ajax({
+                                url: "modal/modalFinalizacaoEscala.php",
+                                method: 'POST',
+                                data: 'Mensagem=' +
+                                retornoVerificacao.MENSAGEM,
+                                success: function (modalFerias) {
+                                    $('.cadastroFerias').empty()
+                                    $('.cadastroFerias').empty().html(modalFerias);
+                                    criandoHtmlmensagemCarregamento("ocultar");
+                                }
+                            });
                         } else {
                             $.ajax({
                                 url: "config/desabilita_ou_habilita_mensal.php",
@@ -224,7 +239,7 @@ $('#table1').DataTable({
             className: ' btnverdeEXCEL',
             action: function () {
 
-                var usuarioLogado = $("#usuarioLogado").val();
+               
                 var loja = $("#loja").val();
 
                 var mesPesquisa = $("#dataPesquisa").val();
@@ -412,7 +427,8 @@ $(document).ready(function () {
                 var mesPesquisa = $("#dataPesquisa").val();
                 //console.log(mesPesquisa)
 
-                var departamentoFunc = $tr.find('td.departamento').text();
+              //  var departamentoFunc = $tr.find('td.departamento').text();
+                //variavel errado
                 //alert(departamentoFunc)
 
 
@@ -459,9 +475,10 @@ $(document).ready(function () {
                             "&cargoFunc=" +
                             cargoFunc +
                             "&departamentoFunc=" +
-                            departamentoFunc,
+                            Departamento,
                         // dataType: 'json',
                         success: function (retorno) {
+        
                             // console.log(retorno)
                         }
                     });
@@ -529,7 +546,7 @@ $('#modalFerias').on('change', '#funcionarioFerias', function () {
 
 $('#modalFerias').on('click', '#feriasAgendadas', function () {
     $('#feriasAgendadas').addClass('ocultarBotao');
-    $('#salletFerias').addClass('ocultarBotao');
+    $('#salvarFerias').addClass('ocultarBotao');
     $('#AgendamentoFerias').removeClass('ocultarBotao');
     let loja = $('#lojaDaPessoaLogada').val();
     $.ajax({
@@ -565,7 +582,7 @@ $('#modalFerias').on('click', '#AgendamentoFerias', function () {
 
 })
 $('#modalFerias').on('click', '#salvarFerias', function () {
-   
+    // alert(statusDaTabela);
     let opcaoSelecionada = 'F';
     let dataInicialFerias = $('#dataInicialFerias').val();
     let dataFinalFerias = $('#dataFinalFerias').val();
@@ -711,8 +728,8 @@ function InsereNoBanco(opcaoSelecionadaPARAMETRO, dataInicialFeriasPARAMETRO, da
         parseInt(primeiroDiaDoMesFinal.substring(8, 10)) // dia
     );
 
-    console.log("dataInicialFerias OBJ: " + dataInicialFeriasObj);
-    console.log("dataFinalFerias OBJ: " + dataFinalFeriasObj);
+    // console.log("dataInicialFerias OBJ: " + dataInicialFeriasObj);
+    // console.log("dataFinalFerias OBJ: " + dataFinalFeriasObj);
     // console.log("DiaFinalDoMesInicial OBJ: " + DiaFinalDoMesInicialObj);
     // console.log("primeiroDiaDoMesFinal OBJ: " + primeiroDiaDoMesFinalObj);
     if (opcaoSelecionada == '') {
@@ -773,7 +790,7 @@ function InsereNoBanco(opcaoSelecionadaPARAMETRO, dataInicialFeriasPARAMETRO, da
                 "&programaFerias=" +
                 programaFerias,
             success: function (retorno) {
-
+var retornoInsercaoEscalMensalFerias = retorno;
             }
         });
 
@@ -823,7 +840,7 @@ function InsereNoBanco(opcaoSelecionadaPARAMETRO, dataInicialFeriasPARAMETRO, da
                     "&programaFerias=" +
                     programaFerias,
                 success: function (retorno) {
-
+                    var retornoInsercaoEscalMensalFerias = retorno;
                 }
             });
         }
@@ -884,9 +901,10 @@ function InsereNoBanco(opcaoSelecionadaPARAMETRO, dataInicialFeriasPARAMETRO, da
                 "&programaFerias=" +
                 programaFerias,
             success: function (retorno) {
-
+                var retornoInsercaoEscalMensalFerias = retorno;
             }
         });
+        // console.log(retornoInsercaoEscalMensalFerias);
         $.ajax({
             url: "config/pesquisar_escalaMensal.php",
             method: 'POST',

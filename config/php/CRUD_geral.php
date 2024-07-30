@@ -87,8 +87,9 @@ class lojas
     public function recuperacaoDosSetoresDaLoja($oracle)
     {
         $lista = array();
-        $query = "SELECT DISTINCT(a.departamento) from webmartminas.web_escala_mensal a
-         ORDER BY A.DEPARTAMENTO ASC
+        $query = "SELECT DISTINCT TRIM(a.departamento) as departamento 
+        FROM webmartminas.web_escala_mensal a
+        ORDER BY departamento ASC
          ";
         echo $query;
         $resultado = oci_parse($oracle, $query);
@@ -149,6 +150,7 @@ class Funcionarios
           and a.mesSelecionado = TO_DATE('$mesSelecionado','YYYY-MM')
           and a.status = 'F'
           and a.departamento like '%$departamento%'
+          and a.cargo not like '%APRENDIZ%'
           order by a.nome asc
           ";
         $resultado = oci_parse($oracle, $query);
@@ -336,7 +338,12 @@ class Funcionarios
                 WHERE   PFUNC.CODCOLIGADA = 1  
                 AND PFUNC.CODSITUACAO IN ('A','F') 
                         AND SUBSTR(PSECAO.DESCRICAO,1,3) =  '$lojaDaPessoaLogada'
-                        and  SUBSTR(PSECAO.DESCRICAO, 6, 99) like '%$setorDaPessoaLogada%'
+                        AND (
+                                CASE 
+                                    WHEN SUBSTR(PSECAO.DESCRICAO, 6, 99) LIKE '%PREVENCAO DE PERDAS PERECIVEIS%' THEN 'PREVENCAO DE PERDAS'
+                                    ELSE SUBSTR(PSECAO.DESCRICAO, 6, 99)
+                                END
+                            ) LIKE '%$setorDaPessoaLogada%'
                         and  SUBSTR(PFUNCAO.NOME, 1, 99) NOT LIKE '%APRENDIZ%'
                         and  SUBSTR(PFUNCAO.NOME, 1, 99) NOT LIKE '%ENCARREGADO%'
                 ORDER BY PFUNC.NOME ";
@@ -359,7 +366,7 @@ class Funcionarios
         A.HORAENTRADA, A.HORASAIDA, A.HORAINTERVALO,
         TO_CHAR(TO_DATE(a.datainicioferiasprogramadas, 'DD-MON-RR'), 'YYYY-MM-DD') AS datainicioferiasprogramadas,
        TO_CHAR(TO_DATE(a.datafimferiasprogramadas, 'DD-MON-RR'), 'YYYY-MM-DD') AS datafimferiasprogramadas
-        from web_escala_mensal a 
+        from webmartminas.web_escala_mensal a 
         where a.loja= '$loja'
         and a.departamento= '$DEPARTAMENTO'
         and a.datainicioferiasprogramadas || a.datafimferiasprogramadas is not null
@@ -383,39 +390,41 @@ class Funcionarios
     {
         $lista = array();
         $query = "SELECT DISTINCT a.matricula,
-        a.nome,
-        a.loja,
-        a.messelecionado,
-        a.horaentrada,
-        a.horasaida,
-        a.horaintervalo
-        FROM webmartminas.WEB_ESCALA_MENSAL a
-        WHERE a.loja = $lojaDaPessoaLogada
-        AND a.$diaDeHojeComAspas IS NULL
-        AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
-        AND a.horaentrada BETWEEN '05:00' AND '11:59'
-        and a.departamento like '%$departamento%'
-        AND a.cargo BETWEEN 'OPERADOR DE CAIXA' AND 'OPERADOR DE LOJA'
-        and a.matricula not in
-        (SELECT b.matricula
-        FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
-        WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
-        AND b.loja = $lojaDaPessoaLogada)
-        UNION
-        SELECT b.matricula,
-        b.nome,
-        b.loja,
-        b.diaselecionado as diaSelecionado,
-        b.horaentrada,
-        b.horasaida,
-        b.horaintervalo
-        FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
-        WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
-        AND b.loja = $lojaDaPessoaLogada 
-        AND b.horaentrada BETWEEN '05:00' AND '11:59'
-        order by nome asc
-        ";
-        // echo $query;
+                a.nome,
+                a.loja,
+                a.messelecionado,
+                a.horaentrada,
+                a.horasaida,
+                a.horaintervalo
+         FROM webmartminas.WEB_ESCALA_MENSAL a
+          WHERE a.loja = $lojaDaPessoaLogada
+           AND a.$diaDeHojeComAspas IS NULL
+           AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
+          AND a.horaentrada BETWEEN '05:00' AND '11:59'
+            and a.departamento like '%$departamento%'
+          AND (a.cargo = 'OPERADOR DE CAIXA' OR a.cargo = 'OPERADOR DE LOJA')
+                
+                AND a.matricula NOT IN (SELECT b.matricula
+                                    FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
+                                    WHERE b.matricula = a.matricula
+                                    AND b.loja = $lojaDaPessoaLogada
+                                    )    union
+                                    SELECT c.matricula,
+            c.nome,
+            c.loja,
+            c.diaselecionado AS diaSelecionado,
+            c.horaentrada,
+            c.horasaida,
+            c.horaintervalo
+         FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED c
+         WHERE  c.loja = $lojaDaPessoaLogada 
+          AND c.horaentrada BETWEEN '05:00' AND '11:59'
+          AND c.datainclusao = (SELECT MAX(d.datainclusao)
+                                FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED d
+                                WHERE d.matricula = c.matricula
+                                    AND d.loja = c.loja)
+        ORDER BY  nome ASC  ";
+        //  echo $query;
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
         while ($row = oci_fetch_assoc($resultado)) {
@@ -428,38 +437,41 @@ class Funcionarios
     {
         $lista = array();
         $query = "SELECT DISTINCT a.matricula,
-        a.nome,
-        a.loja,
-        a.messelecionado,
-        a.horaentrada,
-        a.horasaida,
-        a.horaintervalo
-        FROM webmartminas.WEB_ESCALA_MENSAL a
-        WHERE a.loja = $lojaDaPessoaLogada
-        AND a.$diaDeHojeComAspas IS NULL
-        AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
-        AND a.horaentrada BETWEEN '12:00' AND '14:00'
-        and a.departamento like '%$departamento%'
-        AND a.cargo BETWEEN 'OPERADOR DE CAIXA' AND 'OPERADOR DE LOJA'
-        and a.matricula not in
-        (SELECT b.matricula
-        FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
-        WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
-        AND b.loja = $lojaDaPessoaLogada)
-        UNION
-        SELECT b.matricula,
-        b.nome,
-        b.loja,
-        b.diaselecionado as diaSelecionado,
-        b.horaentrada,
-        b.horasaida,
-        b.horaintervalo
-        FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
-        WHERE b.diaselecionado = TO_DATE('$diaMesEAnoAtual', 'YYYY-MM-DD')
-        AND b.loja = $lojaDaPessoaLogada 
-        AND b.horaentrada BETWEEN '12:00' AND '14:00'
-        order by nome asc
-        ";
+                a.nome,
+                a.loja,
+                a.messelecionado,
+                a.horaentrada,
+                a.horasaida,
+                a.horaintervalo
+             FROM webmartminas.WEB_ESCALA_MENSAL a
+             WHERE a.loja = $lojaDaPessoaLogada
+                            AND a.$diaDeHojeComAspas IS NULL
+                            AND a.messelecionado = TO_DATE('$mesSelecionadoDaEscalaMensal', 'YYYY-MM')
+                            AND a.horaentrada BETWEEN '12:00' AND '14:00'
+                            and a.departamento like '%$departamento%'
+                            AND (a.cargo = 'OPERADOR DE CAIXA' OR a.cargo = 'OPERADOR DE LOJA')
+                            AND a.matricula NOT IN (SELECT b.matricula
+                                    FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
+                                    WHERE b.matricula = a.matricula
+                                    AND b.loja = $lojaDaPessoaLogada)
+                            UNION
+                            
+                                
+             SELECT c.matricula,
+              c.nome,
+             c.loja,
+              c.diaselecionado AS diaSelecionado,
+              c.horaentrada,
+               c.horasaida,
+               c.horaintervalo
+             FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED c
+             WHERE c.loja  = $lojaDaPessoaLogada 
+             AND c.horaentrada BETWEEN '12:00' AND '14:00'
+             AND c.datainclusao = (SELECT MAX(d.datainclusao)
+                                FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED d
+                                WHERE d.matricula = c.matricula
+                                    AND d.loja = c.loja)
+        ORDER BY  nome ASC";
         // echo $query;
         $resultado = oci_parse($oracle, $query);
         oci_execute($resultado);
@@ -686,10 +698,11 @@ class Verifica
         WHERE a.matricula = '$matricula'
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
         AND a.loja = $loja
-        AND a.departamento = '$departamentoFunc' 
+    --    retirado dia 26/07 para testes 
+       -- AND a.departamento = '$departamentoFunc' 
         ";
 
-
+        // echo "</br>".$query;
 
 
         $parse = oci_parse($oracle, $query);
@@ -706,7 +719,7 @@ class Verifica
             $retorno = 0;
         }
 
-        // echo "</br>".$retorno;
+        echo "</br>" . $retorno;
     }
 
     public function verificaCadastroNaEscalaMensa1($oracle, $matricula, $mesPesquisado,)
@@ -714,7 +727,7 @@ class Verifica
         $lista = array();
         global  $retorno;
         $query = "SELECT * FROM webmartminas.WEB_ESCALA_MENSAL a
-        WHERE a.matricula = $matricula
+        WHERE a.matricula = '$matricula'
         AND a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') ";
 
 
@@ -768,250 +781,368 @@ class Verifica
         global  $retorno;
         $query =
             <<<SQL
-                        WITH FOLGA AS
-                        (SELECT E.MATRICULA,
-                                E.NOME,
-                                E.LOJA,
-                                E.CARGO,
-                                E.MESSELECIONADO,
-                                E.STATUS,
-                                E.HORAENTRADA,
-                                E.HORASAIDA,
-                                E.HORAINTERVALO,
-                                E."01",
-                                E."02",
-                                E."03",
-                                E."04",
-                                E."05",
-                                E."06",
-                                E."07",
-                                E."08",
-                                E."09",
-                                E."10",
-                                E."11",
-                                E."12",
-                                E."13",
-                                E."14",
-                                E."15",
-                                E."16",
-                                E."17",
-                                E."18",
-                                E."19",
-                                E."20",
-                                E."21",
-                                E."22",
-                                E."23",
-                                E."24",
-                                E."25",
-                                E."26",
-                                E."27",
-                                E."28",
-                                E."29",
-                                E."30",
-                                E."31",
-                                E.DATAINCLUSAO,
-                                E.USUINCLUSAO,
-                                E.USUFINALIZACAOESCALA,
-                                E.USUNOVALIBERACAOESCALA,
-                                E.INCLUSAODOMESANTERIOR,
-                                E.DEPARTAMENTO,
-                                E.DATAINICIOFERIASPROGRAMADAS,
-                                E.DATAFIMFERIASPROGRAMADAS,
-                                TRIM(REPLACE(CASE
-                                                WHEN E."01" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                '1/'
-                                            END || ' / ' || CASE
-                                                WHEN E."02" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                2
-                                            END || '/ ' || CASE
-                                                WHEN E."03" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                3
-                                            END || '/ ' || CASE
-                                                WHEN E."04" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                4
-                                            END || '/ ' || CASE
-                                                WHEN E."05" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                5
-                                            END || '/ ' || CASE
-                                                WHEN E."06" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                6
-                                            END || '/ ' || CASE
-                                                WHEN E."07" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                7
-                                            END || '/ ' || CASE
-                                                WHEN E."08" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                8
-                                            END || '/ ' || CASE
-                                                WHEN E."09" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                9
-                                            END || '/ ' || CASE
-                                                WHEN E."10" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                10
-                                            END || '/ ' || CASE
-                                                WHEN E."11" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                11
-                                            END || '/ ' || CASE
-                                                WHEN E."12" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                12
-                                            END || '/ ' || CASE
-                                                WHEN E."13" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                13
-                                            END || '/ ' || CASE
-                                                WHEN E."14" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                14
-                                            END || '/ ' || CASE
-                                                WHEN E."15" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                15
-                                            END || '/ ' || CASE
-                                                WHEN E."16" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                16
-                                            END || '/ ' || CASE
-                                                WHEN E."17" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                17
-                                            END || '/ ' || CASE
-                                                WHEN E."18" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                18
-                                            END || '/ ' || CASE
-                                                WHEN E."19" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                19
-                                            END || '/ ' || CASE
-                                                WHEN E."20" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                20
-                                            END || '/ ' || CASE
-                                                WHEN E."21" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                21
-                                            END || '/ ' || CASE
-                                                WHEN E."22" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                22
-                                            END || '/ ' || CASE
-                                                WHEN E."23" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                23
-                                            END || '/ ' || CASE
-                                                WHEN E."24" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                24
-                                            END || '/ ' || CASE
-                                                WHEN E."25" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                25
-                                            END || '/ ' || CASE
-                                                WHEN E."26" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                26
-                                            END || '/ ' || CASE
-                                                WHEN E."27" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                27
-                                            END || '/ ' || CASE
-                                                WHEN E."28" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                28
-                                            END || '/ ' || CASE
-                                                WHEN E."29" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                CASE WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO),'DD') AS INTEGER) >= 29 THEN 29 ELSE NULL END
-                                            END || '/ ' || CASE
-                                                WHEN E."30" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                CASE WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO),'DD') AS INTEGER) >= 30 THEN 30 ELSE NULL END
-                                            END || '/ ' || CASE
-                                                WHEN E."31" IN ('FA', 'FF', 'FD', 'DSR') THEN
-                                                CASE WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO),'DD') AS INTEGER) >= 31 THEN 31 ELSE NULL END
-                                            END,
-                                            ' /',
-                                            '')) DIAS,
-                                            CAST(TO_CHAR(LAST_DAY(MESSELECIONADO),'DD') AS INTEGER) DIA_FINAL
-                                            FROM WEBMARTMINAS.WEB_ESCALA_MENSAL E
-                                                where  E.Matricula = '{$matricula}'
-                                                AND TO_CHAR(E.MESSELECIONADO,'YYYY-MM')= '{$mesPesquisado}'
-                                                and E.departamento = '{$departamento}'
-                                                and E.loja = '{$loja}' 
-                            
-                            
-                            )
-                        SELECT E.MATRICULA,
-                            E.NOME,
-                            E.LOJA,
-                            E.CARGO,
-                            E.MESSELECIONADO,
-                            E.STATUS,
-                            E.HORAENTRADA,
-                            E.HORASAIDA,
-                            E.HORAINTERVALO,
-                            E."01",
-                            E."02",
-                            E."03",
-                            E."04",
-                            E."05",
-                            E."06",
-                            E."07",
-                            E."08",
-                            E."09",
-                            E."10",
-                            E."11",
-                            E."12",
-                            E."13",
-                            E."14",
-                            E."15",
-                            E."16",
-                            E."17",
-                            E."18",
-                            E."19",
-                            E."20",
-                            E."21",
-                            E."22",
-                            E."23",
-                            E."24",
-                            E."25",
-                            E."26",
-                            E."27",
-                            E."28",
-                            E."29",
-                            E."30",
-                            E."31",
-                            E.DATAINCLUSAO,
-                            E.USUINCLUSAO,
-                            E.USUFINALIZACAOESCALA,
-                            E.USUNOVALIBERACAOESCALA,
-                            E.INCLUSAODOMESANTERIOR,
-                            E.DEPARTAMENTO,
-                            E.DATAINICIOFERIASPROGRAMADAS,
-                            E.DATAFIMFERIASPROGRAMADAS,
-                            CASE
-                                WHEN DIAS2 - DIAS1 > 7 THEN
-                                'ALERTA'
-                                WHEN DIAS3 - DIAS2 > 7 THEN
-                                'ALERTA'
-                                WHEN DIAS4 - DIAS3 > 7 THEN
-                                'ALERTA'
-                                WHEN DIAS5 - DIAS4 > 7 THEN
-                                'ALERTA'
-                                WHEN DIAS6 - DIAS5 > 7 THEN
-                                'ALERTA'
-                                ELSE
-                                ''
-                            END AS VALIDA
-                        FROM (SELECT F.DIAS,
-                                    F.*,
-                                    NVL(CAST(REPLACE(SUBSTR(DIAS, 1, 3), '/') AS INTEGER), 1) AS DIAS1,
-                                    NVL(CAST(REPLACE(SUBSTR(DIAS, 4, 3), '/') AS INTEGER),
-                                        CAST(REPLACE(SUBSTR(DIAS, 1, 3), '/') AS INTEGER) + 8) AS DIAS2,
-                                    NVL(CAST(REPLACE(SUBSTR(DIAS, 7, 3), '/') AS INTEGER),
-                                        CAST(REPLACE(SUBSTR(DIAS, 4, 3), '/') AS INTEGER) + 8) AS DIAS3,
-                                    NVL(CAST(REPLACE(SUBSTR(DIAS, 10, 4), '/') AS INTEGER),
-                                        CAST(REPLACE(SUBSTR(DIAS, 7, 3), '/') AS INTEGER) + 8) AS DIAS4,
-                                    CASE WHEN NVL(CAST(REPLACE(SUBSTR(DIAS, 14, 4), '/') AS INTEGER),
-                                                    CAST(REPLACE(SUBSTR(DIAS, 10, 4), '/') AS INTEGER) + 8) <= DIA_FINAL THEN
-                                    NVL(CAST(REPLACE(SUBSTR(DIAS, 14, 4), '/') AS INTEGER),
-                                        CAST(REPLACE(SUBSTR(DIAS, 10, 4), '/') AS INTEGER) + 8) ELSE DIA_FINAL END AS DIAS5,
-                                    
-                                    CASE WHEN NVL(CAST(REPLACE(SUBSTR(DIAS, 14, 4), '/') AS INTEGER),
-                                                    CAST(REPLACE(SUBSTR(DIAS, 10, 4), '/') AS INTEGER) + 8) > DIA_FINAL THEN                    
-                                            NVL(CAST(REPLACE(SUBSTR(DIAS, 18, 4), '/') AS INTEGER),
-                                                CAST(REPLACE(SUBSTR(DIAS, 14, 4), '/') AS INTEGER) + 8) ELSE
-                                    DIA_FINAL END AS DIAS6,
-                                    DIA_FINAL AS DIAS7
-                                FROM FOLGA F
-                                WHERE CARGO NOT LIKE '%APRENDIZ%'
-                                AND DIAS IS NOT NULL) E                 
-                                            
-    
+                   WITH FOLGA AS
+ (SELECT E.MATRICULA,
+         E.NOME,
+         E.LOJA,
+         E.CARGO,
+         E.MESSELECIONADO,
+         E.STATUS,
+         E.HORAENTRADA,
+         E.HORASAIDA,
+         E.HORAINTERVALO,
+         E."01",
+         E."02",
+         E."03",
+         E."04",
+         E."05",
+         E."06",
+         E."07",
+         E."08",
+         E."09",
+         E."10",
+         E."11",
+         E."12",
+         E."13",
+         E."14",
+         E."15",
+         E."16",
+         E."17",
+         E."18",
+         E."19",
+         E."20",
+         E."21",
+         E."22",
+         E."23",
+         E."24",
+         E."25",
+         E."26",
+         E."27",
+         E."28",
+         E."29",
+         E."30",
+         E."31",
+         E.DATAINCLUSAO,
+         E.USUINCLUSAO,
+         E.USUFINALIZACAOESCALA,
+         E.USUNOVALIBERACAOESCALA,
+         E.INCLUSAODOMESANTERIOR,
+         E.DEPARTAMENTO,
+         E.DATAINICIOFERIASPROGRAMADAS,
+         E.DATAFIMFERIASPROGRAMADAS,
+         TRIM(REPLACE(CASE
+                        WHEN E."01" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         '1/'
+                      END || ' / ' || CASE
+                        WHEN E."02" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         2
+                      END || '/ ' || CASE
+                        WHEN E."03" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         3
+                      END || '/ ' || CASE
+                        WHEN E."04" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         4
+                      END || '/ ' || CASE
+                        WHEN E."05" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         5
+                      END || '/ ' || CASE
+                        WHEN E."06" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         6
+                      END || '/ ' || CASE
+                        WHEN E."07" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         7
+                      END || '/ ' || CASE
+                        WHEN E."08" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         8
+                      END || '/ ' || CASE
+                        WHEN E."09" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         9
+                      END || '/ ' || CASE
+                        WHEN E."10" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         10
+                      END || '/ ' || CASE
+                        WHEN E."11" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         11
+                      END || '/ ' || CASE
+                        WHEN E."12" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         12
+                      END || '/ ' || CASE
+                        WHEN E."13" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         13
+                      END || '/ ' || CASE
+                        WHEN E."14" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         14
+                      END || '/ ' || CASE
+                        WHEN E."15" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         15
+                      END || '/ ' || CASE
+                        WHEN E."16" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         16
+                      END || '/ ' || CASE
+                        WHEN E."17" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         17
+                      END || '/ ' || CASE
+                        WHEN E."18" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         18
+                      END || '/ ' || CASE
+                        WHEN E."19" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         19
+                      END || '/ ' || CASE
+                        WHEN E."20" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         20
+                      END || '/ ' || CASE
+                        WHEN E."21" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         21
+                      END || '/ ' || CASE
+                        WHEN E."22" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         22
+                      END || '/ ' || CASE
+                        WHEN E."23" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         23
+                      END || '/ ' || CASE
+                        WHEN E."24" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         24
+                      END || '/ ' || CASE
+                        WHEN E."25" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         25
+                      END || '/ ' || CASE
+                        WHEN E."26" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         26
+                      END || '/ ' || CASE
+                        WHEN E."27" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         27
+                      END || '/ ' || CASE
+                        WHEN E."28" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         28
+                      END || '/ ' || CASE
+                        WHEN E."29" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         CASE
+                           WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO), 'DD') AS INTEGER) >= 29 THEN
+                            29
+                           ELSE
+                            NULL
+                         END
+                      END || '/ ' || CASE
+                        WHEN E."30" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         CASE
+                           WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO), 'DD') AS INTEGER) >= 30 THEN
+                            30
+                           ELSE
+                            NULL
+                         END
+                      END || '/ ' || CASE
+                        WHEN E."31" IN ('FA', 'FF', 'FD', 'DSR') THEN
+                         CASE
+                           WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO), 'DD') AS INTEGER) >= 31 THEN
+                            31
+                           ELSE
+                            NULL
+                         END
+                      END,
+                      ' /',
+                      '')) DIAS,
+         REPLACE(SUBSTR(TRIM(REPLACE(CASE
+                                       WHEN E."01" IN ('F') THEN
+                                        '1/'
+                                     END || ' / ' || CASE
+                                       WHEN E."02" IN ('F') THEN
+                                        2
+                                     END || '/ ' || CASE
+                                       WHEN E."03" IN ('F') THEN
+                                        3
+                                     END || '/ ' || CASE
+                                       WHEN E."04" IN ('F') THEN
+                                        4
+                                     END || '/ ' || CASE
+                                       WHEN E."05" IN ('F') THEN
+                                        5
+                                     END || '/ ' || CASE
+                                       WHEN E."06" IN ('F') THEN
+                                        6
+                                     END || '/ ' || CASE
+                                       WHEN E."07" IN ('F') THEN
+                                        7
+                                     END || '/ ' || CASE
+                                       WHEN E."08" IN ('F') THEN
+                                        8
+                                     END || '/ ' || CASE
+                                       WHEN E."09" IN ('F') THEN
+                                        9
+                                     END || '/ ' || CASE
+                                       WHEN E."10" IN ('F') THEN
+                                        10
+                                     END || '/ ' || CASE
+                                       WHEN E."11" IN ('F') THEN
+                                        11
+                                     END || '/ ' || CASE
+                                       WHEN E."12" IN ('F') THEN
+                                        12
+                                     END || '/ ' || CASE
+                                       WHEN E."13" IN ('F') THEN
+                                        13
+                                     END || '/ ' || CASE
+                                       WHEN E."14" IN ('F') THEN
+                                        14
+                                     END || '/ ' || CASE
+                                       WHEN E."15" IN ('F') THEN
+                                        15
+                                     END || '/ ' || CASE
+                                       WHEN E."16" IN ('F') THEN
+                                        16
+                                     END || '/ ' || CASE
+                                       WHEN E."17" IN ('F') THEN
+                                        17
+                                     END || '/ ' || CASE
+                                       WHEN E."18" IN ('F') THEN
+                                        18
+                                     END || '/ ' || CASE
+                                       WHEN E."19" IN ('F') THEN
+                                        19
+                                     END || '/ ' || CASE
+                                       WHEN E."20" IN ('F') THEN
+                                        20
+                                     END || '/ ' || CASE
+                                       WHEN E."21" IN ('F') THEN
+                                        21
+                                     END || '/ ' || CASE
+                                       WHEN E."22" IN ('F') THEN
+                                        22
+                                     END || '/ ' || CASE
+                                       WHEN E."23" IN ('F') THEN
+                                        23
+                                     END || '/ ' || CASE
+                                       WHEN E."24" IN ('F') THEN
+                                        24
+                                     END || '/ ' || CASE
+                                       WHEN E."25" IN ('F') THEN
+                                        25
+                                     END || '/ ' || CASE
+                                       WHEN E."26" IN ('F') THEN
+                                        26
+                                     END || '/ ' || CASE
+                                       WHEN E."27" IN ('F') THEN
+                                        27
+                                     END || '/ ' || CASE
+                                       WHEN E."28" IN ('F') THEN
+                                        28
+                                     END || '/ ' || CASE
+                                       WHEN E."29" IN ('F') THEN
+                                        CASE
+                                          WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO), 'DD') AS INTEGER) >= 29 THEN
+                                           29
+                                          ELSE
+                                           NULL
+                                        END
+                                     END || '/ ' || CASE
+                                       WHEN E."30" IN ('F') THEN
+                                        CASE
+                                          WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO), 'DD') AS INTEGER) >= 30 THEN
+                                           30
+                                          ELSE
+                                           NULL
+                                        END
+                                     END || '/ ' || CASE
+                                       WHEN E."31" IN ('F') THEN
+                                        CASE
+                                          WHEN CAST(TO_CHAR(LAST_DAY(MESSELECIONADO), 'DD') AS INTEGER) >= 31 THEN
+                                           31
+                                          ELSE
+                                           NULL
+                                        END
+                                     END,
+                                     ' /',
+                                     '')),
+                        -3),
+                 '/',
+                 '') FERIAS,
+         CAST(TO_CHAR(LAST_DAY(MESSELECIONADO), 'DD') AS INTEGER) DIA_FINAL
+         FROM WEBMARTMINAS.WEB_ESCALA_MENSAL E
+                                            WHERE TO_CHAR(E.MESSELECIONADO,'YYYY-MM')= '{$mesPesquisado}'
+                                            and E.departamento = '{$departamento}'
+                                            and E.loja = '{$loja}'    
+                                            AND  E.Matricula = '{$matricula}'  
+     )
+SELECT E.MATRICULA,
+       E.NOME,
+       E.LOJA,
+       E.CARGO,
+       E.MESSELECIONADO,
+       E.STATUS,
+       E.HORAENTRADA,
+       E.HORASAIDA,
+       E.HORAINTERVALO,
+       E."01",
+       E."02",
+       E."03",
+       E."04",
+       E."05",
+       E."06",
+       E."07",
+       E."08",
+       E."09",
+       E."10",
+       E."11",
+       E."12",
+       E."13",
+       E."14",
+       E."15",
+       E."16",
+       E."17",
+       E."18",
+       E."19",
+       E."20",
+       E."21",
+       E."22",
+       E."23",
+       E."24",
+       E."25",
+       E."26",
+       E."27",
+       E."28",
+       E."29",
+       E."30",
+       E."31",
+       E.DATAINCLUSAO,
+       E.USUINCLUSAO,
+       E.USUFINALIZACAOESCALA,
+       E.USUNOVALIBERACAOESCALA,
+       E.INCLUSAODOMESANTERIOR,
+       E.DEPARTAMENTO,
+       E.DATAINICIOFERIASPROGRAMADAS,
+       E.DATAFIMFERIASPROGRAMADAS,
+       CASE
+         WHEN DIAS2 - DIAS1 > 7 THEN
+          'ALERTA'
+         WHEN DIAS3 - DIAS2 > 7 THEN
+          'ALERTA'
+         WHEN DIAS4 - DIAS3 > 7 THEN
+          'ALERTA'
+         WHEN DIAS5 - DIAS4 > 7 THEN
+          'ALERTA'
+         WHEN DIAS6 - DIAS5 > 7 THEN
+          'ALERTA'
+         ELSE
+          ''
+       END AS VALIDA
+  FROM (SELECT F.*,
+               CAST(NVL(NVL(REGEXP_SUBSTR(F.DIAS, '[^/]+', 1, 1), FERIAS),1) AS INTEGER) AS DIAS1,
+               CAST(NVL(NVL(REGEXP_SUBSTR(F.DIAS, '[^/]+', 1, 2), FERIAS),
+                        DIA_FINAL) AS INTEGER) AS DIAS2,
+               CAST(NVL(NVL(REGEXP_SUBSTR(F.DIAS, '[^/]+', 1, 3), FERIAS),
+                        DIA_FINAL) AS INTEGER) AS DIAS3,
+               CAST(NVL(REGEXP_SUBSTR(F.DIAS, '[^/]+', 1, 4), DIA_FINAL) AS
+                    INTEGER) AS DIAS4,
+               CAST(NVL(REGEXP_SUBSTR(F.DIAS, '[^/]+', 1, 5), DIA_FINAL) AS
+                    INTEGER) AS DIAS5,
+               CAST(NVL(REGEXP_SUBSTR(F.DIAS, '[^/]+', 1, 6), DIA_FINAL) AS
+                    INTEGER) AS DIAS6,
+               CAST(NVL(REGEXP_SUBSTR(F.DIAS, '[^/]+', 1, 7), DIA_FINAL) AS
+                    INTEGER) AS DIAS7
+          FROM FOLGA F
+         WHERE CARGO NOT LIKE '%APRENDIZ%') E
+                                                         
 SQL;
-        // echo "<br><br><br><br><br><br><br>" . $query;
-
+        // echo $query;
         $parse = oci_parse($oracle, $query);
         $retorno = oci_execute($parse);
         while ($row = oci_fetch_assoc($parse)) {
@@ -1124,9 +1255,9 @@ SQL;
         and a.loja = $loja
         and status IS NULL OR TRIM(status) = '' 
         
-        
+
         ";
-        // echo "<br> verificaSeAEscalaMensalEstaFinalizada :". $query;
+        // echo "<br> verificaSeAEscalaMensalEstaFinalizada :" . $query;
         //VERIFICA SE TEM LINHAS COM STATUS VAZIO NA TABELA E SE TIVER RETORNA NÃO FINALIZADA 
         $parse = oci_parse($oracle, $query);
 
@@ -1145,6 +1276,57 @@ SQL;
         while ($row = oci_fetch_assoc($parse)) {
             array_push($lista, $row);
         }
+        return $lista;
+    }
+
+    public function verificaSeAEscalaMensalEstaFinalizadaParaInsercaoDeDados($oracle, $mesPesquisado, $loja, $departamento)
+    {
+        $lista = array();
+        global $retorno;
+
+        $query = "SELECT * from webmartminas.WEB_ESCALA_MENSAL a
+    where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
+    and a.departamento = '$departamento'
+    and a.loja = $loja";
+
+        // echo "<br> verificaSeAEscalaMensalEstaFinalizada :" . $query;
+
+        // Executa a consulta
+        $parse = oci_parse($oracle, $query);
+        $retorno = oci_execute($parse);
+
+        if ($retorno) {
+            $numRows = 0;
+            while ($row = oci_fetch_assoc($parse)) {
+                $numRows++;
+                array_push($lista, $row);
+            }
+
+            if ($numRows == 0) {
+                // Nenhuma linha retornada
+                $retorno = "NÃO FINALIZADA.";
+            } else {
+                // Verifica se algum status está vazio ou nulo
+                $statusFinalizado = true;
+                foreach ($lista as $item) {
+                    if (is_null($item['STATUS']) || trim($item['STATUS']) == '') {
+                        $statusFinalizado = false;
+                        break;
+                    }
+                }
+
+                if ($statusFinalizado) {
+                    $retorno = "JÁ FINALIZADA.";
+                } else {
+                    $retorno = "NÃO FINALIZADA.";
+                }
+            }
+        } else {
+            // Erro na consulta
+            echo "Erro na consulta.";
+            $retorno = "ERRO NA CONSULTA.";
+        }
+
         return $lista;
     }
 
@@ -1167,13 +1349,7 @@ SQL;
         WHERE a.matricula = '$matricula'
         and trim(a.nome) = '$nome'
         and a.loja = $loja      
-   AND a.diaselecionado = (
-       SELECT MAX(b.diaselecionado)
-         FROM webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED b
-        WHERE b.matricula = a.matricula
-          AND TRIM(b.nome) = TRIM(a.nome)
-          AND b.loja = a.loja
-   )
+     and diaselecionado = TO_DATE('$diaselecionado', 'YYYY-MM-DD') 
         ";
         $parse = oci_parse($oracle, $query);
 
@@ -1514,7 +1690,7 @@ class Insert
 class Update
 {
     //mensal
-    public function updateDeFuncionariosNaEscalaMensal($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $matricula, $loja)
+    public function updateDeFuncionariosNaEscalaMensal($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $matricula, $loja, $departamento)
     {
         $query = "UPDATE webmartminas.WEB_ESCALA_MENSAL a
          SET
@@ -1523,17 +1699,18 @@ class Update
             mesSelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM'),
             nome = '$nome',
             $dia = '$opcaoSelect',
-            LOJA = '$loja' 
+            LOJA = '$loja', 
+            departamento = '$departamento' 
          WHERE a.matricula = '$matricula'
           and messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
           and loja = $loja";
-        echo $query;
+        // echo $query;
         $parse = oci_parse($oracle, $query);
 
         oci_execute($parse);
     }
 
-    public function updateDeFuncionariosNaEscalaMensalFerias($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $matricula, $loja, $DATAINICIOFERIASPROGRAMADAS, $DATAFIMFERIASPROGRAMADAS)
+    public function updateDeFuncionariosNaEscalaMensalFerias($oracle, $usuarioLogado, $mesPesquisado, $nome, $dia, $opcaoSelect, $matricula, $loja, $DATAINICIOFERIASPROGRAMADAS, $DATAFIMFERIASPROGRAMADAS, $departamento)
     {
         $query = "UPDATE webmartminas.WEB_ESCALA_MENSAL a
          SET
@@ -1544,35 +1721,63 @@ class Update
             $dia = '$opcaoSelect',
             LOJA = '$loja',
             DATAINICIOFERIASPROGRAMADAS =   TO_DATE('$DATAINICIOFERIASPROGRAMADAS', 'YYYY-MM-DD'),
-            DATAFIMFERIASPROGRAMADAS =     TO_DATE('$DATAFIMFERIASPROGRAMADAS', 'YYYY-MM-DD')       
+            DATAFIMFERIASPROGRAMADAS =     TO_DATE('$DATAFIMFERIASPROGRAMADAS', 'YYYY-MM-DD'),
+            departamento = '$departamento'        
                WHERE a.matricula = '$matricula'
           and messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM')
           and loja = $loja";
-        echo $query;
+        // echo $query;
         $parse = oci_parse($oracle, $query);
 
         oci_execute($parse);
     }
     // bloqueio da escala mensal
-    public function bloqueiaEscalaMensal($oracle,  $status,  $usuarioQueFinalizou, $mesPesquisado, $loja)
+    public function bloqueiaEscalaMensal($oracle,  $status,  $usuarioQueFinalizou, $mesPesquisado, $loja, $departamento)
     {
 
         $query = "UPDATE webmartminas.WEB_ESCALA_MENSAL a
         SET 
-        status = '$status', 
-        usufinalizacaoescala = ' $usuarioQueFinalizou'
+        status = '$status' ,
+        a.datafinalizacao = sysdate
         where a.messelecionado = TO_DATE('$mesPesquisado', 'YYYY-MM') 
-        and status IS NULL OR TRIM(status) = '' 
-        and a.loja = $loja";
-
-
-
+        and a.loja = $loja
+        and a.departamento = '$departamento'   ";
+        //  echo $query;
         $parse = oci_parse($oracle, $query);
 
         $retorno = oci_execute($parse);
         if ($retorno) {
-            global $sucess;
-            $sucess = 1;
+
+            $sql2 = 'SELECT weboficial.S_LOG_ESCALA_MENSAL_finaliza.Nextval from dual';
+            $parse = oci_parse($oracle, $sql2);
+            oci_execute($parse);
+            while (($row = oci_fetch_assoc($parse)) != false) {
+
+                $idfinalizacao = $row['NEXTVAL'];
+            }
+
+
+            // log liberação escala finalizacao
+            $query11 = "INSERT INTO WEBOFICIAL.WEB_ESCALA_MENSAL_LOG_FINALI(
+                id, 
+                loja, 
+                messelecionado, 
+                datafinalizacao,
+                 usufinalizacao,
+                 departamento 
+                 )
+                VALUES (
+                $idfinalizacao,
+                $loja,
+                 TO_DATE('$mesPesquisado', 'YYYY-MM'),
+                sysdate,
+                 '$usuarioQueFinalizou',
+                 '$departamento'        
+            )";
+
+            $parse = oci_parse($oracle, $query11);
+
+            $retorno = oci_execute($parse);
 
             return true;
         } else {
@@ -1785,7 +1990,7 @@ class log_escala_mensal
         }
 
 
-
+        // log liberação escala liberacao
         $query = "INSERT INTO webmartminas.WEB_ESCALA_MENSAL_log (
             id, 
             loja, 

@@ -12,122 +12,42 @@ $nomeFunc = trim($_GET['nomeSelecionado']);
 $verifica = $verificacaoDeDados->verificaAlteracaoNoHorarioDiario($oracle, $MatriculaDaPessoaSelecionada, $dataAtual, $nomeFunc, $loja);
 
 if ($retorno == "Já existem dados.") {
-    $sql = "Select a.matricula as MATRICULA,
-            a.nome,
+    $sql = "SELECT  a.nome,
             a.loja,
             a.diaselecionado,
+            a.matricula as MATRICULA,
             a.horaentrada as HORAENTRADA,
             a.horasaida as HORASAIDA,
             a.horaintervalo as INICIOINTERVALO
-            from WEB_ESCALA_DIARIA_HR_INTERMED a 
+            from webmartminas.WEB_ESCALA_DIARIA_HR_INTERMED a 
                     WHERE a.matricula = '$MatriculaDaPessoaSelecionada'
                     and a.loja = $loja      
                     and a.diaselecionado = TO_DATE('$dataAtual', 'YYYY-MM-DD')";
-                    // echo $sql;
+    //  echo $sql;
     $parse = ociparse($oracle, $sql);
     oci_execute($parse);
-    
 } else if ($retorno == "Não existem dados.") {
-    $sql = "SELECT DISTINCT 
-    
-            PFUNC.CHAPA AS MATRICULA,
-            PFUNC.NOME, 
-            TO_CHAR(PFUNC.DATAADMISSAO, 'DD/MM/YYYY') AS DATA_ADMISSAO, 
-            SUBSTR(PSECAO.DESCRICAO, 6,99) AS DEPARTAMENTO, 
-            SUBSTR(PSECAO.DESCRICAO, 1,3) AS LOJA, 
-            PFUNC.CODFUNCAO AS CODIGO_FUNCAO, 
-            PFUNCAO.NOME AS FUNCAO, 
-            ENTRADA1.BATIDA as HORAEntrada,
-            SAIDA1.BATIDA as INICIOINTERVALO,
-            ENTRADA2.BATIDA as VoltaDoAlmoco,
-            SAIDA2.BATIDA as HoraSaida,
-            ENTRADA1.BATIDA || ' - ' || SAIDA1.BATIDA || ' - ' || ENTRADA2.BATIDA || ' - ' || SAIDA2.BATIDA AS HORARIO
-                
-            FROM PFUNC 
-
-            INNER JOIN PFUNCAO 
-            ON (PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA 
-            AND PFUNC.CODFUNCAO = PFUNCAO.CODIGO) 
-
-            INNER JOIN PSECAO 
-            ON (PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA 
-            AND PFUNC.CODSECAO = PSECAO.CODIGO)
-
-            LEFT JOIN (
-            SELECT DISTINCT 
-
-                AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-
-                TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-                TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00')
-                AS BATIDA
-            FROM ABATHOR 
-                INNER JOIN AHORARIO ON 
-                    ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                    AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-                WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 0
-                GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-                ) ENTRADA1 ON
-            ENTRADA1.CODCOLIGADA = PFUNC.CODCOLIGADA AND ENTRADA1.CODIGO = PFUNC.CODHORARIO
-
-            LEFT JOIN (
-            SELECT DISTINCT 
-                AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-                NVL(TO_CHAR(TRUNC((MIN(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-                TO_CHAR(TRUNC(MOD(ABS(MIN(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
-            FROM ABATHOR 
-                INNER JOIN AHORARIO ON 
-                    ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                    AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-                WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 1
-                GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-                ) SAIDA1 ON
-            SAIDA1.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA1.CODIGO = PFUNC.CODHORARIO
-
-            LEFT JOIN (
-            SELECT DISTINCT 
-                AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-                NVL(TO_CHAR(TRUNC((MAX(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-                TO_CHAR(TRUNC(MOD(ABS(MAX(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
-            FROM ABATHOR 
-                INNER JOIN AHORARIO ON 
-                    ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                    AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-                WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 0
-                GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-                ) ENTRADA2 ON
-            ENTRADA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND ENTRADA2.CODIGO = PFUNC.CODHORARIO
-
-            LEFT JOIN (
-            SELECT DISTINCT 
-                AHORARIO.CODCOLIGADA, AHORARIO.CODIGO,
-                NVL(TO_CHAR(TRUNC((MAX(ABATHOR.BATIDA) * 60) / 3600), 'FM9900') || ':' || 
-                TO_CHAR(TRUNC(MOD(ABS(MAX(ABATHOR.BATIDA) * 60), 3600) / 60), 'FM00'), '00:00') AS BATIDA
-            FROM ABATHOR 
-                INNER JOIN AHORARIO ON 
-                    ABATHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA 
-                    AND ABATHOR.CODHORARIO = AHORARIO.CODIGO 
-                WHERE   ABATHOR.TIPO = 0 AND ABATHOR.INDICE = 1 AND ABATHOR.NATUREZA = 1
-                GROUP BY AHORARIO.CODCOLIGADA, AHORARIO.CODIGO
-                ) SAIDA2 ON
-            SAIDA2.CODCOLIGADA = PFUNC.CODCOLIGADA AND SAIDA2.CODIGO = PFUNC.CODHORARIO
-
-            WHERE   PFUNC.CODCOLIGADA = 1 
-            AND PFUNC.CODSITUACAO  <> 'D' 
-                AND SUBSTR(PSECAO.DESCRICAO,1,3) LIKE $loja
-               -- AND PFUNCAO.NOME = 'OPERADOR DE CAIXA' 
-            and  PFUNC.CHAPA = '$MatriculaDaPessoaSelecionada'
-
-            ORDER BY PFUNC.NOME
-        ";
-// echo $sql;
-    $parse = ociparse($TotvsOracle, $sql);
+    $sql = " SELECT a.nome,
+                a.messelecionado,
+                a.matricula AS MATRICULA,
+                a.horaentrada AS HORAENTRADA,
+                a.horasaida AS HORASAIDA,
+                a.horaintervalo AS INICIOINTERVALO
+            FROM webmartminas.web_escala_mensal a
+            WHERE a.matricula = '$MatriculaDaPessoaSelecionada'
+            AND a.loja = $loja
+            AND a.messelecionado = (SELECT MAX(messelecionado) 
+                                    FROM webmartminas.web_escala_mensal 
+                                    WHERE matricula = '$MatriculaDaPessoaSelecionada'
+                                    AND loja = $loja) ";
+    //  echo $sql;
+    $parse = ociparse($oracle, $sql);
     oci_execute($parse);
 };
 
 
 while (($row = oci_fetch_assoc($parse)) != false) {
-   $array_valor = array(
+    $array_valor = array(
         'MATRICULA' => $row['MATRICULA'],
         'HORAENTRADA' => $row['HORAENTRADA'],
         'HORASAIDA' => $row['HORASAIDA'],
