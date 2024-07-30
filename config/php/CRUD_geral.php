@@ -338,11 +338,15 @@ class Funcionarios
                 WHERE   PFUNC.CODCOLIGADA = 1  
                 AND PFUNC.CODSITUACAO IN ('A','F') 
                         AND SUBSTR(PSECAO.DESCRICAO,1,3) =  '$lojaDaPessoaLogada'
-                        AND (
-                                CASE 
-                                    WHEN SUBSTR(PSECAO.DESCRICAO, 6, 99) LIKE '%PREVENCAO DE PERDAS PERECIVEIS%' THEN 'PREVENCAO DE PERDAS'
-                                    ELSE SUBSTR(PSECAO.DESCRICAO, 6, 99)
-                                END
+                            AND (
+                                    CASE
+                                        WHEN SUBSTR(PSECAO.DESCRICAO, 6, 99) LIKE '%PREVENCAO DE PERDAS PERECIVEIS%' THEN
+                                        'PREVENCAO DE PERDAS'
+                                        WHEN SUBSTR(PSECAO.DESCRICAO, 6, 99) LIKE '%PADARIA%' THEN
+                                        'PERECIVEIS'
+                                        ELSE
+                                        SUBSTR(PSECAO.DESCRICAO, 6, 99)
+                                    END
                             ) LIKE '%$setorDaPessoaLogada%'
                         and  SUBSTR(PFUNCAO.NOME, 1, 99) NOT LIKE '%APRENDIZ%'
                         and  SUBSTR(PFUNCAO.NOME, 1, 99) NOT LIKE '%ENCARREGADO%'
